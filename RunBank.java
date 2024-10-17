@@ -12,11 +12,11 @@ public class RunBank {
 
     }
     /*returns checking account balance */
-    public float check_balance(CheckingAccount customer_account){
+    public float check_balance_checkings(CheckingAccount customer_account){
         return customer_account.get_account_balance();
     }
     /*returns savings account balance */
-    public float check_balance(SavingAccount customer_account){
+    public float check_balance_savings(SavingAccount customer_account){
         return customer_account.get_account_balance();
     }
 
