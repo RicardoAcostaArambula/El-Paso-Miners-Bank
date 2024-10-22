@@ -20,5 +20,15 @@ public class RunBank {
         return customer_account.get_account_balance();
     }
 
-
+    /*deposit dunts to checkings*/
+    public boolean deposit_funds_checking(SavingAccount customer_account, float amount){
+        float current_balance = customer_account.get_account_balance();
+        float new_balance = current_balance + amount;
+        return customer_account.set_account_balance(new_balance);
+    }
+    public boolean deposit_funds_saving(SavingAccount customer_account, float amount){
+        float current_balance = customer_account.get_account_balance();
+        float new_balance = current_balance + amount;
+        return customer_account.set_account_balance(new_balance);
+    }
 }
