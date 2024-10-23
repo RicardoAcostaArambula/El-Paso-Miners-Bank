@@ -1,12 +1,16 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.Scanner;
 public class RunBank {
     public static void main(String[] args){
-
         boolean browing = true;
-        int option, pin, account_type;
+        int option, id, account_type;
         Scanner kb = new Scanner(System.in);
         String exit, username;
         float balance;
+        HashMap <Integer, Customer> users = new HashMap<>();
+        setup_users(users);
         Account account;
 
         System.out.println("Welcome to El Paso miners Bank");
@@ -19,16 +23,15 @@ public class RunBank {
             /*Verify user*/
             System.out.print("Enter your name");
             username = kb.nextLine();
-            System.out.print("Enter your pin");
-            pin = kb.nextInt();
+            System.out.print("Enter your Customer ID");
+            id = kb.nextInt();
             
-            /*We may check if the username is in the text file (mimicking our database) 
-            if so we create the object from there*/
-            
-            if (!verify_user(username, pin)){
-                System.out.println("Please, try again");
-            } else{
+            /*Check that user exist in the dictonary */
+            if (!(users.containsKey(id)) || !users.get(id).get_name().equals(username)){
+                System.out.println("Error: please enter a valid number");
+            } else {
                 if (option == 1){
+                    Customer customer = users.get(id);
                     /*do we get the account first or after the transaction?*/
                     System.out.println("(1) Checkings");
                     System.out.println("(2) Savings");
@@ -50,7 +53,7 @@ public class RunBank {
                     /* switch statmenet with all call to each*/
                     switch (option){
                         case 1: 
-                            balance = check_balance(account);
+                            balance = check_balance(customer);
                             System.out.println("The account balance is: " + balance);
                             break;
                         case 2:
@@ -76,20 +79,15 @@ public class RunBank {
             browing = exit.toLowerCase().equals("yes") ? true : false;
         } while (browing);
     }
-
-    /*Verifies user*/
-    public boolean verify_user(Customer customer, int pin){
-        return customer.get_pin() == pin;
-    }
     /*logs transaction information */
     public void log_information(Customer customer, String transaction){
 
     }
     /*returns checking account balance */
-    public float check_balance(CheckingAccount customer_account){
-        return customer_account.get_account_balance();
+    public float check_balance(Customer customer){
+        return customer.checking_account_balance;
     }
-    /*deposit dunts to checkings*/
+    /*deposit funds to checkings*/
 
     /*Are we going to have one method for each account type? 
      * or are we going to have one method, and the account class will be abstract and have the methods and attributes needed for generalization?
@@ -99,5 +97,52 @@ public class RunBank {
         float current_balance = account.get_account_balance();
         float new_balance = current_balance + amount;
         return account.set_account_balance(new_balance);
+    }
+    /*builds up the dictinary with the users with the id as primary key*/
+    /*
+        ,Credit Account Number,Credit Max,Credit Starting Balance
+     */
+    public static void setup_users(HashMap <Integer, Customer>  users){
+        try {
+            File file = new File("bank_users.csv");
+            Scanner read = new Scanner(file);
+            while (read.hasNextLine()){
+                String line = read.nextLine();
+                String[] items = line.split(",");
+                int id = Integer.parseInt(items[0]);
+                String name = items[1];
+                String last = items[2];
+                String dob = items[3];
+                String address = items[4];
+                String phone_number = items[5];
+                int checking_account_number = Integer.parseInt(items[6]);
+                float checking_account_balance = Float.parseFloat((items[7]));
+                int saving_account_number = Integer.parseInt(items[8]);
+                float saving_account_balance = Float.parseFloat((items[9]));
+                int credit_account_number = Integer.parseInt(items[10]);
+                float credit_account_max= Float.parseFloat((items[11]));
+                float credit_account_balance= Float.parseFloat((items[12]));
+                /*Create object*/
+                Customer customer = new Customer();
+                customer.set_account_id(id);
+                customer.set_name(name);
+                customer.set_last(last);
+                customer.set_dob(dob);
+                customer.set_address(address);
+                customer.set_phone_number(phone_number);
+                customer.set_checking_account_number(checking_account_number);
+                customer.set_checking_account_balance(checking_account_balance);
+                customer.set_saving_account_number(saving_account_number);
+                customer.set_saving_account_balance(saving_account_balance);
+                customer.set_credit_account_balance(credit_account_number);
+                customer.set_credit_account_max(credit_account_max);
+                customer.set_credit_account_balance(credit_account_balance);
+                users.put(id, customer);
+                /*add it to dic */
+            }
+        } catch (FileNotFoundException error){
+            System.out.println("Error: could not find file");
+            error.printStackTrace();
+        }
     }
 }
