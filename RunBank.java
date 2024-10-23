@@ -11,6 +11,7 @@ public class RunBank {
         Scanner kb = new Scanner(System.in);
         String exit, username;
         float balance;
+        Log transactionLog = new Log();
         HashMap <Integer, Customer> users = new HashMap<>();
         setup_users(users);
         System.out.println("Welcome to El Paso miners Bank");
@@ -84,7 +85,7 @@ public class RunBank {
                             balance = credit_account_balance(customer);
                         }
                         System.out.println("The account balance is: $" + String.format("%.2f", balance));
-
+                        transactionLog.logBalanceInquiry(customer, account_type);
                         break;
                 
                     case 2:
@@ -105,6 +106,7 @@ public class RunBank {
                             deposit_to_credit(customer, deposit_amount);
                             System.out.println("Successfully deposited $" + deposit_amount + " to credit account");
                         }
+                        transactionLog.logDeposit(customer, account_type, deposit_amount);
                         break;
                 
                     case 3:
@@ -134,6 +136,7 @@ public class RunBank {
                         } else {
                             System.out.println("Error: Cannot withdraw from credit account");
                         }
+                        transactionLog.logWithdrawal( customer, account_type, withdrawal_amount);
                         break;
                 
                     case 4:
@@ -197,6 +200,7 @@ public class RunBank {
                         }
                         
                         System.out.println("Successfully transferred $" + transfer_amount);
+                        transactionLog.logTransfer(customer, source_account,  dest_account, transfer_amount);
                         break;
                 
                     case 5:
@@ -220,8 +224,9 @@ public class RunBank {
                         
                         customer.set_credit_account_balance(credit_balance + payment_amount);
                         System.out.println("Successfully made payment of $" + payment_amount);
+                        transactionLog.logPayment(customer, payment_amount);
                         break;
-                
+                        
                     default:
                         System.out.println("Invalid option selected");
                         break;

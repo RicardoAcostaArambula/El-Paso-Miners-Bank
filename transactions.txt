@@ -1,0 +1,7 @@
+[2024-10-22 23:40:08] Daniel A made a balance inquiry on Checking-1078. Balance: $857.56
+[2024-10-22 23:40:21] Daniel A deposited $2.44 to Checking-1078. New Balance: $860.00
+[2024-10-22 23:40:26] Daniel A made a balance inquiry on Checking-1078. Balance: $860.00
+[2024-10-22 23:42:28] Daniel A, made a balance inquiry on Checking-1078. Balance: $857.56
+[2024-10-22 23:42:37] Daniel A, deposited $2.44 to Checking-1078. New Balance: $860.00
+[2024-10-22 23:42:41] Daniel A, made a balance inquiry on Checking-1078. Balance: $860.00
+[2024-10-22 23:43:06] Daniel A, withdrew $5.00 from Checking-1078. New Balance: $852.56
