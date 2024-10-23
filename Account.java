@@ -1,20 +1,30 @@
 public class Account {
-    /*attributes*/
-    private String routing_number;
-    /*constructor*/
-    public Account(){
-        
-    }
-    public Account(String routing_number){
-        this.routing_number = routing_number;
-    }
-    /*setters*/
-    public void set_routing_number(String routing_number){
-        this.routing_number = routing_number;
-    }
-    /*getters*/
-    public String get_routing_number(){
-        return this.routing_number;
+    private int accountNumber;
+    private float balance;
+
+    // Constructor
+    public Account(int accountNumber, float startingBalance) {
+        this.accountNumber = accountNumber;
+        this.balance = startingBalance;
     }
 
+    public int get_account_number() {
+        return accountNumber;
+    }
+
+    public float get_balance() {
+        return balance;
+    }
+
+    public void deposit(float amount) {
+        balance += amount; // Add amount to balance
+    }
+
+    public void withdraw(float amount) {
+        if (balance >= amount) {
+            balance -= amount; // Subtract amount from balance
+        } else {
+            System.out.println("Insufficient funds for withdrawal."); // Handle insufficient funds
+        }
+    }
 }

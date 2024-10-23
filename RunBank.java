@@ -49,7 +49,7 @@ public class RunBank {
                 boolean valid = false;
                 /*checking the account time */
                 do {
-                    System.out.println("Select one of the following accoutns:");
+                    System.out.println("Select one of the following accounts:");
                     System.out.println("(1) Checkings");
                     System.out.println("(2) Savings");
                     System.out.println("(3) Credit");
@@ -67,44 +67,163 @@ public class RunBank {
                 System.out.println("Select one of the transactions below:");
                 System.out.println("(1) Inquire about balance");
                 /*Assuming the user already selected the account in which the money will go*/
-                System.out.println("(2) Deposit money to an account");
-                System.out.println("(3) Withdraw money from an account");
-                System.out.println("(4) Transfer Money between accounts");
+                System.out.println("(2) Deposit money to the account");
+                System.out.println("(3) Withdraw money from the account");
+                System.out.println("(4) Transfer money between accounts");
                 System.out.println("(5) Make payment");
-                kb.nextInt();
+                int transaction_option = kb.nextInt();
                 
                 /* switch statmenet with all call to each*/
-                switch (option){
+                switch (transaction_option) {
                     case 1: 
-                        if (account_type == 1){
+                        if (account_type == 1) {
                             balance = checking_account_balance(customer);
                         } else if (account_type == 2) {
                             balance = saving_account_balance(customer);
                         } else {
                             balance = credit_account_balance(customer);
                         }
-                        System.out.println("The account balance is: " + balance);
+                        System.out.println("The account balance is: $" + String.format("%.2f", balance));
+
                         break;
+                
                     case 2:
-                        /*Ask user to which account will it deposit moeny to*/
                         System.out.println("Enter deposit amount:");
-                        float amount = kb.nextFloat();
-                        if (account_type == 1){
-                            deposit_to_checking(customer, amount);
-                            /*sucess message?*/
-                        } else if (account_type == 2) {
-                            deposit_to_saving(customer, amount);
-                        } else {
-                            deposit_to_credit(customer, amount);
+                        float deposit_amount = kb.nextFloat();
+                        if (deposit_amount <= 0) {
+                            System.out.println("Error: Deposit amount must be positive");
+                            break;
                         }
-                        break; 
-                    case 3: 
+                        
+                        if (account_type == 1) {
+                            deposit_to_checking(customer, deposit_amount);
+                            System.out.println("Successfully deposited $" + deposit_amount + " to checking account");
+                        } else if (account_type == 2) {
+                            deposit_to_saving(customer, deposit_amount);
+                            System.out.println("Successfully deposited $" + deposit_amount + " to savings account");
+                        } else {
+                            deposit_to_credit(customer, deposit_amount);
+                            System.out.println("Successfully deposited $" + deposit_amount + " to credit account");
+                        }
                         break;
+                
+                    case 3:
+                        System.out.println("Enter withdrawal amount:");
+                        float withdrawal_amount = kb.nextFloat();
+                        if (withdrawal_amount <= 0) {
+                            System.out.println("Error: Withdrawal amount must be positive");
+                            break;
+                        }
+                        
+                        if (account_type == 1) {
+                            float checking_balance = checking_account_balance(customer);
+                            if (checking_balance >= withdrawal_amount) {
+                                customer.set_checking_account_balance(checking_balance - withdrawal_amount);
+                                System.out.println("Successfully withdrew $" + withdrawal_amount + " from checking account");
+                            } else {
+                                System.out.println("Error: Insufficient funds in checking account");
+                            }
+                        } else if (account_type == 2) {
+                            float savings_balance = saving_account_balance(customer);
+                            if (savings_balance >= withdrawal_amount) {
+                                customer.set_saving_account_balance(savings_balance - withdrawal_amount);
+                                System.out.println("Successfully withdrew $" + withdrawal_amount + " from savings account");
+                            } else {
+                                System.out.println("Error: Insufficient funds in savings account");
+                            }
+                        } else {
+                            System.out.println("Error: Cannot withdraw from credit account");
+                        }
+                        break;
+                
                     case 4:
-                        break; 
-                    case 5: 
-                        break; 
+                        System.out.println("From which account?");
+                        System.out.println("(1) Checking");
+                        System.out.println("(2) Savings");
+                        System.out.println("(3) Credit");
+                        int source_account = kb.nextInt();
+                        
+                        System.out.println("To which account?");
+                        System.out.println("(1) Checking");
+                        System.out.println("(2) Savings");
+                        System.out.println("(3) Credit");
+                        int dest_account = kb.nextInt();
+                        
+                        if (source_account == dest_account) {
+                            System.out.println("Error: Cannot transfer to the same account");
+                            break;
+                        }
+                        
+                        System.out.println("Enter transfer amount:");
+                        float transfer_amount = kb.nextFloat();
+                        if (transfer_amount <= 0) {
+                            System.out.println("Error: Transfer amount must be positive");
+                            break;
+                        }
+                        
+                        // Get source account balance
+                        float source_balance = 0;
+                        if (source_account == 1) {
+                            source_balance = checking_account_balance(customer);
+                        } else if (source_account == 2) {
+                            source_balance = saving_account_balance(customer);
+                        } else if (source_account == 3) {
+                            source_balance = credit_account_balance(customer);
+                        }
+                        
+                        // Check if source has sufficient funds
+                        if (source_balance < transfer_amount) {
+                            System.out.println("Error: Insufficient funds in source account");
+                            break;
+                        }
+                        
+                        // Perform transfer
+                        // Deduct from source
+                        if (source_account == 1) {
+                            customer.set_checking_account_balance(source_balance - transfer_amount);
+                        } else if (source_account == 2) {
+                            customer.set_saving_account_balance(source_balance - transfer_amount);
+                        } else if (source_account == 3) {
+                            customer.set_credit_account_balance(source_balance - transfer_amount);
+                        }
+                        
+                        // Add to destination
+                        if (dest_account == 1) {
+                            deposit_to_checking(customer, transfer_amount);
+                        } else if (dest_account == 2) {
+                            deposit_to_saving(customer, transfer_amount);
+                        } else if (dest_account == 3) {
+                            deposit_to_credit(customer, transfer_amount);
+                        }
+                        
+                        System.out.println("Successfully transferred $" + transfer_amount);
+                        break;
+                
+                    case 5:
+                        if (account_type != 3) {
+                            System.out.println("Error: Payments can only be made from credit account");
+                            break;
+                        }
+                        
+                        System.out.println("Enter payment amount:");
+                        float payment_amount = kb.nextFloat();
+                        if (payment_amount <= 0) {
+                            System.out.println("Error: Payment amount must be positive");
+                            break;
+                        }
+                        
+                        float credit_balance = credit_account_balance(customer);
+                        if (credit_balance + payment_amount > customer.get_credit_account_max()) {
+                            System.out.println("Error: Payment would exceed credit limit");
+                            break;
+                        }
+                        
+                        customer.set_credit_account_balance(credit_balance + payment_amount);
+                        System.out.println("Successfully made payment of $" + payment_amount);
+                        break;
+                
                     default:
+                        System.out.println("Invalid option selected");
                         break;
                 }
                 System.out.println("Do you want to exit? YES/NO");
