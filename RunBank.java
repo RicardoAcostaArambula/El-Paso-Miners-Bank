@@ -13,17 +13,15 @@ public class RunBank {
         setup_users(users);
         System.out.println("Welcome to El Paso miners Bank");
         do {
-
             System.out.println("Please Select the One of the following modes:");
             System.out.println("1. Individual Person");
             System.out.println("2. Bank Teller");
             option = kb.nextInt();
             /*Verify user*/
-            System.out.print("Enter your name");
+            System.out.println("Enter your name: ");
             username = kb.nextLine();
-            System.out.print("Enter your Customer ID");
+            System.out.println("Enter your Customer ID: ");
             id = kb.nextInt();
-            
             /*Check that user exist in the dictonary */
             if (!(users.containsKey(id)) || !(users.get(id).get_name().equals(username))){
                 System.out.println("Error: please enter a valid number and/or name");
@@ -130,6 +128,7 @@ public class RunBank {
             String line = read.nextLine();
             while (read.hasNextLine()){
                 line = read.nextLine();
+                line = remove_commas_inside_quotations(line);
                 String[] items = line.split(",");
                 int id = Integer.parseInt(items[0]);
                 String name = items[1];
@@ -169,6 +168,17 @@ public class RunBank {
     }
     public static String remove_commas_inside_quotations(String line){
         StringBuilder new_line = new StringBuilder();
-        return "Hello";
+        boolean inside_quotes = false;
+        for (int i = 0; i < line.length(); i++){
+            char current_char = line.charAt(i);
+            if (current_char == '"'){
+                inside_quotes = !inside_quotes;
+            } else if(current_char == ',' && inside_quotes){
+                continue;
+            } else {
+                new_line.append(current_char);
+            }
+        }
+        return new_line.toString();
     }
 }
