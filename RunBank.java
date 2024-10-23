@@ -67,7 +67,7 @@ public class RunBank {
                 System.out.println("Select one of the transactions below:");
                 System.out.println("(1) Inquire about balance");
                 /*Assuming the user already selected the account in which the money will go*/
-                System.out.println("(2) Depsit money to an account");
+                System.out.println("(2) Deposit money to an account");
                 System.out.println("(3) Withdraw money from an account");
                 System.out.println("(4) Transfer Money between accounts");
                 System.out.println("(5) Make payment");
@@ -87,12 +87,15 @@ public class RunBank {
                         break;
                     case 2:
                         /*Ask user to which account will it deposit moeny to*/
+                        System.out.println("Enter deposit amount:");
+                        float amount = kb.nextFloat();
                         if (account_type == 1){
-                            balance = checking_account_balance(customer);
+                            deposit_to_checking(customer, amount);
+                            /*sucess message?*/
                         } else if (account_type == 2) {
-                            balance = saving_account_balance(customer);
+                            deposit_to_saving(customer, amount);
                         } else {
-                            balance = credit_account_balance(customer);
+                            deposit_to_credit(customer, amount);
                         }
                         break; 
                     case 3: 
@@ -128,7 +131,24 @@ public class RunBank {
     public static float credit_account_balance(Customer customer){
         return customer.get_credit_account_balance();
     }
-    /*deposit funds to checkings*/
+    /*Deposit checkings */
+    public static void deposit_to_checking(Customer customer, float amount){
+        float current_balance = checking_account_balance(customer);
+        float new_balance = current_balance + amount;
+        customer.set_checking_account_balance(new_balance);
+    }
+    /*Deposit savings */
+    public static void deposit_to_saving(Customer customer, float amount){
+        float current_balance = saving_account_balance(customer);
+        float new_balance = current_balance + amount;
+        customer.set_saving_account_balance(new_balance);
+    }
+    /*Deposit credit */
+    public static void deposit_to_credit(Customer customer, float amount){
+        float current_balance = credit_account_balance(customer);
+        float new_balance = current_balance + amount;
+        customer.set_credit_account_balance(new_balance);
+    }
 
     /*Are we going to have one method for each account type? 
      * or are we going to have one method, and the account class will be abstract and have the methods and attributes needed for generalization?
