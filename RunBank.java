@@ -86,6 +86,7 @@ public class RunBank {
                 System.out.println("(3) Withdraw money from the account");
                 System.out.println("(4) Transfer money between accounts");
                 System.out.println("(5) Make payment");
+                System.out.println("(6) Transfer to another customer");
                 int transaction_option = kb.nextInt();
                 
                 /* switch statmenet with all call to each*/
@@ -106,7 +107,7 @@ public class RunBank {
                         System.out.println("Enter deposit amount:");
                         float deposit_amount = kb.nextFloat();
                         if (deposit_amount <= 0) {
-                            System.out.println("Error: Deposit amount must be positive");
+                            System.out.println("Error: Deposit amount must be greater than zero");
                             break;
                         }
                         
@@ -127,7 +128,7 @@ public class RunBank {
                         System.out.println("Enter withdrawal amount:");
                         float withdrawal_amount = kb.nextFloat();
                         if (withdrawal_amount <= 0) {
-                            System.out.println("Error: Withdrawal amount must be positive");
+                            System.out.println("Error: Withdrawal amount must be greater than zero");
                             break;
                         }
                         
@@ -174,7 +175,7 @@ public class RunBank {
                         System.out.println("Enter transfer amount:");
                         float transfer_amount = kb.nextFloat();
                         if (transfer_amount <= 0) {
-                            System.out.println("Error: Transfer amount must be positive");
+                            System.out.println("Error: Transfer amount must be greater than zero");
                             break;
                         }
                         
@@ -226,7 +227,7 @@ public class RunBank {
                         System.out.println("Enter payment amount:");
                         float payment_amount = kb.nextFloat();
                         if (payment_amount <= 0) {
-                            System.out.println("Error: Payment amount must be positive");
+                            System.out.println("Error: Payment amount must be greater than zero");
                             break;
                         }
                         
@@ -241,13 +242,55 @@ public class RunBank {
                         transactionLog.logPayment(customer, payment_amount);
                         break;
                         
+                    case 6:
+                        System.out.println("Enter recipient's Customer ID: ");
+                        int recipientId = kb.nextInt();
+                        
+                        if (!users.containsKey(recipientId)) {
+                            System.out.println("Error: Recipient not found");
+                            break;
+                        }
+                        
+                        Customer recipientCustomer = users.get(recipientId);
+                        
+                        System.out.println("Select recipient's account type:");
+                        System.out.println("(1) Checking");
+                        System.out.println("(2) Savings");
+                        System.out.println("(3) Credit");
+                        int recipientAccountType = kb.nextInt();
+                        
+                        if (recipientAccountType < 1 || recipientAccountType > 3) {
+                            System.out.println("Error: Invalid account type");
+                            break;
+                        }
+                        
+                        System.out.println("Enter transfer amount:");
+                        float interCustomerTransferAmount = kb.nextFloat();
+                        
+                        if (interCustomerTransferAmount <= 0) {
+                            System.out.println("Error: Transfer amount must be greater than zero");
+                            break;
+                        }
+                        
+                        if (transferBetweenCustomers(customer, recipientCustomer, account_type, 
+                            recipientAccountType, interCustomerTransferAmount)) {
+                            System.out.println("Successfully transferred $" + 
+                                String.format("%.2f", interCustomerTransferAmount) + 
+                                " to customer ID: " + recipientId);
+                            transactionLog.logInterCustomerTransfer(customer, recipientCustomer, 
+                                account_type, recipientAccountType, interCustomerTransferAmount);
+                        }
+                        break;
+                        
                     default:
                         System.out.println("Invalid option selected");
                         break;
                 }
-                System.out.println("Write: EXIT to exit");
-                exit = kb.next();
-                browing = exit.equals("EXIT") ? false : true;
+
+                System.out.println("Do you want to Exit? (Yes/No)");
+                kb.nextLine(); // Clear the input buffer
+                exit = kb.nextLine().trim(); // Read the whole line for exit command
+                browing = exit.toLowerCase().equals("yes") ? false : true;
             } while(browing);
         } else if (option == 2){    
             do {
@@ -275,9 +318,10 @@ public class RunBank {
                 } else {
                     System.out.println("Please choose a valid option");
                 }
-                System.out.println("Write: EXIT to exit");
-                exit = kb.next();
-                browing = exit.equals("EXIT") ? false : true;
+                System.out.println("Do you want to Exit? (Yes/No)");
+                kb.nextLine(); // Clear the input buffer
+                exit = kb.nextLine().trim(); // Read the whole line for exit command
+                browing = exit.toLowerCase().equals("yes") ? false : true;;
             } while(browing);
             
 
@@ -286,6 +330,56 @@ public class RunBank {
 
         }
     }
+     /**
+     * Transfers funds between two customers' accounts.
+     *
+     * @param sourceCustomer the customer sending the money
+     * @param destCustomer the customer receiving the money
+     * @param sourceAccountType the type of account to transfer from (1=Checking, 2=Savings, 3=Credit)
+     * @param destAccountType the type of account to transfer to (1=Checking, 2=Savings, 3=Credit)
+     * @param amount the amount to transfer
+     * @return true if transfer was successful, false otherwise
+     */
+    public static boolean transferBetweenCustomers(Customer sourceCustomer, Customer destCustomer, 
+        int sourceAccountType, int destAccountType, float amount) {
+        
+        // Get source account balance
+        float sourceBalance = 0;
+        if (sourceAccountType == 1) {
+            sourceBalance = checking_account_balance(sourceCustomer);
+        } else if (sourceAccountType == 2) {
+            sourceBalance = saving_account_balance(sourceCustomer);
+        } else if (sourceAccountType == 3) {
+            sourceBalance = credit_account_balance(sourceCustomer);
+        }
+        
+        // Check if source has sufficient funds
+        if (sourceBalance < amount) {
+            System.out.println("Error: Insufficient funds in source account");
+            return false;
+        }
+        
+        // Deduct from source account
+        if (sourceAccountType == 1) {
+            sourceCustomer.set_checking_account_balance(sourceBalance - amount);
+        } else if (sourceAccountType == 2) {
+            sourceCustomer.set_saving_account_balance(sourceBalance - amount);
+        } else if (sourceAccountType == 3) {
+            sourceCustomer.set_credit_account_balance(sourceBalance - amount);
+        }
+        
+        // Add to destination account
+        if (destAccountType == 1) {
+            deposit_to_checking(destCustomer, amount);
+        } else if (destAccountType == 2) {
+            deposit_to_saving(destCustomer, amount);
+        } else if (destAccountType == 3) {
+            deposit_to_credit(destCustomer, amount);
+        }
+        
+        return true;
+    }
+
       /**
      * Logs transaction information for a customer.
      *

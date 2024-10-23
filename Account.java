@@ -10,16 +10,22 @@
 public class Account {
     private int accountNumber;
     private float balance;
+    private String routing_number;
     /**
+     * 
      * Constructs an {@code Account} with the specified account number and starting balance.
      *
      * @param accountNumber the unique account number associated with the account
      * @param startingBalance the initial balance of the account
      */
     // Constructor
-    public Account(int accountNumber, float startingBalance) {
+    public Account(int accountNumber, float startingBalance, String routing_number) {
         this.accountNumber = accountNumber;
         this.balance = startingBalance;
+        this.routing_number = routing_number;
+    }
+    public void set_routing_number(String routing_number){
+        this.routing_number = routing_number;
     }
     /**
      * Returns the account number of the account.
@@ -42,6 +48,10 @@ public class Account {
      *
      * @param amount the amount to deposit
      */
+    public String get_routing_number(){
+        return this.routing_number;
+    }
+
     public void deposit(float amount) {
         balance += amount; // Add amount to balance
     }

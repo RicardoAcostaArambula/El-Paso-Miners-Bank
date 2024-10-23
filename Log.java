@@ -210,6 +210,51 @@ public class Log {
             default: return 0;
         }
     }
+    /**
+ * Logs a transfer transaction between two customers' accounts.
+ * 
+ * @param sender         The customer sending the money.
+ * @param recipient      The customer receiving the money.
+ * @param senderType     The type of the sender's account (1 for Checking, 2 for Savings, 3 for Credit).
+ * @param recipientType  The type of the recipient's account (1 for Checking, 2 for Savings, 3 for Credit).
+ * @param transferAmount The amount transferred.
+ */
+public void logInterCustomerTransfer(Customer sender, Customer recipient, int senderType, int recipientType, float transferAmount) {
+    // Update bank data for both sender and recipient accounts
+    bankDataUpdater.processWithdrawal(sender.get_account_id(), senderType, transferAmount);
+    bankDataUpdater.processDeposit(recipient.get_account_id(), recipientType, transferAmount);
+    
+    // Get account names, numbers, and balances for logging
+    String senderAccountName = getAccountName(senderType);
+    String recipientAccountName = getAccountName(recipientType);
+    int senderAccountNumber = getAccountNumber(sender, senderType);
+    int recipientAccountNumber = getAccountNumber(recipient, recipientType);
+    float senderNewBalance = getAccountBalance(sender, senderType);
+    float recipientNewBalance = getAccountBalance(recipient, recipientType);
+    
+    // Create the log message
+    String message = String.format(
+        "%s %s, transferred $%.2f from %s-%d to %s %s's %s-%d. " +
+        "Sender New Balance: $%.2f. Recipient New Balance: $%.2f",
+        sender.get_name(),
+        sender.get_last(),
+        transferAmount,
+        senderAccountName,
+        senderAccountNumber,
+        recipient.get_name(),
+        recipient.get_last(),
+        recipientAccountName,
+        recipientAccountNumber,
+        senderNewBalance,
+        recipientNewBalance
+    );
+    
+    // Write the transaction to the log file
+    writeToLog(message);
+    
+    // Save the updated bank data
+    bankDataUpdater.saveUpdates();
+}
 
     /**
      * Retrieves the account balance of the specified account type for the customer.
