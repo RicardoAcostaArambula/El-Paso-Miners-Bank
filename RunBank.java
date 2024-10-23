@@ -24,7 +24,7 @@ public class RunBank {
             } else {
                 System.out.println("Please choose a valid option");
             }
-        } while(right_option);
+        } while(!right_option);
         
 
         /*check that the option is valid */
@@ -66,7 +66,6 @@ public class RunBank {
                 /*code below is assuming we have the account and account type*/
                 System.out.println("Select one of the transactions below:");
                 System.out.println("(1) Inquire about balance");
-
                 /*Assuming the user already selected the account in which the money will go*/
                 System.out.println("(2) Depsit money to an account");
                 System.out.println("(3) Withdraw money from an account");
@@ -88,6 +87,13 @@ public class RunBank {
                         break;
                     case 2:
                         /*Ask user to which account will it deposit moeny to*/
+                        if (account_type == 1){
+                            balance = checking_account_balance(customer);
+                        } else if (account_type == 2) {
+                            balance = saving_account_balance(customer);
+                        } else {
+                            balance = credit_account_balance(customer);
+                        }
                         break; 
                     case 3: 
                         break;
@@ -112,7 +118,7 @@ public class RunBank {
     }
     /*returns checking account balance */
     public static float checking_account_balance(Customer customer){
-        return customer.get_checking_account_balance();
+       return customer.get_checking_account_balance();
     }
 
     public static float saving_account_balance(Customer customer){
