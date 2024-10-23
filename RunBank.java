@@ -27,23 +27,20 @@ public class RunBank {
             }
         } while(!right_option);
         
-
-        /*check that the option is valid */
-        
-        do {
-            System.out.println("Enter your name: ");
-            username = kb.next();
-            System.out.println("Enter your Customer ID: ");
-            id = kb.nextInt();
-            /*Check that user exist in the dictonary */
-            if (!(users.containsKey(id)) || !(users.get(id).get_name().equals(username))){
-                System.out.println("Error: please enter a valid number and/or name");
-            } else {
-                right_user = true;
-            } 
-        } while(!right_user);
         
         if (option==1){
+            do {
+                System.out.println("Enter your name: ");
+                username = kb.next();
+                System.out.println("Enter your Customer ID: ");
+                id = kb.nextInt();
+                /*Check that user exist in the dictonary */
+                if (!(users.containsKey(id)) || !(users.get(id).get_name().equals(username))){
+                    System.out.println("Error: please enter a valid number and/or name");
+                } else {
+                    right_user = true;
+                } 
+            } while(!right_user);
             do {
                 /*Getting the customer*/
                 Customer customer = users.get(id);
@@ -236,7 +233,40 @@ public class RunBank {
                 browing = exit.equals("EXIT") ? false : true;
             } while(browing);
         } else if (option == 2){    
-            System.out.println("Will be implemented later");
+            do {
+                System.out.println("Please enter the user ID: ");
+                id = kb.nextInt();
+
+                Customer customer = users.get(id);
+
+                System.out.println("Enter the account type: ");
+                System.out.println("(1) Checking");
+                System.out.println("(2) Saving");
+                System.out.println("(3) Credit");
+                account_type = kb.nextInt();
+
+                if (1<= account_type && account_type <=2){
+                    if (account_type == 1) {
+                        balance = checking_account_balance(customer);
+                    } else if (account_type == 2) {
+                        balance = saving_account_balance(customer);
+                    } else {
+                        balance = credit_account_balance(customer);
+                    }
+                    System.out.println("The account balance is: $" + String.format("%.2f", balance));
+                    transactionLog.logBalanceInquiry(customer, account_type);
+                } else {
+                    System.out.println("Please choose a valid option");
+                }
+                System.out.println("Write: EXIT to exit");
+                exit = kb.next();
+                browing = exit.equals("EXIT") ? false : true;
+            } while(browing);
+            
+
+
+
+
         }
     }
     /*logs transaction information */
