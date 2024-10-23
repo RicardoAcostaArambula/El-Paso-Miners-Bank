@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 public class Log {
     private static final String LOG_FILE = "Log.txt";
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private bankDataUpdater bankDataUpdater;
 
     public Log() {
         try {
@@ -14,6 +15,7 @@ public class Log {
             if (!file.exists()) {
                 file.createNewFile();
             }
+            bankDataUpdater = new bankDataUpdater();
         } catch (IOException e) {
             System.err.println("Error creating log file: " + e.getMessage());
         }
@@ -45,6 +47,10 @@ public class Log {
     }
 
     public void logDeposit(Customer customer, int accountType, float deposit_amount) {
+        // Update bank data
+        bankDataUpdater.processDeposit(customer.get_account_id(), accountType, deposit_amount);
+        
+        // Log the transaction
         String accountName = getAccountName(accountType);
         int accountNumber = getAccountNumber(customer, accountType);
         float newBalance = getAccountBalance(customer, accountType);
@@ -58,12 +64,19 @@ public class Log {
             newBalance
         );
         writeToLog(message);
+        
+        // Save updates to CSV
+        bankDataUpdater.saveUpdates();
     }
 
-    public void logWithdrawal(Customer customer, int account_type, float withdrawal_amount) {
-        String accountName = getAccountName(account_type);
-        int accountNumber = getAccountNumber(customer, account_type);
-        float newBalance = getAccountBalance(customer, account_type);
+    public void logWithdrawal(Customer customer, int accountType, float withdrawal_amount) {
+        // Update bank data
+        bankDataUpdater.processWithdrawal(customer.get_account_id(), accountType, withdrawal_amount);
+        
+        // Log the transaction
+        String accountName = getAccountName(accountType);
+        int accountNumber = getAccountNumber(customer, accountType);
+        float newBalance = getAccountBalance(customer, accountType);
         
         String message = String.format("%s %s, withdrew $%.2f from %s-%d. New Balance: $%.2f",
             customer.get_name(),
@@ -74,14 +87,21 @@ public class Log {
             newBalance
         );
         writeToLog(message);
+        
+        // Save updates to CSV
+        bankDataUpdater.saveUpdates();
     }
 
-    public void logTransfer(Customer customer, int source_type, int destType, float transfer_amount) {
-        String sourceAccount = getAccountName(source_type);
+    public void logTransfer(Customer customer, int sourceType, int destType, float transfer_amount) {
+        // Update bank data
+        bankDataUpdater.processTransfer(customer.get_account_id(), sourceType, destType, transfer_amount);
+        
+        // Log the transaction
+        String sourceAccount = getAccountName(sourceType);
         String destAccount = getAccountName(destType);
-        int sourceNumber = getAccountNumber(customer, source_type);
+        int sourceNumber = getAccountNumber(customer, sourceType);
         int destNumber = getAccountNumber(customer, destType);
-        float sourceBalance = getAccountBalance(customer, source_type);
+        float sourceBalance = getAccountBalance(customer, sourceType);
         float destBalance = getAccountBalance(customer, destType);
         
         String message = String.format(
@@ -98,9 +118,16 @@ public class Log {
             destBalance
         );
         writeToLog(message);
+        
+        // Save updates to CSV
+        bankDataUpdater.saveUpdates();
     }
 
     public void logPayment(Customer customer, float payment_amount) {
+        // Update bank data
+        bankDataUpdater.processPayment(customer.get_account_id(), payment_amount);
+        
+        // Log the transaction
         int creditNumber = customer.get_credit_account_number();
         float newBalance = customer.get_credit_account_balance();
         
@@ -112,6 +139,9 @@ public class Log {
             newBalance
         );
         writeToLog(message);
+        
+        // Save updates to CSV
+        bankDataUpdater.saveUpdates();
     }
 
     private String getAccountName(int accountType) {
