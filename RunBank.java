@@ -11,8 +11,6 @@ public class RunBank {
         float balance;
         HashMap <Integer, Customer> users = new HashMap<>();
         setup_users(users);
-        Account account;
-
         System.out.println("Welcome to El Paso miners Bank");
         do {
 
@@ -27,15 +25,26 @@ public class RunBank {
             id = kb.nextInt();
             
             /*Check that user exist in the dictonary */
-            if (!(users.containsKey(id)) || !users.get(id).get_name().equals(username)){
-                System.out.println("Error: please enter a valid number");
+            if (!(users.containsKey(id)) || !(users.get(id).get_name().equals(username))){
+                System.out.println("Error: please enter a valid number and/or name");
             } else {
                 if (option == 1){
+                    /*Getting the customer*/
                     Customer customer = users.get(id);
-                    /*do we get the account first or after the transaction?*/
-                    System.out.println("(1) Checkings");
-                    System.out.println("(2) Savings");
-                    account_type = kb.nextInt();
+                    boolean valid = false;
+                    /*checking the account time */
+                    do {
+                        System.out.println("Select one of the following accoutns:");
+                        System.out.println("(1) Checkings");
+                        System.out.println("(2) Savings");
+                        System.out.println("(3) Credit");
+                        account_type = kb.nextInt();
+                        if (1 <= account_type && account_type <=3){
+                            valid = true;
+                        } else {
+                            System.out.println("Please choose a valid account");
+                        }
+                    } while(!valid);
                     /* We need to store the account object in the account varaible so that we are able to 
                      * call the methods for checking the balance
                     */
@@ -53,7 +62,13 @@ public class RunBank {
                     /* switch statmenet with all call to each*/
                     switch (option){
                         case 1: 
-                            balance = check_balance(customer);
+                            if (account_type == 1){
+                                balance = checking_account_balance(customer);
+                            } else if (account_type == 2) {
+                                balance = saving_account_balance(customer);
+                            } else {
+                                balance = credit_account_balance(customer);
+                            }
                             System.out.println("The account balance is: " + balance);
                             break;
                         case 2:
@@ -84,8 +99,16 @@ public class RunBank {
 
     }
     /*returns checking account balance */
-    public float check_balance(Customer customer){
-        return customer.checking_account_balance;
+    public static float checking_account_balance(Customer customer){
+        return customer.get_checking_account_balance();
+    }
+
+    public static float saving_account_balance(Customer customer){
+        return customer.get_saving_account_balance();
+    }
+
+    public static float credit_account_balance(Customer customer){
+        return customer.get_credit_account_balance();
     }
     /*deposit funds to checkings*/
 
@@ -93,10 +116,8 @@ public class RunBank {
      * or are we going to have one method, and the account class will be abstract and have the methods and attributes needed for generalization?
      * 
     */
-    public boolean deposit_funds(Account account, float amount){
-        float current_balance = account.get_account_balance();
-        float new_balance = current_balance + amount;
-        return account.set_account_balance(new_balance);
+    public static boolean deposit_funds(Account account, float amount){
+        return false;
     }
     /*builds up the dictinary with the users with the id as primary key*/
     /*
@@ -106,8 +127,9 @@ public class RunBank {
         try {
             File file = new File("bank_users.csv");
             Scanner read = new Scanner(file);
+            String line = read.nextLine();
             while (read.hasNextLine()){
-                String line = read.nextLine();
+                line = read.nextLine();
                 String[] items = line.split(",");
                 int id = Integer.parseInt(items[0]);
                 String name = items[1];
@@ -144,5 +166,9 @@ public class RunBank {
             System.out.println("Error: could not find file");
             error.printStackTrace();
         }
+    }
+    public static String remove_commas_inside_quotations(String line){
+        StringBuilder new_line = new StringBuilder();
+        return "Hello";
     }
 }

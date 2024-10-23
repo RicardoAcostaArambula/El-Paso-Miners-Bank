@@ -40,6 +40,7 @@ public class Customer extends Person {
         this.accounts = accounts;
     }
 
+    @Override
     public void set_name(String name) {
         this.name = name;
     }
@@ -52,6 +53,7 @@ public class Customer extends Person {
         this.dob = dob;
     }
 
+    @Override
     public void set_address(String address) {
         this.address = address;
     }
@@ -97,6 +99,7 @@ public class Customer extends Person {
         return this.accounts;
     }
 
+    @Override
     public String get_name() {
         return this.name;
     }
@@ -109,6 +112,7 @@ public class Customer extends Person {
         return this.dob;
     }
 
+    @Override
     public String get_address() {
         return this.address;
     }
