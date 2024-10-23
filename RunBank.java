@@ -231,9 +231,9 @@ public class RunBank {
                         System.out.println("Invalid option selected");
                         break;
                 }
-                System.out.println("Do you want to exit? YES/NO");
+                System.out.println("Write: EXIT to exit");
                 exit = kb.next();
-                browing = exit.toLowerCase().equals("yes") ? false : true;
+                browing = exit.equals("EXIT") ? false : true;
             } while(browing);
         } else if (option == 2){    
             System.out.println("Will be implemented later");
