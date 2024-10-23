@@ -4,11 +4,24 @@ import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * The {@code Log} class is responsible for logging various banking transactions including balance inquiries, 
+ * deposits, withdrawals, transfers, and payments. It writes transaction details to a log file and updates 
+ * bank data accordingly.
+ * 
+ * This class also provides helper methods to determine account names, numbers, and balances based on 
+ * account types.
+ * 
+ * @author Sebastian Nares, Ricardo Acosta
+ */
 public class Log {
     private static final String LOG_FILE = "Log.txt";
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
     private bankDataUpdater bankDataUpdater;
 
+    /**
+     * Constructs a new {@code Log} object. Initializes the log file and the {@code bankDataUpdater} object.
+     */
     public Log() {
         try {
             File file = new File(LOG_FILE);
@@ -21,6 +34,11 @@ public class Log {
         }
     }
 
+    /**
+     * Writes a message to the log file with a timestamp.
+     * 
+     * @param message The message to write to the log.
+     */
     private void writeToLog(String message) {
         try (FileWriter fw = new FileWriter(LOG_FILE, true)) {
             LocalDateTime now = LocalDateTime.now();
@@ -31,6 +49,12 @@ public class Log {
         }
     }
 
+    /**
+     * Logs a balance inquiry for the specified customer and account type.
+     * 
+     * @param customer   The customer making the balance inquiry.
+     * @param accountType The type of account (1 for Checking, 2 for Savings, 3 for Credit).
+     */
     public void logBalanceInquiry(Customer customer, int accountType) {
         String accountName = getAccountName(accountType);
         int accountNumber = getAccountNumber(customer, accountType);
@@ -46,11 +70,15 @@ public class Log {
         writeToLog(message);
     }
 
+    /**
+     * Logs a deposit transaction for the specified customer and account type.
+     * 
+     * @param customer      The customer making the deposit.
+     * @param accountType   The type of account (1 for Checking, 2 for Savings, 3 for Credit).
+     * @param deposit_amount The amount deposited.
+     */
     public void logDeposit(Customer customer, int accountType, float deposit_amount) {
-        // Update bank data
         bankDataUpdater.processDeposit(customer.get_account_id(), accountType, deposit_amount);
-        
-        // Log the transaction
         String accountName = getAccountName(accountType);
         int accountNumber = getAccountNumber(customer, accountType);
         float newBalance = getAccountBalance(customer, accountType);
@@ -65,15 +93,18 @@ public class Log {
         );
         writeToLog(message);
         
-        // Save updates to CSV
         bankDataUpdater.saveUpdates();
     }
 
+    /**
+     * Logs a withdrawal transaction for the specified customer and account type.
+     * 
+     * @param customer          The customer making the withdrawal.
+     * @param accountType       The type of account (1 for Checking, 2 for Savings, 3 for Credit).
+     * @param withdrawal_amount The amount withdrawn.
+     */
     public void logWithdrawal(Customer customer, int accountType, float withdrawal_amount) {
-        // Update bank data
         bankDataUpdater.processWithdrawal(customer.get_account_id(), accountType, withdrawal_amount);
-        
-        // Log the transaction
         String accountName = getAccountName(accountType);
         int accountNumber = getAccountNumber(customer, accountType);
         float newBalance = getAccountBalance(customer, accountType);
@@ -88,15 +119,19 @@ public class Log {
         );
         writeToLog(message);
         
-        // Save updates to CSV
         bankDataUpdater.saveUpdates();
     }
 
+    /**
+     * Logs a transfer transaction between two accounts for the specified customer.
+     * 
+     * @param customer       The customer making the transfer.
+     * @param sourceType     The type of the source account (1 for Checking, 2 for Savings, 3 for Credit).
+     * @param destType       The type of the destination account (1 for Checking, 2 for Savings, 3 for Credit).
+     * @param transfer_amount The amount transferred.
+     */
     public void logTransfer(Customer customer, int sourceType, int destType, float transfer_amount) {
-        // Update bank data
         bankDataUpdater.processTransfer(customer.get_account_id(), sourceType, destType, transfer_amount);
-        
-        // Log the transaction
         String sourceAccount = getAccountName(sourceType);
         String destAccount = getAccountName(destType);
         int sourceNumber = getAccountNumber(customer, sourceType);
@@ -119,15 +154,17 @@ public class Log {
         );
         writeToLog(message);
         
-        // Save updates to CSV
         bankDataUpdater.saveUpdates();
     }
 
+    /**
+     * Logs a payment transaction for the specified customer.
+     * 
+     * @param customer        The customer making the payment.
+     * @param payment_amount  The amount paid.
+     */
     public void logPayment(Customer customer, float payment_amount) {
-        // Update bank data
         bankDataUpdater.processPayment(customer.get_account_id(), payment_amount);
-        
-        // Log the transaction
         int creditNumber = customer.get_credit_account_number();
         float newBalance = customer.get_credit_account_balance();
         
@@ -140,10 +177,15 @@ public class Log {
         );
         writeToLog(message);
         
-        // Save updates to CSV
         bankDataUpdater.saveUpdates();
     }
 
+    /**
+     * Gets the name of the account based on the account type.
+     * 
+     * @param accountType The type of account (1 for Checking, 2 for Savings, 3 for Credit).
+     * @return The account name as a string.
+     */
     private String getAccountName(int accountType) {
         switch (accountType) {
             case 1: return "Checking";
@@ -153,6 +195,13 @@ public class Log {
         }
     }
 
+    /**
+     * Retrieves the account number of the specified account type for the customer.
+     * 
+     * @param customer    The customer whose account number is being retrieved.
+     * @param accountType The type of account (1 for Checking, 2 for Savings, 3 for Credit).
+     * @return The account number as an integer.
+     */
     private int getAccountNumber(Customer customer, int accountType) {
         switch (accountType) {
             case 1: return customer.get_checking_account_number();
@@ -162,6 +211,13 @@ public class Log {
         }
     }
 
+    /**
+     * Retrieves the account balance of the specified account type for the customer.
+     * 
+     * @param customer    The customer whose account balance is being retrieved.
+     * @param accountType The type of account (1 for Checking, 2 for Savings, 3 for Credit).
+     * @return The account balance as a float.
+     */
     private float getAccountBalance(Customer customer, int accountType) {
         switch (accountType) {
             case 1: return customer.get_checking_account_balance();

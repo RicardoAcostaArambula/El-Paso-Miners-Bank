@@ -1,41 +1,108 @@
+/**
+ * The {@code Person} class represents an individual with a name, address, and Social Security Number (SSN).
+ * It provides constructors to create a person object and getter/setter methods to access and modify the attributes.
+ * 
+ * @author Sebastian Nares, Ricado Acosta
+ */
 public class Person {
     private String name;
     private String address;
     private int ssn;
-    /*default*/
-    public Person(){
 
+    /**
+     * Default constructor that initializes a new {@code Person} object without any attributes.
+     */
+    public Person() {
     }
-    public Person(String name){
+
+    /**
+     * Constructs a new {@code Person} object with the specified name.
+     * 
+     * @param name The name of the person.
+     */
+    public Person(String name) {
         this.name = name;
     }
-    public Person(String name, String address){
+
+    /**
+     * Constructs a new {@code Person} object with the specified name and address.
+     * 
+     * @param name    The name of the person.
+     * @param address The address of the person.
+     */
+    public Person(String name, String address) {
         this.name = name;
         this.address = address;
     }
-    public Person(String name, String address, int ssn){
+
+    /**
+     * Constructs a new {@code Person} object with the specified name, address, and SSN.
+     * 
+     * @param name    The name of the person.
+     * @param address The address of the person.
+     * @param ssn     The Social Security Number of the person.
+     */
+    public Person(String name, String address, int ssn) {
         this.name = name;
         this.address = address;
         this.ssn = ssn;
     }
-    /*setters*/
-    public void set_name(String name){
+
+    /* Setters */
+
+    /**
+     * Sets the name of the person.
+     * 
+     * @param name The new name of the person.
+     */
+    public void set_name(String name) {
         this.name = name;
     }
-    public void set_address(String address){
+
+    /**
+     * Sets the address of the person.
+     * 
+     * @param address The new address of the person.
+     */
+    public void set_address(String address) {
         this.address = address;
     }
-    public void set_ssn(int ssn){
-        this.ssn= ssn;
+
+    /**
+     * Sets the Social Security Number of the person.
+     * 
+     * @param ssn The new Social Security Number of the person.
+     */
+    public void set_ssn(int ssn) {
+        this.ssn = ssn;
     }
-    /*getters*/
-    public String get_name(){
+
+    /* Getters */
+
+    /**
+     * Gets the name of the person.
+     * 
+     * @return The name of the person.
+     */
+    public String get_name() {
         return this.name;
     }
-    public String get_address(){
+
+    /**
+     * Gets the address of the person.
+     * 
+     * @return The address of the person.
+     */
+    public String get_address() {
         return this.address;
     }
-    public int get_ssn(){
+
+    /**
+     * Gets the Social Security Number of the person.
+     * 
+     * @return The Social Security Number of the person.
+     */
+    public int get_ssn() {
         return this.ssn;
     }
 }

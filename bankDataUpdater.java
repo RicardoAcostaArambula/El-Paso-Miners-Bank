@@ -1,19 +1,30 @@
 import java.io.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+/**
+ * The {@code bankDataUpdater} class handles operations related to banking transactions,
+ * such as deposits, withdrawals, transfers, and payments. It reads user account information
+ * from a CSV file, processes updates to account balances, and saves changes back to the file.
+ * This class uses account data indexed by customer ID and account types.
+ * 
+ * @author Sebastian Nares, Ricardo Acosta
+ */
 
 public class bankDataUpdater {
     private static final String CSV_FILE = "bank_users.csv";
     private List<String[]> userData;
 
+    /**
+     * Constructor to initialize and load bank user data from the CSV file.
+     */
     public bankDataUpdater() {
         userData = new ArrayList<>();
         loadData();
-        
     }
 
+    /**
+     * Loads data from the CSV file and stores it in userData list.
+     */
     private void loadData() {
         try (BufferedReader br = new BufferedReader(new FileReader(CSV_FILE))) {
             String line;
@@ -25,10 +36,14 @@ public class bankDataUpdater {
         }
     }
 
-    
-
+    /**
+     * Finds the row index of a customer based on their ID.
+     *
+     * @param customerId The ID of the customer.
+     * @return The row index of the customer if found, -1 otherwise.
+     */
     private int findCustomerRow(int customerId) {
-        for (int i = 1; i < userData.size(); i++) { // Start from 1 to skip header
+        for (int i = 1; i < userData.size(); i++) { 
             if (Integer.parseInt(userData.get(i)[0]) == customerId) {
                 return i;
             }
@@ -36,6 +51,12 @@ public class bankDataUpdater {
         return -1;
     }
 
+    /**
+     * Returns the index of the balance column based on the account type.
+     *
+     * @param accountType The type of account (1 = Checking, 2 = Savings, 3 = Credit).
+     * @return The index of the balance column.
+     */
     private int getBalanceColumnIndex(int accountType) {
         switch (accountType) {
             case 1: return 9;  // Checking Starting Balance
@@ -45,6 +66,13 @@ public class bankDataUpdater {
         }
     }
 
+    /**
+     * Updates the balance for a specific customer and account type.
+     *
+     * @param customerId The ID of the customer.
+     * @param accountType The type of account.
+     * @param newBalance The new balance to set.
+     */
     private void updateBalance(int customerId, int accountType, float newBalance) {
         int rowIndex = findCustomerRow(customerId);
         if (rowIndex == -1) {
@@ -56,72 +84,85 @@ public class bankDataUpdater {
         row[columnIndex] = String.format("%.2f", newBalance);
     }
 
-    public void processDeposit(int customerId, int accountType, float deposit_amount) {
+    /**
+     * Processes a deposit by adding the deposit amount to the current balance.
+     *
+     * @param customerId The ID of the customer.
+     * @param accountType The type of account.
+     * @param depositAmount The amount to deposit.
+     */
+    public void processDeposit(int customerId, int accountType, float depositAmount) {
         int rowIndex = findCustomerRow(customerId);
         if (rowIndex == -1) {
             System.err.println("Customer not found: " + customerId);
-            return; // Exit the method if customer not found
+            return;
         }
-    
+
         int columnIndex = getBalanceColumnIndex(accountType);
-        
         try {
-    
-            // Ensure you're getting the right value (the balance, not the phone number)
             float currentBalance = Float.parseFloat(userData.get(rowIndex)[columnIndex]);
-    
-            float newBalance = currentBalance + deposit_amount;
-    
-            // Update the balance in the userData
+            float newBalance = currentBalance + depositAmount;
             updateBalance(customerId, accountType, newBalance);
-    
-            
         } catch (NumberFormatException e) {
             System.err.println("Invalid balance format for customer ID " + customerId + ": " + userData.get(rowIndex)[columnIndex]);
         }
     }
-    
 
-    public void processWithdrawal(int customerId, int accountType, float withdrawal_amount) {
+    /**
+     * Processes a withdrawal by subtracting the withdrawal amount from the current balance.
+     *
+     * @param customerId The ID of the customer.
+     * @param accountType The type of account.
+     * @param withdrawalAmount The amount to withdraw.
+     */
+    public void processWithdrawal(int customerId, int accountType, float withdrawalAmount) {
         int rowIndex = findCustomerRow(customerId);
-        if (rowIndex == -1) return; // Customer not found, exit the method
+        if (rowIndex == -1) return;
 
         int columnIndex = getBalanceColumnIndex(accountType);
         try {
             float currentBalance = Float.parseFloat(userData.get(rowIndex)[columnIndex]);
-            float newBalance = currentBalance - withdrawal_amount;
+            float newBalance = currentBalance - withdrawalAmount;
             updateBalance(customerId, accountType, newBalance);
         } catch (NumberFormatException e) {
-            // Suppressing the error message
+            // Suppress the error message
         }
     }
 
-    public void processTransfer(int customerId, int source_account, int dest_account, float transfer_amount) {
+    /**
+     * Processes a transfer between two accounts for a customer.
+     *
+     * @param customerId The ID of the customer.
+     * @param sourceAccount The source account type.
+     * @param destAccount The destination account type.
+     * @param transferAmount The amount to transfer.
+     */
+    public void processTransfer(int customerId, int sourceAccount, int destAccount, float transferAmount) {
         int rowIndex = findCustomerRow(customerId);
-        if (rowIndex == -1) return; // Customer not found, exit the method
+        if (rowIndex == -1) return;
 
-        // Withdraw from source account
-        int sourceColumnIndex = getBalanceColumnIndex(source_account);
+        int sourceColumnIndex = getBalanceColumnIndex(sourceAccount);
+        int destColumnIndex = getBalanceColumnIndex(destAccount);
+
         try {
             float sourceBalance = Float.parseFloat(userData.get(rowIndex)[sourceColumnIndex]);
-            updateBalance(customerId, source_account, sourceBalance - transfer_amount);
-        } catch (NumberFormatException e) {
-            // Suppressing the error message
-        }
-
-        // Deposit to destination account
-        int destColumnIndex = getBalanceColumnIndex(dest_account);
-        try {
             float destBalance = Float.parseFloat(userData.get(rowIndex)[destColumnIndex]);
-            updateBalance(customerId, dest_account, destBalance + transfer_amount);
+            updateBalance(customerId, sourceAccount, sourceBalance - transferAmount);
+            updateBalance(customerId, destAccount, destBalance + transferAmount);
         } catch (NumberFormatException e) {
-            // Suppressing the error message
+            // Suppress the error message
         }
     }
 
+    /**
+     * Processes a payment by reducing the credit balance for a customer.
+     *
+     * @param customerId The ID of the customer.
+     * @param amount The payment amount.
+     */
     public void processPayment(int customerId, float amount) {
         int rowIndex = findCustomerRow(customerId);
-        if (rowIndex == -1) return; // Customer not found, exit the method
+        if (rowIndex == -1) return;
 
         int columnIndex = getBalanceColumnIndex(3); // Credit account
         try {
@@ -129,15 +170,22 @@ public class bankDataUpdater {
             float newBalance = currentBalance - amount;
             updateBalance(customerId, 3, newBalance);
         } catch (NumberFormatException e) {
-            // Suppressing the error message
+            // Suppress the error message
         }
-        
     }
 
+    /**
+     * Saves the updated user data to the original CSV file.
+     */
     public void saveUpdates() {
-        saveUpdates("bank_users.csv");
+        saveUpdates(CSV_FILE);
     }
 
+    /**
+     * Saves the updated user data to a specified CSV file.
+     *
+     * @param outputFile The name of the output file.
+     */
     public void saveUpdates(String outputFile) {
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile))) {
             for (String[] row : userData) {

@@ -2,7 +2,24 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Scanner;
+/**
+ * The RunBank class simulates a banking system that allows users to perform various 
+ * transactions such as deposits, withdrawals, and transfers across different account types.
+ *
+ * @author Sebastian Nares, Ricardo Acosta 
+ */
 public class RunBank {
+    /**
+     * The main method that initiates the banking application.
+     * 
+     ** <p>This method handles the user interface for selecting modes of 
+     * operation (Individual Person or Bank Teller) and authenticates 
+     * the user based on their name and Customer ID. It allows users 
+     * to perform the following banking transactions: Inquiring balance, depositing, 
+     * withdrawing, and transferring funds. </p>
+     * 
+     * @param args command-line arguments (not used)
+     */
     public static void main(String[] args){
         boolean browing = true;
         boolean right_user = false;
@@ -269,34 +286,77 @@ public class RunBank {
 
         }
     }
+      /**
+     * Logs transaction information for a customer.
+     *
+     * @param customer the customer whose transaction information is being logged
+     * @param transaction a description of the transaction
+     */
     /*logs transaction information */
     public void log_information(Customer customer, String transaction){
 
     }
+    /**
+     * Returns the checking account balance for a customer.
+     *
+     * @param customer the customer whose checking account balance is requested
+     * @return the checking account balance
+     */
     /*returns checking account balance */
     public static float checking_account_balance(Customer customer){
        return customer.get_checking_account_balance();
     }
+      /**
+     * Returns the savings account balance for a customer.
+     *
+     * @param customer the customer whose savings account balance is requested
+     * @return the savings account balance
+     */
 
     public static float saving_account_balance(Customer customer){
         return customer.get_saving_account_balance();
     }
+    /**
+     * Returns the credit account balance for a customer.
+     *
+     * @param customer the customer whose credit account balance is requested
+     * @return the credit account balance
+     */
 
     public static float credit_account_balance(Customer customer){
         return customer.get_credit_account_balance();
     }
+    /**
+     * Deposits funds into a customer's checking account.
+     *
+     * @param customer the customer whose checking account will be credited
+     * @param amount the amount to be deposited
+     */
     /*Deposit checkings */
     public static void deposit_to_checking(Customer customer, float amount){
         float current_balance = checking_account_balance(customer);
         float new_balance = current_balance + amount;
         customer.set_checking_account_balance(new_balance);
     }
+    /**
+     * Deposits funds into a customer's savings account.
+     *
+     * @param customer the customer whose savings account will be credited
+     * @param amount the amount to be deposited
+     */
     /*Deposit savings */
     public static void deposit_to_saving(Customer customer, float amount){
         float current_balance = saving_account_balance(customer);
         float new_balance = current_balance + amount;
         customer.set_saving_account_balance(new_balance);
     }
+    
+     /**
+     * Deposits funds into a customer's credit account.
+     *
+     * @param customer the customer whose credit account will be credited
+     * @param amount the amount to be deposited
+     */
     /*Deposit credit */
     public static void deposit_to_credit(Customer customer, float amount){
         float current_balance = credit_account_balance(customer);
@@ -307,13 +367,28 @@ public class RunBank {
     /*Are we going to have one method for each account type? 
      * or are we going to have one method, and the account class will be abstract and have the methods and attributes needed for generalization?
      * 
+     
     */
+
+    /**
+     * Deposit funds into the selected account 
+    * @param account The account into which the funds will be deposited.
+    * @param amount The amount of money to deposit into the account.
+    * @return true if the deposit was successful; false otherwise.
+    */
+    
     public static boolean deposit_funds(Account account, float amount){
         return false;
     }
     /*builds up the dictinary with the users with the id as primary key*/
     /*
         ,Credit Account Number,Credit Max,Credit Starting Balance
+     */
+
+     /**
+     * Sets up users from a CSV file and populates the users HashMap.
+     *
+     * @param users the HashMap to be populated with Customer objects
      */
     public static void setup_users(HashMap <Integer, Customer>  users){
         try {
@@ -359,6 +434,13 @@ public class RunBank {
             System.out.println("Error: could not find file");
             error.printStackTrace();
         }
+     
+        /**
+     * Removes commas inside quotations from a given line.
+     *
+     * @param line the line from which to remove commas inside quotations
+     * @return the modified line with commas removed
+     */
     }
     public static String remove_commas_inside_quotations(String line){
         StringBuilder new_line = new StringBuilder();
