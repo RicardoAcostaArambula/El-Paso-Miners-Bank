@@ -5,6 +5,8 @@ import java.util.Scanner;
 public class RunBank {
     public static void main(String[] args){
         boolean browing = true;
+        boolean right_user = false;
+        boolean right_option = false;
         int option, id, account_type;
         Scanner kb = new Scanner(System.in);
         String exit, username;
@@ -17,80 +19,92 @@ public class RunBank {
             System.out.println("1. Individual Person");
             System.out.println("2. Bank Teller");
             option = kb.nextInt();
-            /*Verify user*/
+            if (1 <= option && option <=3){
+                right_option = true;
+            } else {
+                System.out.println("Please choose a valid option");
+            }
+        } while(right_option);
+        
+
+        /*check that the option is valid */
+        
+        do {
             System.out.println("Enter your name: ");
-            username = kb.nextLine();
+            username = kb.next();
             System.out.println("Enter your Customer ID: ");
             id = kb.nextInt();
             /*Check that user exist in the dictonary */
             if (!(users.containsKey(id)) || !(users.get(id).get_name().equals(username))){
                 System.out.println("Error: please enter a valid number and/or name");
             } else {
-                if (option == 1){
-                    /*Getting the customer*/
-                    Customer customer = users.get(id);
-                    boolean valid = false;
-                    /*checking the account time */
-                    do {
-                        System.out.println("Select one of the following accoutns:");
-                        System.out.println("(1) Checkings");
-                        System.out.println("(2) Savings");
-                        System.out.println("(3) Credit");
-                        account_type = kb.nextInt();
-                        if (1 <= account_type && account_type <=3){
-                            valid = true;
-                        } else {
-                            System.out.println("Please choose a valid account");
-                        }
-                    } while(!valid);
-                    /* We need to store the account object in the account varaible so that we are able to 
-                     * call the methods for checking the balance
-                    */
-                    /*code below is assuming we have the account and account type*/
-                    System.out.println("Select one of the transactions below:");
-                    System.out.println("(1) Inquire about balance");
-
-                    /*Assuming the user already selected the account in which the money will go*/
-                    System.out.println("(2) Depsit money to an account");
-                    System.out.println("(3) Withdraw money from an account");
-                    System.out.println("(4) Transfer Money between accounts");
-                    System.out.println("(5) Make payment");
-                    kb.nextInt();
-                    
-                    /* switch statmenet with all call to each*/
-                    switch (option){
-                        case 1: 
-                            if (account_type == 1){
-                                balance = checking_account_balance(customer);
-                            } else if (account_type == 2) {
-                                balance = saving_account_balance(customer);
-                            } else {
-                                balance = credit_account_balance(customer);
-                            }
-                            System.out.println("The account balance is: " + balance);
-                            break;
-                        case 2:
-                            /*Ask user to which account will it deposit moeny to*/
-                            break; 
-                        case 3: 
-                            break;
-                        case 4:
-                            break; 
-                        case 5: 
-                            break; 
-                        default:
-                            break;
+                right_user = true;
+            } 
+        } while(!right_user);
+        
+        if (option==1){
+            do {
+                /*Getting the customer*/
+                Customer customer = users.get(id);
+                boolean valid = false;
+                /*checking the account time */
+                do {
+                    System.out.println("Select one of the following accoutns:");
+                    System.out.println("(1) Checkings");
+                    System.out.println("(2) Savings");
+                    System.out.println("(3) Credit");
+                    account_type = kb.nextInt();
+                    if (1 <= account_type && account_type <=3){
+                        valid = true;
+                    } else {
+                        System.out.println("Please choose a valid account");
                     }
+                } while(!valid);
+                /* We need to store the account object in the account varaible so that we are able to 
+                    * call the methods for checking the balance
+                */
+                /*code below is assuming we have the account and account type*/
+                System.out.println("Select one of the transactions below:");
+                System.out.println("(1) Inquire about balance");
 
-
-                } else if (option == 2){    
-                    System.out.println("Will be implemented later");
+                /*Assuming the user already selected the account in which the money will go*/
+                System.out.println("(2) Depsit money to an account");
+                System.out.println("(3) Withdraw money from an account");
+                System.out.println("(4) Transfer Money between accounts");
+                System.out.println("(5) Make payment");
+                kb.nextInt();
+                
+                /* switch statmenet with all call to each*/
+                switch (option){
+                    case 1: 
+                        if (account_type == 1){
+                            balance = checking_account_balance(customer);
+                        } else if (account_type == 2) {
+                            balance = saving_account_balance(customer);
+                        } else {
+                            balance = credit_account_balance(customer);
+                        }
+                        System.out.println("The account balance is: " + balance);
+                        break;
+                    case 2:
+                        /*Ask user to which account will it deposit moeny to*/
+                        break; 
+                    case 3: 
+                        break;
+                    case 4:
+                        break; 
+                    case 5: 
+                        break; 
+                    default:
+                        break;
                 }
-            }
-            System.out.println("Do you want to exit? YES/NO");
-            exit = kb.next();
-            browing = exit.toLowerCase().equals("yes") ? true : false;
-        } while (browing);
+                System.out.println("Do you want to exit? YES/NO");
+                exit = kb.next();
+                browing = exit.toLowerCase().equals("yes") ? false : true;
+            } while(browing);
+        } else if (option == 2){    
+            System.out.println("Will be implemented later");
+        }
     }
     /*logs transaction information */
     public void log_information(Customer customer, String transaction){
