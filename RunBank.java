@@ -29,8 +29,10 @@ public class RunBank {
         String exit, username;
         float balance;
         Log transactionLog = new Log();
-        HashMap <Integer, Customer> users = new HashMap<>();
-        setup_users(users);
+        HashMap <String, Customer> users_by_name = new HashMap<>();
+        HashMap <Integer, Customer> accounts_by_number = new HashMap<>();
+        
+        setup_users(users_by_name, accounts_by_number);
         System.out.println("Welcome to El Paso miners Bank");
         do {
             System.out.println("Please Select the One of the following modes:");
@@ -47,20 +49,19 @@ public class RunBank {
         
         if (option==1){
             do {
-                System.out.println("Enter your name: ");
+                System.out.println("Enter your full name: ");
                 username = kb.next();
-                System.out.println("Enter your Customer ID: ");
-                id = kb.nextInt();
+
                 /*Check that user exist in the dictonary */
-                if (!(users.containsKey(id)) || !(users.get(id).get_name().equals(username))){
-                    System.out.println("Error: please enter a valid number and/or name");
+                if (!users_by_name.containsKey(username)){
+                    System.out.println("Error: please enter a valid name");
                 } else {
                     right_user = true;
                 } 
             } while(!right_user);
             do {
                 /*Getting the customer*/
-                Customer customer = users.get(id);
+                Customer customer = users_by_name.get(username);
                 boolean valid = false;
                 /*checking the account time */
                 do {
@@ -125,10 +126,10 @@ public class RunBank {
                         break;
                 
                     case 3:
-                        System.out.println("Enter withdrawal amount:");
+                        System.out.println("Enter withdraw amount:");
                         float withdrawal_amount = kb.nextFloat();
                         if (withdrawal_amount <= 0) {
-                            System.out.println("Error: Withdrawal amount must be greater than zero");
+                            System.out.println("Error: Withdraw amount must be greater than zero");
                             break;
                         }
                         
@@ -174,10 +175,6 @@ public class RunBank {
                         
                         System.out.println("Enter transfer amount:");
                         float transfer_amount = kb.nextFloat();
-                        if (transfer_amount <= 0) {
-                            System.out.println("Error: Transfer amount must be greater than zero");
-                            break;
-                        }
                         
                         // Get source account balance
                         float source_balance = 0;
@@ -244,14 +241,14 @@ public class RunBank {
                         
                     case 6:
                         System.out.println("Enter recipient's Customer ID: ");
-                        int recipientId = kb.nextInt();
+                        String recipient_full_name = kb.nextLine();
                         
-                        if (!users.containsKey(recipientId)) {
+                        if (!users_by_name.containsKey(recipient_full_name)) {
                             System.out.println("Error: Recipient not found");
                             break;
                         }
                         
-                        Customer recipientCustomer = users.get(recipientId);
+                        Customer recipientCustomer = users.get(recipient_full_name);
                         
                         System.out.println("Select recipient's account type:");
                         System.out.println("(1) Checking");
@@ -276,7 +273,7 @@ public class RunBank {
                             recipientAccountType, interCustomerTransferAmount)) {
                             System.out.println("Successfully transferred $" + 
                                 String.format("%.2f", interCustomerTransferAmount) + 
-                                " to customer ID: " + recipientId);
+                                " to customer : " + recipient_full_name);
                             transactionLog.logInterCustomerTransfer(customer, recipientCustomer, 
                                 account_type, recipientAccountType, interCustomerTransferAmount);
                         }
@@ -294,42 +291,106 @@ public class RunBank {
             } while(browing);
         } else if (option == 2){    
             do {
-                System.out.println("Please enter the user ID: ");
-                id = kb.nextInt();
-
-                Customer customer = users.get(id);
-
-                System.out.println("Enter the account type: ");
-                System.out.println("(1) Checking");
-                System.out.println("(2) Saving");
-                System.out.println("(3) Credit");
-                account_type = kb.nextInt();
-
-                if (1<= account_type && account_type <=2){
-                    if (account_type == 1) {
-                        balance = checking_account_balance(customer);
-                    } else if (account_type == 2) {
-                        balance = saving_account_balance(customer);
+                String account_holder;
+                boolean inquiry_chosen = false;
+                int inquiry_type;
+                int account_number;
+                do {
+                    System.out.println("Please select one of the two options: ");
+                    System.out.println("(1) Inquiry account by name");
+                    System.out.println("(2) Inquiry account by account number");
+                    inquiry_type = kb.nextInt();
+                    if (1 <= inquiry_type && inquiry_type <= 2){
+                        inquiry_chosen = true;
                     } else {
-                        balance = credit_account_balance(customer);
+                        System.out.println("Please choose a valid option");
                     }
-                    System.out.println("The account balance is: $" + String.format("%.2f", balance));
-                    transactionLog.logBalanceInquiry(customer, account_type);
+                } while (!inquiry_chosen);
+                
+                if (inquiry_type == 1){
+
+                    System.out.println("Whose account would you like to inquire about? (Enter full name as following: FirstName LastName)");
+                    account_holder = kb.nextLine();
+
+
                 } else {
-                    System.out.println("Please choose a valid option");
+                    
+                    boolean valid = false;
+                    /*checking the account time */
+                    do {
+                        System.out.println("What is the account type: ");
+                        System.out.println("(1) Checkings");
+                        System.out.println("(2) Savings");
+                        System.out.println("(3) Credit");
+                        account_type = kb.nextInt();
+                        if (1 <= account_type && account_type <=3){
+                            valid = true;
+                        } else {
+                            System.out.println("Please choose a valid account");
+                        }
+                    } while(!valid);
+                    valid = false;
+                    do {
+                        System.out.println("What is the account number?");
+                        account_number = kb.nextInt();
+                        if (!accounts_by_number.containsKey(account_number)){
+                            System.out.println("Please enter a valid account number");
+                        } else {
+                            valid = true;
+                        }
+                    } while (!valid);
+
+                    
+                    Customer customer = accounts_by_number.get(account_number);
+                    dislay_account_information_by_account_number(customer, account_number, account_type);
+                    transactionLog.logBalanceInquiry(customer, account_type);
                 }
+
+                
+
+                
+
                 System.out.println("Do you want to Exit? (Yes/No)");
                 kb.nextLine(); // Clear the input buffer
                 exit = kb.nextLine().trim(); // Read the whole line for exit command
                 browing = exit.toLowerCase().equals("yes") ? false : true;;
             } while(browing);
             
-
-
-
-
         }
     }
+    /**
+     * Displays account information
+     * 
+     * @param customer is the target user for the information
+     * @param account_type is an int that represents the account type to dislay the information
+     * @return None
+     */
+
+    public static void dislay_account_information_by_account_number(Customer customer, int account_number, int account_type){
+        String name = customer.get_name();
+        String account;
+        String last = customer.get_last();
+        int id = customer.get_account_id();
+        float balance;
+        if (account_type == 1){
+            account_number = customer.get_checking_account_number();
+            balance = customer.get_checking_account_balance();
+            account = "Checking";
+        } else if (account_type == 2){
+            account_number = customer.get_saving_account_number();
+            balance = customer.get_saving_account_balance();
+            account = "Saving";
+        } else {
+            account_number = customer.get_credit_account_number();
+            balance = customer.get_credit_account_balance();
+            account = "Credit";
+        }
+        System.out.println("Account holder: " + name + " " + last + "with ID: " + id);
+        System.out.println("The Account of type: " + account + ", with number: " + account_number);
+        System.out.print("Balance: " + balance);
+    }
+
+
      /**
      * Transfers funds between two customers' accounts.
      *
@@ -484,7 +545,7 @@ public class RunBank {
      *
      * @param users the HashMap to be populated with Customer objects
      */
-    public static void setup_users(HashMap <Integer, Customer>  users){
+    public static void setup_users(HashMap <String, Customer>  users_by_name, HashMap <Integer, Customer> accounts_by_number){
         try {
             File file = new File("bank_users.csv");
             Scanner read = new Scanner(file);
@@ -521,7 +582,11 @@ public class RunBank {
                 customer.set_credit_account_balance(credit_account_number);
                 customer.set_credit_account_max(credit_account_max);
                 customer.set_credit_account_balance(credit_account_balance);
-                users.put(id, customer);
+                users_by_name.put(name, customer);
+                accounts_by_number.put(checking_account_number, customer);
+                accounts_by_number.put(saving_account_number, customer);
+
+
                 /*add it to dic */
             }
         } catch (FileNotFoundException error){
@@ -529,13 +594,14 @@ public class RunBank {
             error.printStackTrace();
         }
      
-        /**
+     
+    }
+    /**
      * Removes commas inside quotations from a given line.
      *
      * @param line the line from which to remove commas inside quotations
      * @return the modified line with commas removed
      */
-    }
     public static String remove_commas_inside_quotations(String line){
         StringBuilder new_line = new StringBuilder();
         boolean inside_quotes = false;
