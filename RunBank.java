@@ -248,7 +248,7 @@ public class RunBank {
                             break;
                         }
                         
-                        Customer recipientCustomer = users.get(recipient_full_name);
+                        Customer recipientCustomer = users_by_name.get(recipient_full_name);
                         
                         System.out.println("Select recipient's account type:");
                         System.out.println("(1) Checking");
@@ -269,14 +269,14 @@ public class RunBank {
                             break;
                         }
                         
-                        if (transferBetweenCustomers(customer, recipientCustomer, account_type, 
-                            recipientAccountType, interCustomerTransferAmount)) {
-                            System.out.println("Successfully transferred $" + 
-                                String.format("%.2f", interCustomerTransferAmount) + 
-                                " to customer : " + recipient_full_name);
-                            transactionLog.logInterCustomerTransfer(customer, recipientCustomer, 
-                                account_type, recipientAccountType, interCustomerTransferAmount);
+                        if (transferBetweenCustomers(customer, recipientCustomer, account_type, recipientAccountType, interCustomerTransferAmount)) {
+                            System.out.println("Successfully transferred $" + String.format("%.2f", interCustomerTransferAmount) + 
+                                               " to customer: " + recipientCustomer.get_name() + " " + recipientCustomer.get_last());
+                            transactionLog.logInterCustomerTransfer(customer, recipientCustomer, account_type, recipientAccountType, interCustomerTransferAmount);
+                        } else {
+                            System.out.println("Transfer failed. Please check account balances or input data.");
                         }
+                        
                         break;
                         
                     default:
@@ -285,8 +285,8 @@ public class RunBank {
                 }
 
                 System.out.println("Do you want to Exit? (Yes/No)");
-                kb.nextLine(); // Clear the input buffer
-                exit = kb.nextLine().trim(); // Read the whole line for exit command
+                kb.nextLine(); 
+                exit = kb.nextLine().trim(); 
                 browing = exit.toLowerCase().equals("yes") ? false : true;
             } while(browing);
         } else if (option == 2){    
@@ -300,6 +300,7 @@ public class RunBank {
                     System.out.println("(1) Inquiry account by name");
                     System.out.println("(2) Inquiry account by account number");
                     inquiry_type = kb.nextInt();
+                    kb.nextLine(); 
                     if (1 <= inquiry_type && inquiry_type <= 2){
                         inquiry_chosen = true;
                     } else {
@@ -323,6 +324,7 @@ public class RunBank {
                         System.out.println("(2) Savings");
                         System.out.println("(3) Credit");
                         account_type = kb.nextInt();
+                        kb.nextLine(); 
                         if (1 <= account_type && account_type <=3){
                             valid = true;
                         } else {
@@ -333,6 +335,7 @@ public class RunBank {
                     do {
                         System.out.println("What is the account number?");
                         account_number = kb.nextInt();
+                        kb.nextLine(); 
                         if (!accounts_by_number.containsKey(account_number)){
                             System.out.println("Please enter a valid account number");
                         } else {
@@ -351,9 +354,8 @@ public class RunBank {
                 
 
                 System.out.println("Do you want to Exit? (Yes/No)");
-                kb.nextLine(); // Clear the input buffer
                 exit = kb.nextLine().trim(); // Read the whole line for exit command
-                browing = exit.toLowerCase().equals("yes") ? false : true;;
+                browing = exit.equalsIgnoreCase("yes") ? false : true;
             } while(browing);
             
         }

@@ -220,7 +220,13 @@ public class Log {
  * @param transferAmount The amount transferred.
  */
 public void logInterCustomerTransfer(Customer sender, Customer recipient, int senderType, int recipientType, float transferAmount) {
-    // Update bank data for both sender and recipient accounts
+    // Validate transfer amount
+    if (transferAmount <= 0) {
+        System.out.println("Transfer amount must be greater than zero.");
+        return;
+    }
+    
+    // Process withdrawal and deposit
     bankDataUpdater.processWithdrawal(sender.get_account_id(), senderType, transferAmount);
     bankDataUpdater.processDeposit(recipient.get_account_id(), recipientType, transferAmount);
     
@@ -234,7 +240,7 @@ public void logInterCustomerTransfer(Customer sender, Customer recipient, int se
     
     // Create the log message
     String message = String.format(
-        "%s %s, transferred $%.2f from %s-%d to %s %s's %s-%d. " +
+        "%s %s transferred $%.2f from %s-%d to %s %s's %s-%d. " +
         "Sender New Balance: $%.2f. Recipient New Balance: $%.2f",
         sender.get_name(),
         sender.get_last(),
@@ -255,6 +261,7 @@ public void logInterCustomerTransfer(Customer sender, Customer recipient, int se
     // Save the updated bank data
     bankDataUpdater.saveUpdates();
 }
+
 
     /**
      * Retrieves the account balance of the specified account type for the customer.
