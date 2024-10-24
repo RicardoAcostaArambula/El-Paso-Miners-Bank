@@ -284,10 +284,10 @@ public class RunBank {
                         break;
                 }
 
-                System.out.println("Do you want to Exit? (Yes/No)");
+                System.out.println("Type EXIT to exit");
                 kb.nextLine(); 
                 exit = kb.nextLine().trim(); 
-                browing = exit.toLowerCase().equals("yes") ? false : true;
+                browing = exit.equalsIgnoreCase("exit") ? false : true;
             } while(browing);
         } else if (option == 2){    
             do {
@@ -309,10 +309,20 @@ public class RunBank {
                 } while (!inquiry_chosen);
                 
                 if (inquiry_type == 1){
+                    boolean valid = false;
+                    do {
+                        System.out.println("Whose account would you like to inquire about? (Enter full name as following: FirstName LastName)");
+                        account_holder = kb.nextLine();
+                        if (!users_by_name.containsKey(account_holder)){
+                            System.out.println("Please enter a valid name");
+                        } else {
+                            valid = true;
+                        }
+                    } while (!valid);
 
-                    System.out.println("Whose account would you like to inquire about? (Enter full name as following: FirstName LastName)");
-                    account_holder = kb.nextLine();
 
+                    Customer customer = users_by_name.get(account_holder);
+                    dislay_account_information_by_name(customer);
 
                 } else {
                     
@@ -353,15 +363,15 @@ public class RunBank {
 
                 
 
-                System.out.println("Do you want to Exit? (Yes/No)");
+                System.out.println("Type EXIT to exit");
                 exit = kb.nextLine().trim(); // Read the whole line for exit command
-                browing = exit.equalsIgnoreCase("yes") ? false : true;
+                browing = exit.equalsIgnoreCase("exit") ? false : true;
             } while(browing);
             
         }
     }
     /**
-     * Displays account information
+     * Displays account information by account number
      * 
      * @param customer is the target user for the information
      * @param account_type is an int that represents the account type to dislay the information
@@ -375,15 +385,12 @@ public class RunBank {
         int id = customer.get_account_id();
         float balance;
         if (account_type == 1){
-            account_number = customer.get_checking_account_number();
             balance = customer.get_checking_account_balance();
             account = "Checking";
         } else if (account_type == 2){
-            account_number = customer.get_saving_account_number();
             balance = customer.get_saving_account_balance();
             account = "Saving";
         } else {
-            account_number = customer.get_credit_account_number();
             balance = customer.get_credit_account_balance();
             account = "Credit";
         }
@@ -391,6 +398,41 @@ public class RunBank {
         System.out.println("The Account of type: " + account + ", with number: " + account_number);
         System.out.print("Balance: " + balance);
     }
+     /**
+     * Displays account information by name
+     * 
+     * @param customer is the target user for the information
+     * @return None
+     */
+
+    public static void dislay_account_information_by_name(Customer customer){
+        String name = customer.get_name();
+        String last = customer.get_last();
+        int id = customer.get_account_id();
+        int account_number_saving, account_number_checking, account_number_credit;
+        float balance_checking, balance_saving, balance_credit;
+
+        account_number_saving = customer.get_checking_account_number();
+        balance_checking = customer.get_checking_account_balance();
+
+        account_number_checking = customer.get_saving_account_number();
+        balance_saving = customer.get_saving_account_balance();
+
+        account_number_credit = customer.get_credit_account_number();
+        balance_credit = customer.get_credit_account_balance();
+
+        System.out.println("Account holder: " + name + " " + last + " with ID: " + id);
+
+        System.out.println("The Account of type: Checkings | number: " + account_number_checking + " | Balance: " + balance_checking);
+
+        System.out.println("The Account of type: Checkings | number: " + account_number_saving + "| Balance: " + balance_saving);
+
+        System.out.println("The Account of type: Checkings | number: " + account_number_credit + "| Balance: " + balance_credit);
+        
+    }
+
+
+
 
 
      /**
@@ -584,7 +626,8 @@ public class RunBank {
                 customer.set_credit_account_balance(credit_account_number);
                 customer.set_credit_account_max(credit_account_max);
                 customer.set_credit_account_balance(credit_account_balance);
-                users_by_name.put(name, customer);
+                String key = name + " " + last;
+                users_by_name.put(key, customer);
                 accounts_by_number.put(checking_account_number, customer);
                 accounts_by_number.put(saving_account_number, customer);
 
