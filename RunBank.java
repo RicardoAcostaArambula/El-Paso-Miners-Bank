@@ -66,6 +66,9 @@ public class RunBank {
                 Customer customer = users_by_name.get(username);
                 boolean valid = false;
                 /*checking the account time */
+
+
+
                 do {
                     System.out.println("Select one of the following accounts:");
                     System.out.println("(1) Checkings");
@@ -242,6 +245,9 @@ public class RunBank {
                         break;
                         
                     case 6:
+                        if (kb.hasNextLine()) { 
+                            kb.nextLine();
+                        }
                         System.out.println("Enter recipient's Customer ID: ");
                         String recipient_full_name = kb.nextLine();
                         
@@ -285,7 +291,9 @@ public class RunBank {
                         System.out.println("Invalid option selected");
                         break;
                 }
-
+                if (kb.hasNextLine()) { 
+                    kb.nextLine();
+                }
                 System.out.println("Type EXIT to exit");
                 kb.nextLine(); 
                 exit = kb.nextLine().trim(); 
@@ -302,7 +310,6 @@ public class RunBank {
                     System.out.println("(1) Inquiry account by name");
                     System.out.println("(2) Inquiry account by account number");
                     inquiry_type = kb.nextInt();
-                    kb.nextLine(); 
                     if (1 <= inquiry_type && inquiry_type <= 2){
                         inquiry_chosen = true;
                     } else {
@@ -313,6 +320,9 @@ public class RunBank {
                 if (inquiry_type == 1){
                     boolean valid = false;
                     do {
+                        if (kb.hasNextLine()) { 
+                            kb.nextLine();
+                        }
                         System.out.println("Whose account would you like to inquire about? (Enter full name as following: FirstName LastName)");
                         account_holder = kb.nextLine();
                         if (!users_by_name.containsKey(account_holder)){
@@ -336,7 +346,6 @@ public class RunBank {
                         System.out.println("(2) Savings");
                         System.out.println("(3) Credit");
                         account_type = kb.nextInt();
-                        kb.nextLine(); 
                         if (1 <= account_type && account_type <=3){
                             valid = true;
                         } else {
@@ -347,7 +356,9 @@ public class RunBank {
                     do {
                         System.out.println("What is the account number?");
                         account_number = kb.nextInt();
-                        kb.nextLine(); 
+                        if (kb.hasNextLine()) { 
+                            kb.nextLine();
+                        }
                         if (!accounts_by_number.containsKey(account_number)){
                             System.out.println("Please enter a valid account number");
                         } else {
@@ -360,10 +371,6 @@ public class RunBank {
                     dislay_account_information_by_account_number(customer, account_number, account_type);
                     transactionLog.logBalanceInquiry(customer, account_type);
                 }
-
-                
-
-                
 
                 System.out.println("Type EXIT to exit");
                 exit = kb.nextLine().trim(); // Read the whole line for exit command
