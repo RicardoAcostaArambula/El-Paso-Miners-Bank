@@ -295,7 +295,6 @@ public class RunBank {
                     kb.nextLine();
                 }
                 System.out.println("Type EXIT to exit");
-                kb.nextLine(); 
                 exit = kb.nextLine().trim(); 
                 browing = exit.equalsIgnoreCase("exit") ? false : true;
             } while(browing);
