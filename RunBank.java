@@ -48,10 +48,12 @@ public class RunBank {
         
         
         if (option==1){
+            System.out.println("Enter your full name: ");
+            if (kb.hasNextLine()) { 
+                kb.nextLine();
+            }
             do {
-                System.out.println("Enter your full name: ");
-                username = kb.next();
-
+                username = kb.nextLine();
                 /*Check that user exist in the dictonary */
                 if (!users_by_name.containsKey(username)){
                     System.out.println("Error: please enter a valid name");
