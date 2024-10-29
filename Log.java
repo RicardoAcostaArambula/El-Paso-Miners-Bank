@@ -219,36 +219,36 @@ public class Log {
  * @param recipientType  The type of the recipient's account (1 for Checking, 2 for Savings, 3 for Credit).
  * @param transferAmount The amount transferred.
  */
-public void logInterCustomerTransfer(Customer sender, Customer recipient, int senderType, int recipientType, float transferAmount) {
+public void logInterCustomerTransfer(Customer customer, Customer recipientCustomer, int account_type, int recipientAccountType, float interCustomerTransferAmount) {
     // Validate transfer amount
-    if (transferAmount <= 0) {
+    if (interCustomerTransferAmount <= 0) {
         System.out.println("Transfer amount must be greater than zero.");
         return;
     }
     
     // Process withdrawal and deposit
-    bankDataUpdater.processWithdrawal(sender.get_account_id(), senderType, transferAmount);
-    bankDataUpdater.processDeposit(recipient.get_account_id(), recipientType, transferAmount);
+    bankDataUpdater.processWithdrawal(customer.get_account_id(), account_type, interCustomerTransferAmount);
+    bankDataUpdater.processDeposit(recipientCustomer.get_account_id(), recipientAccountType, interCustomerTransferAmount);
     
     // Get account names, numbers, and balances for logging
-    String senderAccountName = getAccountName(senderType);
-    String recipientAccountName = getAccountName(recipientType);
-    int senderAccountNumber = getAccountNumber(sender, senderType);
-    int recipientAccountNumber = getAccountNumber(recipient, recipientType);
-    float senderNewBalance = getAccountBalance(sender, senderType);
-    float recipientNewBalance = getAccountBalance(recipient, recipientType);
+    String senderAccountName = getAccountName(account_type);
+    String recipientAccountName = getAccountName(recipientAccountType);
+    int senderAccountNumber = getAccountNumber(customer, account_type);
+    int recipientAccountNumber = getAccountNumber(recipientCustomer, recipientAccountType);
+    float senderNewBalance = getAccountBalance(customer, account_type);
+    float recipientNewBalance = getAccountBalance(recipientCustomer, recipientAccountType);
     
     // Create the log message
     String message = String.format(
         "%s %s transferred $%.2f from %s-%d to %s %s's %s-%d. " +
         "Sender New Balance: $%.2f. Recipient New Balance: $%.2f",
-        sender.get_name(),
-        sender.get_last(),
-        transferAmount,
+        customer.get_name(),
+        customer.get_last(),
+        interCustomerTransferAmount,
         senderAccountName,
         senderAccountNumber,
-        recipient.get_name(),
-        recipient.get_last(),
+        recipientCustomer.get_name(),
+        recipientCustomer.get_last(),
         recipientAccountName,
         recipientAccountNumber,
         senderNewBalance,
