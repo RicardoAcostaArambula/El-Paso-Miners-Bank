@@ -5,7 +5,7 @@
 * <p>This class includes basic functionalities like adding to the account balance through deposits
 * and subtracting from the balance through withdrawals, with a check for sufficient funds.</p>
 * 
-* @authors Sebastian Nares, Ricardo Acosta
+* @author Sebastian Nares, Ricardo Acosta
 */
 public class Account {
     private int accountNumber;
@@ -17,6 +17,7 @@ public class Account {
      *
      * @param accountNumber the unique account number associated with the account
      * @param startingBalance the initial balance of the account
+     * @param routing_number the routing number of the account
      */
     // Constructor
     public Account(int accountNumber, float startingBalance, String routing_number) {
@@ -44,14 +45,16 @@ public class Account {
         return balance;
     }
      /**
-     * Deposits the specified amount into the account.
-     *
-     * @param amount the amount to deposit
+     * Gets the routing number.
+     * @return Returns the routing number
      */
     public String get_routing_number(){
         return this.routing_number;
     }
-
+    /**
+     * 
+     * @param amount amount being deposited to account.
+     */
     public void deposit(float amount) {
         balance += amount; // Add amount to balance
     }

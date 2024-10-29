@@ -248,7 +248,7 @@ public class RunBank {
                         if (kb.hasNextLine()) { 
                             kb.nextLine();
                         }
-                        System.out.println("Enter recipient's Customer ID: ");
+                        System.out.println("Enter recipient's name: ");
                         String recipient_full_name = kb.nextLine();
                         
                         if (!users_by_name.containsKey(recipient_full_name)) {
@@ -383,7 +383,7 @@ public class RunBank {
      * 
      * @param customer is the target user for the information
      * @param account_type is an int that represents the account type to dislay the information
-     * @return None
+     * @param account_number is an int that represents the account number to display the information
      */
 
     public static void dislay_account_information_by_account_number(Customer customer, int account_number, int account_type){
@@ -410,7 +410,7 @@ public class RunBank {
      * Displays account information by name
      * 
      * @param customer is the target user for the information
-     * @return None
+     * 
      */
 
     public static void dislay_account_information_by_name(Customer customer){
@@ -438,10 +438,6 @@ public class RunBank {
         System.out.println("The Account of type: Credit | number: " + account_number_credit + "| Balance: " + balance_credit);
         
     }
-
-
-
-
 
      /**
      * Transfers funds between two customers' accounts.
@@ -592,10 +588,10 @@ public class RunBank {
         ,Credit Account Number,Credit Max,Credit Starting Balance
      */
 
-     /**
+    /**
      * Sets up users from a CSV file and populates the users HashMap.
-     *
-     * @param users the HashMap to be populated with Customer objects
+     * @param users_by_name the HashMap to be populated with Customer objects
+     * @param accounts_by_number the HashMap to be pupulated with Customer objects
      */
     public static void setup_users(HashMap <String, Customer>  users_by_name, HashMap <Integer, Customer> accounts_by_number){
         try {

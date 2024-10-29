@@ -7,7 +7,7 @@ import java.util.List;
  * <p>The class enforces the presence of at least one account by throwing an exception
  * if the provided list of accounts is null or empty.</p>
  * 
- * @authors Sebastian Nares, Ricardo Acosta 
+ * @author Sebastian Nares, Ricardo Acosta 
  */
 
 public class Bank {
