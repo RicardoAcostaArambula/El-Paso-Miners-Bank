@@ -402,9 +402,9 @@ public class RunBank {
             balance = customer.get_credit_account_balance();
             account = "Credit";
         }
-        System.out.println("Account holder: " + name + " " + last + "with ID: " + id);
+        System.out.println("Account holder: " + name + " " + last + " with ID: " + id);
         System.out.println("The Account of type: " + account + ", with number: " + account_number);
-        System.out.print("Balance: " + balance);
+        System.out.println("Balance: " + balance);
     }
      /**
      * Displays account information by name
@@ -433,9 +433,9 @@ public class RunBank {
 
         System.out.println("The Account of type: Checkings | number: " + account_number_checking + " | Balance: " + balance_checking);
 
-        System.out.println("The Account of type: Savings | number: " + account_number_saving + "| Balance: " + balance_saving);
+        System.out.println("The Account of type: Savings | number: " + account_number_saving + " | Balance: " + balance_saving);
 
-        System.out.println("The Account of type: Credit | number: " + account_number_credit + "| Balance: " + balance_credit);
+        System.out.println("The Account of type: Credit | number: " + account_number_credit + " | Balance: " + balance_credit);
         
     }
 
