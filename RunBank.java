@@ -38,6 +38,7 @@ public class RunBank {
             System.out.println("Please Select the One of the following modes:");
             System.out.println("1. Individual Person");
             System.out.println("2. Bank Teller");
+            System.out.println("3. Create New Account");
             option = kb.nextInt();
             if (1 <= option && option <=3){
                 right_option = true;
@@ -376,7 +377,19 @@ public class RunBank {
                 browing = exit.equalsIgnoreCase("exit") ? false : true;
             } while(browing);
             
+        } if (option == 3) {            
+            // Create a new user
+            Customer customer = UserCreation.createNewUser(kb, users_by_name, accounts_by_number);
+            
+
+            if (customer != null) {
+                System.out.println("Account creation completed. You may now login as an Individual Person.");
+            } else {
+                System.out.println("Account creation failed.");
+            }
+            
         }
+
     }
     /**
      * Displays account information by account number
