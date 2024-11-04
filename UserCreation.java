@@ -3,6 +3,9 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Scanner;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class UserCreation {
     private static int lastUserId = 0;
@@ -87,12 +90,12 @@ public class UserCreation {
         System.out.print("ZIP: ");
         String zip = kb.nextLine();
         
-        String fullAddress = String.format("%s, %s, %s %s", street, city, state, zip);
+        String fullAddress = String.format("\"%s, %s, %s %s\"", street, city, state, zip);
         customer.set_address(fullAddress);
         
-        System.out.print("Phone Number: (123) 123-1234)");
+        System.out.print("Phone Number (without spaces or dashes): ");
         String phone = kb.nextLine();
-        customer.set_phone_number(phone);
+        customer.set_phone_number(formatPhoneNumber(phone));
         
         // Get and validate credit score
         int creditScore;
@@ -116,7 +119,7 @@ public class UserCreation {
         
         customer.set_checking_account_number(checkingAccountNumber);
         customer.set_saving_account_number(savingsAccountNumber);
-        customer.set_credit_account_balance(creditAccountNumber);
+        customer.set_credit_account_number(creditAccountNumber);
         
         // Set initial balances
         customer.set_checking_account_balance(0.0f);
@@ -125,7 +128,7 @@ public class UserCreation {
         // Set credit limit and initial balance
         float creditLimit = generateCreditLimit(creditScore);
         customer.set_credit_account_max(creditLimit);
-        customer.set_credit_account_balance(0.0f);
+        customer.set_credit_account_balance(-creditLimit); 
         
         // Add to HashMaps
         String key = firstName + " " + lastName;
@@ -152,22 +155,24 @@ public class UserCreation {
             // Write CSV header
             writer.append("ID,FirstName,LastName,DOB,Address,Phone,CheckingAccountNumber,CheckingBalance,SavingAccountNumber,SavingBalance,CreditAccountNumber,CreditLimit,CreditBalance\n");
             
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yy");
+            
             // Write each customer's data
             for (Customer customer : users_by_name.values()) {
                 writer.append(String.valueOf(customer.get_account_id())).append(",")
                       .append(customer.get_name()).append(",")
                       .append(customer.get_last()).append(",")
-                      .append(customer.get_dob()).append(",")
+                      .append(dateFormat.format(parseDate(customer.get_dob()))).append(",")
                       .append(customer.get_address()).append(",")
-                      .append(customer.get_phone_number()).append(",")
+                      .append(formatPhoneNumber(customer.get_phone_number())).append(",") 
                       .append(String.valueOf(customer.get_checking_account_number())).append(",")
                       .append(String.valueOf(customer.get_checking_account_balance())).append(",")
                       .append(String.valueOf(customer.get_saving_account_number())).append(",")
                       .append(String.valueOf(customer.get_saving_account_balance())).append(",")
                       .append(String.valueOf(customer.get_credit_account_number())).append(",")
                       .append(String.valueOf(customer.get_credit_account_max())).append(",")
-                      .append(String.valueOf(customer.get_credit_account_balance())).append("\n");
-            }
+                      .append(String.valueOf(customer.get_credit_account_balance())).append("\n"); 
+                    }
             writer.flush();
             System.out.println("User data saved successfully to bank_users.csv.");
         } catch (IOException e) {
@@ -175,4 +180,25 @@ public class UserCreation {
             e.printStackTrace();
         }
     }
+    
+    
+    private static Date parseDate(String dateStr) {
+        SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MMM-yy"); // Change to match the input format
+        try {
+            return inputFormat.parse(dateStr);
+        } catch (ParseException e) {
+            System.out.println("Error parsing date: " + e.getMessage());
+            return new Date(); // Return current date or handle accordingly
+        }
+    }
+    
+    private static String formatPhoneNumber(String phone) {
+        // Assume the phone is provided in the format "9159159159" and you want "(915) 915-9159"
+        if (phone.length() == 10) { // Ensure it has the expected length
+            return String.format("(%s) %s-%s", phone.substring(0, 3), phone.substring(3, 6), phone.substring(6, 10));
+        } else {
+            return phone; // Return the original phone number if it doesn't match expected format
+        }
+    }
+    
 }
