@@ -1,8 +1,11 @@
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
+
 
 /**
  * The {@code Log} class is responsible for logging various banking transactions including balance inquiries, 
@@ -278,4 +281,21 @@ public void logInterCustomerTransfer(Customer customer, Customer recipientCustom
             default: return 0.0f;
         }
     }
+    public void logNewAccountCreation(Customer customer) {
+        String message = String.format(
+            "%s %s created a new account. Checking Account: %d, Savings Account: %d, Credit Account: %d, Credit Limit: $%.2f",
+            customer.get_name(),
+            customer.get_last(),
+            customer.get_checking_account_number(),
+            customer.get_saving_account_number(),
+            customer.get_credit_account_number(),
+            customer.get_credit_account_max()
+        );
+    
+        writeToLog(message);
+    }
+    
 }
+
+   
+
