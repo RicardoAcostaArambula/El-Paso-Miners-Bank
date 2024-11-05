@@ -29,7 +29,6 @@ public class RunBank {
         String exit, username;
         float balance;
         Log transactionLog = new Log();
-        UserCreation creating_users = new UserCreation();
         HashMap <String, Customer> users_by_name = new HashMap<>();
         HashMap <Integer, Customer> accounts_by_number = new HashMap<>();
         //transaction_reader("Transactions(1).csv", users_by_name, transactionLog);
@@ -381,7 +380,7 @@ public class RunBank {
             
         } if (option == 3) {            
             // Create a new user
-            Customer customer = creating_users.createNewUser(kb, users_by_name, accounts_by_number);
+            Customer customer = UserCreation.createNewUser(kb, users_by_name, accounts_by_number);
             
 
             if (customer != null) {
@@ -688,6 +687,7 @@ public class RunBank {
      * @return None
      */
     public static void transaction_reader(String filename, HashMap <String, Customer>  users_by_name, Log transactionLog){
+        System.out.println("Processing transacitons from file...");
         try {
             File file = new File(filename);
             Scanner read = new Scanner(file);
@@ -928,11 +928,10 @@ public class RunBank {
                         break;
                 }
             }
-
-
         } catch (FileNotFoundException e){
             System.out.println("File not found: " +e.getMessage());
         }
+        System.out.println("Processed all transacitons from file...");
     }
     public static int get_account_type(String account){
         int account_type;
