@@ -1,5 +1,3 @@
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Scanner;
 /**
@@ -31,7 +29,7 @@ public class RunBank {
         Log transactionLog = new Log();
         HashMap <String, Customer> users_by_name = new HashMap<>();
         HashMap <Integer, Customer> accounts_by_number = new HashMap<>();
-        setup_users(users_by_name, accounts_by_number);
+        SetupUsers.setup_users(users_by_name, accounts_by_number);
         TransactionReader.transaction_reader("Transactions(1).csv", users_by_name, transactionLog);
         System.out.println("Welcome to El Paso miners Bank");
         do {
@@ -67,9 +65,6 @@ public class RunBank {
                 Customer customer = users_by_name.get(username);
                 boolean valid = false;
                 /*checking the account time */
-
-
-
                 do {
                     System.out.println("Select one of the following accounts:");
                     System.out.println("(1) Checkings");
@@ -285,9 +280,7 @@ public class RunBank {
                         } else {
                             System.out.println("Transfer failed. Please check account balances or input data.");
                         }
-                        
                         break;
-                        
                     default:
                         System.out.println("Invalid option selected");
                         break;
@@ -331,14 +324,11 @@ public class RunBank {
                             valid = true;
                         }
                     } while (!valid);
-
-
                     Customer customer = users_by_name.get(account_holder);
                     dislay_account_information_by_name(customer);
-
                 } else {
                     boolean valid = false;
-                    /*checking the account time */
+                    /*checking the account type */
                     do {
                         System.out.println("What is the account type: ");
                         System.out.println("(1) Checkings");
@@ -363,14 +353,11 @@ public class RunBank {
                         } else {
                             valid = true;
                         }
-                    } while (!valid);
-
-                    
+                    } while (!valid);   
                     Customer customer = accounts_by_number.get(account_number);
                     dislay_account_information_by_account_number(customer, account_number, account_type);
                     transactionLog.logBalanceInquiry(customer, account_type);
                 }
-
                 System.out.println("Type EXIT to exit");
                 exit = kb.nextLine().trim(); // Read the whole line for exit command
                 browing = exit.equalsIgnoreCase("exit") ? false : true;
@@ -379,8 +366,6 @@ public class RunBank {
         } if (option == 3) {            
             // Create a new user
             Customer customer = UserCreation.createNewUser(kb, users_by_name, accounts_by_number);
-            
-
             if (customer != null) {
                 System.out.println("Account creation completed. You may now login as an Individual Person.");
             } else {
@@ -424,7 +409,6 @@ public class RunBank {
      * @param customer is the target user for the information
      * 
      */
-
     public static void dislay_account_information_by_name(Customer customer){
         String name = customer.get_name();
         String last = customer.get_last();
@@ -448,104 +432,5 @@ public class RunBank {
         System.out.println("The Account of type: Savings | number: " + account_number_saving + " | Balance: " + balance_saving);
 
         System.out.println("The Account of type: Credit | number: " + account_number_credit + " | Balance: " + balance_credit);
-        
-    }
-    /**
-     * Logs transaction information for a customer.
-     *
-     * @param customer the customer whose transaction information is being logged
-     * @param transaction a description of the transaction
-     */
-    /*logs transaction information */
-    public void log_information(Customer customer, String transaction){
-
-    }
-    /**
-     * Deposit funds into the selected account 
-    * @param account The account into which the funds will be deposited.
-    * @param amount The amount of money to deposit into the account.
-    * @return true if the deposit was successful; false otherwise.
-    */
-    
-    public static boolean deposit_funds(Account account, float amount){
-        return false;
-    }
-    /*builds up the dictinary with the users with the id as primary key*/
-    /*
-        ,Credit Account Number,Credit Max,Credit Starting Balance
-     */
-
-    /**
-     * Sets up users from a CSV file and populates the users HashMap.
-     * @param users_by_name the HashMap to be populated with Customer objects
-     * @param accounts_by_number the HashMap to be pupulated with Customer objects
-     */
-    public static void setup_users(HashMap <String, Customer>  users_by_name, HashMap <Integer, Customer> accounts_by_number){
-        try {
-            File file = new File("bank_users.csv");
-            Scanner read = new Scanner(file);
-            String line = read.nextLine();
-            while (read.hasNextLine()){
-                line = read.nextLine();
-                line = remove_commas_inside_quotations(line);
-                String[] items = line.split(",");
-                int id = Integer.parseInt(items[0]);
-                String name = items[1];
-                String last = items[2];
-                String dob = items[3];
-                String address = items[4];
-                String phone_number = items[5];
-                int checking_account_number = Integer.parseInt(items[6]);
-                float checking_account_balance = Float.parseFloat((items[7]));
-                int saving_account_number = Integer.parseInt(items[8]);
-                float saving_account_balance = Float.parseFloat((items[9]));
-                int credit_account_number = Integer.parseInt(items[10]);
-                float credit_account_max= Float.parseFloat((items[11]));
-                float credit_account_balance= Float.parseFloat((items[12]));
-                /*Create object*/
-                Customer customer = new Customer();
-                customer.set_account_id(id);
-                customer.set_name(name);
-                customer.set_last(last);
-                customer.set_dob(dob);
-                customer.set_address(address);
-                customer.set_phone_number(phone_number);
-                customer.set_checking_account_number(checking_account_number);
-                customer.set_checking_account_balance(checking_account_balance);
-                customer.set_saving_account_number(saving_account_number);
-                customer.set_saving_account_balance(saving_account_balance);
-                customer.set_credit_account_balance(credit_account_number);
-                customer.set_credit_account_max(credit_account_max);
-                customer.set_credit_account_balance(credit_account_balance);
-                String key = name + " " + last;
-                users_by_name.put(key, customer);
-                accounts_by_number.put(checking_account_number, customer);
-                accounts_by_number.put(saving_account_number, customer);
-            }
-        } catch (FileNotFoundException error){
-            System.out.println("Error: could not find file");
-            error.printStackTrace();
-        }
-    }
-    /**
-     * Removes commas inside quotations from a given line.
-     *
-     * @param line the line from which to remove commas inside quotations
-     * @return the modified line with commas removed
-     */
-    public static String remove_commas_inside_quotations(String line){
-        StringBuilder new_line = new StringBuilder();
-        boolean inside_quotes = false;
-        for (int i = 0; i < line.length(); i++){
-            char current_char = line.charAt(i);
-            if (current_char == '"'){
-                inside_quotes = !inside_quotes;
-            } else if(current_char == ',' && inside_quotes){
-                continue;
-            } else {
-                new_line.append(current_char);
-            }
-        }
-        return new_line.toString();
     }
 }
