@@ -113,13 +113,13 @@ public class RunBank {
                         }
                         
                         if (account_type == 1) {
-                            Opearations.deposit_to_checking(customer, deposit_amount);
+                            Operations.deposit_to_checking(customer, deposit_amount);
                             System.out.println("Successfully deposited $" + deposit_amount + " to checking account");
                         } else if (account_type == 2) {
-                            Opearations.deposit_to_saving(customer, deposit_amount);
+                            Operations.deposit_to_saving(customer, deposit_amount);
                             System.out.println("Successfully deposited $" + deposit_amount + " to savings account");
                         } else {
-                            Opearations.deposit_to_credit(customer, deposit_amount);
+                            Operations.deposit_to_credit(customer, deposit_amount);
                             System.out.println("Successfully deposited $" + deposit_amount + " to credit account");
                         }
                         transactionLog.logDeposit(customer, account_type, deposit_amount);
@@ -142,7 +142,7 @@ public class RunBank {
                                 System.out.println("Error: Insufficient funds in checking account");
                             }
                         } else if (account_type == 2) {
-                            float savings_balance = Opearations.saving_account_balance(customer);
+                            float savings_balance = Operations.saving_account_balance(customer);
                             if (savings_balance >= withdrawal_amount) {
                                 customer.set_saving_account_balance(savings_balance - withdrawal_amount);
                                 System.out.println("Successfully withdrew $" + withdrawal_amount + " from savings account");
