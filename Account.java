@@ -20,6 +20,12 @@ abstract class Account {
      * @param routing_number the routing number of the account
      */
     // Constructor
+    public Account() {
+    	
+    }
+    public Account(String routing_number) {
+    	this.routing_number = routing_number;
+    }
     public Account(int accountNumber, float startingBalance, String routing_number) {
         this.accountNumber = accountNumber;
         this.balance = startingBalance;
