@@ -31,9 +31,8 @@ public class RunBank {
         Log transactionLog = new Log();
         HashMap <String, Customer> users_by_name = new HashMap<>();
         HashMap <Integer, Customer> accounts_by_number = new HashMap<>();
-        //transaction_reader("Transactions(1).csv", users_by_name, transactionLog);
-        
         setup_users(users_by_name, accounts_by_number);
+        transaction_reader("Transactions(1).csv", users_by_name, transactionLog);
         System.out.println("Welcome to El Paso miners Bank");
         do {
             System.out.println("Please Select the One of the following modes:");
@@ -789,7 +788,7 @@ public class RunBank {
                         int account_type_from = get_account_type(from_where);
                         int account_type_to = get_account_type(to_where);
                         float transfer_amount = Float.parseFloat(amount);
-                        if (account_type_from == -1 || account_type_to==-1){
+                        if (account_type_from == -1 || account_type_to== -1){
                             System.out.println("There was an error getting the account type");
                             break;
                         } else if (account_type_from == account_type_to) {
@@ -831,7 +830,7 @@ public class RunBank {
                             deposit_to_credit(customer, transfer_amount);
                         }
                         
-                        System.out.println("Successfully transferred $" + transfer_amount);
+                        System.out.println("Successfully transferred $" + transfer_amount + " from " +from_where + " to " + to_where + " for account holder: " + from_user);
                         transactionLog.logTransfer(customer, account_type_from,  account_type_to, transfer_amount);
                         break;
                     case "withdraws":
@@ -935,11 +934,11 @@ public class RunBank {
     }
     public static int get_account_type(String account){
         int account_type;
-        if (account.toLowerCase() == "checking"){
+        if (account.equalsIgnoreCase("checking")){
             account_type = 1;
-        } else if (account.toLowerCase() == "savings"){
+        } else if (account.equalsIgnoreCase("savings")){
             account_type = 2;
-        } else if (account.toLowerCase() == "credit"){
+        } else if (account.equalsIgnoreCase("credit")){
             account_type = 3;
         } else {
             account_type = -1;
