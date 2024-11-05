@@ -697,23 +697,50 @@ public class RunBank {
                 line = read.nextLine();
                 String[] items = line.split(",");
                 /*From First Name */
-                String from_first_name = items[0];
+                String from_first_name;
                 /*From Last Name*/
-                String from_last_name = items[0];
+                String from_last_name;
                 /*From Where*/
-                String from_where = items[0];
+                String from_where = "";
                 /*Action */
-                String action = items[0];
+                String action = "";
                 /*To First Name*/
-                String to_first_name = items[0];
+                String to_first_name = "";
                 /*To Last Name*/
-                String to_last_name = items[0];
+                String to_last_name = "";
                 /*To Where*/
-                String to_where = items[0];
+                String to_where = "";
                 /*Amount*/
-                String amount = items[0];
+                String amount = "";
                 String from_user;
                 float withdrawal_amount;
+                if (items.length == 4){
+                    from_first_name = items[0];
+                    /*From Last Name*/
+                    from_last_name = items[1];
+                    /*From Where*/
+                    from_where = items[2];
+                    /*Action */
+                    action = items[3];
+                } else {
+                    /*From First Name */
+                    from_first_name = items[0];
+                    /*From Last Name*/
+                    from_last_name = items[1];
+                    /*From Where*/
+                    from_where = items[2];
+                    /*Action */
+                    action = items[3];
+                    /*To First Name*/
+                    to_first_name = items[4];
+                    /*To Last Name*/
+                    to_last_name = items[5];
+                    /*To Where*/
+                    to_where = items[6];
+                    /*Amount*/
+                    amount = items[7];
+                }
+                
                 
                 switch (action){
                     /*Mickey,Mouse,Checking,pays,Donald,Duck,Checking,100 */
@@ -874,6 +901,27 @@ public class RunBank {
                             System.out.println("Successfully deposited $" + deposit_amount + " to credit account");
                         }
                         transactionLog.logDeposit(customer, account_type, deposit_amount);
+                        break;
+                    case "inquires":
+                        /*Gets customer name*/
+                        from_user = from_first_name + " " + from_last_name;
+                        if (!users_by_name.containsKey(from_user)) {
+                            System.out.println("The customer with Name: " + from_first_name + " and last name: " + from_last_name + " was not found");
+                            break;
+                        } 
+                        customer = users_by_name.get(from_user);
+                        Float balance;
+                        /*implement inquires*/
+                        account_type = get_account_type(from_where);
+                        if (account_type == 1) {
+                            balance = checking_account_balance(customer);
+                        } else if (account_type == 2) {
+                            balance = saving_account_balance(customer);
+                        } else {
+                            balance = credit_account_balance(customer);
+                        }
+                        System.out.println("The account balance is: $" + String.format("%.2f", balance));
+                        transactionLog.logBalanceInquiry(customer, account_type);
                         break;
                     default:
                         System.out.println("there was an error selecting the action");

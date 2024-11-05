@@ -7,7 +7,7 @@
 * 
 * @author Sebastian Nares, Ricardo Acosta
 */
-public class Account {
+abstract class Account {
     private int accountNumber;
     private float balance;
     private String routing_number;
