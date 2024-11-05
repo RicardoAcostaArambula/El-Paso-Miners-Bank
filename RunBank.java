@@ -30,7 +30,6 @@ public class RunBank {
         HashMap <String, Customer> users_by_name = new HashMap<>();
         HashMap <Integer, Customer> accounts_by_number = new HashMap<>();
         SetupUsers.setup_users(users_by_name, accounts_by_number);
-        TransactionReader.transaction_reader("Transactions(1).csv", users_by_name, transactionLog);
         System.out.println("Welcome to El Paso miners Bank");
         do {
             System.out.println("Please Select the One of the following modes:");
@@ -95,11 +94,11 @@ public class RunBank {
                 switch (transaction_option) {
                     case 1: 
                         if (account_type == 1) {
-                            balance = Opearations.checking_account_balance(customer);
+                            balance = Operations.checking_account_balance(customer);
                         } else if (account_type == 2) {
-                            balance = Opearations.saving_account_balance(customer);
+                            balance = Operations.saving_account_balance(customer);
                         } else {
-                            balance = Opearations.credit_account_balance(customer);
+                            balance = Operations.credit_account_balance(customer);
                         }
                         System.out.println("The account balance is: $" + String.format("%.2f", balance));
                         transactionLog.logBalanceInquiry(customer, account_type);
@@ -299,11 +298,12 @@ public class RunBank {
                 int inquiry_type;
                 int account_number;
                 do {
-                    System.out.println("Please select one of the two options: ");
+                    System.out.println("Please select one of the following options: ");
                     System.out.println("(1) Inquiry account by name");
                     System.out.println("(2) Inquiry account by account number");
+                    System.out.println("(3) Process transactions from file");
                     inquiry_type = kb.nextInt();
-                    if (1 <= inquiry_type && inquiry_type <= 2){
+                    if (1 <= inquiry_type && inquiry_type <= 3){
                         inquiry_chosen = true;
                     } else {
                         System.out.println("Please choose a valid option");
@@ -326,7 +326,7 @@ public class RunBank {
                     } while (!valid);
                     Customer customer = users_by_name.get(account_holder);
                     dislay_account_information_by_name(customer);
-                } else {
+                } else if (inquiry_type == 2){
                     boolean valid = false;
                     /*checking the account type */
                     do {
@@ -357,6 +357,9 @@ public class RunBank {
                     Customer customer = accounts_by_number.get(account_number);
                     dislay_account_information_by_account_number(customer, account_number, account_type);
                     transactionLog.logBalanceInquiry(customer, account_type);
+                } else { 
+                    System.out.print("The transaction process from the file will start shortly...");
+                    TransactionReader.transaction_reader("Transactions(1).csv", users_by_name, transactionLog);
                 }
                 System.out.println("Type EXIT to exit");
                 exit = kb.nextLine().trim(); // Read the whole line for exit command
