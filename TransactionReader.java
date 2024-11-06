@@ -272,4 +272,3 @@ class TransactionReader {
         return account_type;
     }
 }
-
