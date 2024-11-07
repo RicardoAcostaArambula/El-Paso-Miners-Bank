@@ -167,7 +167,7 @@ public class bankDataUpdater {
         int columnIndex = getBalanceColumnIndex(3); // Credit account
         try {
             float currentBalance = Float.parseFloat(userData.get(rowIndex)[columnIndex]);
-            float newBalance = currentBalance - amount;
+            float newBalance = currentBalance + amount;
             updateBalance(customerId, 3, newBalance);
         } catch (NumberFormatException e) {
             // Suppress the error message
