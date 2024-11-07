@@ -51,7 +51,7 @@ public class UserCreation {
             }
         }
     
-        public static Customer createNewUser(Scanner kb, HashMap<String, Customer> users_by_name, 
+        public Customer createNewUser(Scanner kb, HashMap<String, Customer> users_by_name, 
                                               HashMap<Integer, Customer> accounts_by_number) {
             // Initialize IDs if not already done
             if (lastUserId == 0) {

@@ -27,6 +27,7 @@ public class RunBank {
         String exit, username;
         float balance;
         Log transactionLog = new Log();
+        UserCreation userCreation = new UserCreation();
         HashMap <String, Customer> users_by_name = new HashMap<>();
         HashMap <Integer, Customer> accounts_by_number = new HashMap<>();
         SetupUsers.setup_users(users_by_name, accounts_by_number);
@@ -368,7 +369,7 @@ public class RunBank {
             
         } if (option == 3) {            
             // Create a new user
-            Customer customer = UserCreation.createNewUser(kb, users_by_name, accounts_by_number);
+            Customer customer = userCreation.createNewUser(kb, users_by_name, accounts_by_number);
             if (customer != null) {
                 System.out.println("Account creation completed. You may now login as an Individual Person.");
             } else {
