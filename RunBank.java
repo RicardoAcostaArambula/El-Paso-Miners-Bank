@@ -19,320 +19,56 @@ public class RunBank {
      * @param args command-line arguments (not used)
      */
     public static void main(String[] args){
-        boolean browing = true;
-        boolean right_user = false;
-        boolean right_option = false;
-        int option, account_type;
+        boolean continueProgram = true;
         Scanner kb = new Scanner(System.in);
-        String exit, username;
-        float balance;
         Log transactionLog = new Log();
         UserCreation userCreation = new UserCreation();
         HashMap <String, Customer> users_by_name = new HashMap<>();
         HashMap <Integer, Customer> accounts_by_number = new HashMap<>();
         UserCreation.loadUsersFromCSV(users_by_name, accounts_by_number);
         SetupUsers.setup_users(users_by_name, accounts_by_number);
-        System.out.println("Welcome to El Paso miners Bank");
-        do {
-            System.out.println("Please Select the One of the following modes:");
-            System.out.println("1. Individual Person");
-            System.out.println("2. Bank Teller");
-            System.out.println("3. Create New Account");
-            option = kb.nextInt();
-            if (1 <= option && option <=3){
-                right_option = true;
-            } else {
-                System.out.println("Please choose a valid option");
-            }
-        } while(!right_option);
         
-        
-        if (option==1){
-            System.out.println("Enter your full name: ");
-            if (kb.hasNextLine()) { 
-                kb.nextLine();
-            }
+        while(continueProgram) {
+            System.out.println("Welcome to El Paso miners Bank");
+            boolean right_option = false;
+            int option;
+            
             do {
-                username = kb.nextLine();
-                /*Check that user exist in the dictonary */
-                if (!users_by_name.containsKey(username)){
-                    System.out.println("Error: please enter a valid name");
+                System.out.println("Please Select the One of the following modes:");
+                System.out.println("1. Individual Person");
+                System.out.println("2. Bank Teller");
+                System.out.println("3. Create New Account");
+                option = kb.nextInt();
+                if (1 <= option && option <=3){
+                    right_option = true;
                 } else {
-                    right_user = true;
-                } 
-            } while(!right_user);
-            do {
-                /*Getting the customer*/
-                Customer customer = users_by_name.get(username);
-                boolean valid = false;
-                /*checking the account time */
-                do {
-                    System.out.println("Select one of the following accounts:");
-                    System.out.println("(1) Checkings");
-                    System.out.println("(2) Savings");
-                    System.out.println("(3) Credit");
-                    account_type = kb.nextInt();
-                    if (1 <= account_type && account_type <=3){
-                        valid = true;
-                    } else {
-                        System.out.println("Please choose a valid account");
-                    }
-                } while(!valid);
-                /* We need to store the account object in the account varaible so that we are able to 
-                    * call the methods for checking the balance
-                */
-                /*code below is assuming we have the account and account type*/
-                System.out.println("Select one of the transactions below:");
-                System.out.println("(1) Inquire about balance");
-                /*Assuming the user already selected the account in which the money will go*/
-                System.out.println("(2) Deposit money to the account");
-                System.out.println("(3) Withdraw money from the account");
-                System.out.println("(4) Transfer money between accounts");
-                System.out.println("(5) Make payment");
-                System.out.println("(6) Transfer to another customer");
-                int transaction_option = kb.nextInt();
-                
-                /* switch statmenet with all call to each*/
-                switch (transaction_option) {
-                    case 1: 
-                        if (account_type == 1) {
-                            balance = Operations.checking_account_balance(customer);
-                        } else if (account_type == 2) {
-                            balance = Operations.saving_account_balance(customer);
-                        } else {
-                            balance = Operations.credit_account_balance(customer);
-                        }
-                        System.out.println("The account balance is: $" + String.format("%.2f", balance));
-                        transactionLog.logBalanceInquiry(customer, account_type);
-                        break;
-                
-                    case 2:
-                        System.out.println("Enter deposit amount:");
-                        float deposit_amount = kb.nextFloat();
-                        if (deposit_amount <= 0) {
-                            System.out.println("Error: Deposit amount must be greater than zero");
-                            break;
-                        }
-                        
-                        if (account_type == 1) {
-                            Operations.deposit_to_checking(customer, deposit_amount);
-                            System.out.println("Successfully deposited $" + deposit_amount + " to checking account");
-                        } else if (account_type == 2) {
-                            Operations.deposit_to_saving(customer, deposit_amount);
-                            System.out.println("Successfully deposited $" + deposit_amount + " to savings account");
-                        } else {
-                            Operations.deposit_to_credit(customer, deposit_amount);
-                            System.out.println("Successfully deposited $" + deposit_amount + " to credit account");
-                        }
-                        transactionLog.logDeposit(customer, account_type, deposit_amount);
-                        break;
-                
-                    case 3:
-                        System.out.println("Enter withdraw amount:");
-                        float withdrawal_amount = kb.nextFloat();
-                        if (withdrawal_amount <= 0) {
-                            System.out.println("Error: Withdraw amount must be greater than zero");
-                            break;
-                        }
-                        
-                        if (account_type == 1) {
-                            float checking_balance = Operations.checking_account_balance(customer);
-                            if (checking_balance >= withdrawal_amount) {
-                                customer.set_checking_account_balance(checking_balance - withdrawal_amount);
-                                System.out.println("Successfully withdrew $" + withdrawal_amount + " from checking account");
-                            } else {
-                                System.out.println("Error: Insufficient funds in checking account");
-                            }
-                        } else if (account_type == 2) {
-                            float savings_balance = Operations.saving_account_balance(customer);
-                            if (savings_balance >= withdrawal_amount) {
-                                customer.set_saving_account_balance(savings_balance - withdrawal_amount);
-                                System.out.println("Successfully withdrew $" + withdrawal_amount + " from savings account");
-                            } else {
-                                System.out.println("Error: Insufficient funds in savings account");
-                            }
-                        } else {
-                            System.out.println("Error: Cannot withdraw from credit account");
-                        }
-                        transactionLog.logWithdrawal( customer, account_type, withdrawal_amount);
-                        break;
-                
-                    case 4:
-                        System.out.println("From which account?");
-                        System.out.println("(1) Checking");
-                        System.out.println("(2) Savings");
-                        System.out.println("(3) Credit");
-                        int source_account = kb.nextInt();
-                        
-                        System.out.println("To which account?");
-                        System.out.println("(1) Checking");
-                        System.out.println("(2) Savings");
-                        System.out.println("(3) Credit");
-                        int dest_account = kb.nextInt();
-                        
-                        if (source_account == dest_account) {
-                            System.out.println("Error: Cannot transfer to the same account");
-                            break;
-                        }
-                        
-                        System.out.println("Enter transfer amount:");
-                        float transfer_amount = kb.nextFloat();
-                        
-                        // Get source account balance
-                        float source_balance = 0;
-                        if (source_account == 1) {
-                            source_balance = Operations.checking_account_balance(customer);
-                        } else if (source_account == 2) {
-                            source_balance = Operations.saving_account_balance(customer);
-                        } else if (source_account == 3) {
-                            source_balance = Operations.credit_account_balance(customer);
-                        }
-                        
-                        // Check if source has sufficient funds
-                        if (source_balance < transfer_amount) {
-                            System.out.println("Error: Insufficient funds in source account");
-                            break;
-                        }
-                        
-                        // Perform transfer
-                        // Deduct from source
-                        if (source_account == 1) {
-                            customer.set_checking_account_balance(source_balance - transfer_amount);
-                        } else if (source_account == 2) {
-                            customer.set_saving_account_balance(source_balance - transfer_amount);
-                        } else if (source_account == 3) {
-                            customer.set_credit_account_balance(source_balance - transfer_amount);
-                        }
-                        
-                        // Add to destination
-                        if (dest_account == 1) {
-                            Operations.deposit_to_checking(customer, transfer_amount);
-                        } else if (dest_account == 2) {
-                            Operations.deposit_to_saving(customer, transfer_amount);
-                        } else if (dest_account == 3) {
-                            Operations.deposit_to_credit(customer, transfer_amount);
-                        }
-                        
-                        System.out.println("Successfully transferred $" + transfer_amount);
-                        transactionLog.logTransfer(customer, source_account,  dest_account, transfer_amount);
-                        break;
-                
-                    case 5:
-                        if (account_type != 3) {
-                            System.out.println("Error: Payments can only be made from credit account");
-                            break;
-                        }
-                        
-                        System.out.println("Enter payment amount:");
-                        float payment_amount = kb.nextFloat();
-                        if (payment_amount <= 0) {
-                            System.out.println("Error: Payment amount must be greater than zero");
-                            break;
-                        }
-                        
-                        float credit_balance = Operations.credit_account_balance(customer);
-                        if (credit_balance + payment_amount > customer.get_credit_account_max()) {
-                            System.out.println("Error: Payment would exceed credit limit");
-                            break;
-                        }
-                        
-                        customer.set_credit_account_balance(credit_balance + payment_amount);
-                        System.out.println("Successfully made payment of $" + payment_amount);
-                        transactionLog.logPayment(customer, payment_amount);
-                        break;
-                        
-                    case 6:
-                        if (kb.hasNextLine()) { 
-                            kb.nextLine();
-                        }
-                        System.out.println("Enter recipient's name: ");
-                        String recipient_full_name = kb.nextLine();
-                        
-                        if (!users_by_name.containsKey(recipient_full_name)) {
-                            System.out.println("Error: Recipient not found");
-                            break;
-                        }
-                        
-                        Customer recipientCustomer = users_by_name.get(recipient_full_name);
-                        
-                        System.out.println("Select recipient's account type:");
-                        System.out.println("(1) Checking");
-                        System.out.println("(2) Savings");
-                        System.out.println("(3) Credit");
-                        int recipientAccountType = kb.nextInt();
-                        
-                        if (recipientAccountType < 1 || recipientAccountType > 3) {
-                            System.out.println("Error: Invalid account type");
-                            break;
-                        }
-                        
-                        System.out.println("Enter transfer amount:");
-                        float interCustomerTransferAmount = kb.nextFloat();
-                        
-                        if (interCustomerTransferAmount <= 0) {
-                            System.out.println("Error: Transfer amount must be greater than zero");
-                            break;
-                        }
-                        
-                        if (Operations.transferBetweenCustomers(customer, recipientCustomer, account_type, recipientAccountType, interCustomerTransferAmount)) {
-                            System.out.println("Successfully transferred $" + String.format("%.2f", interCustomerTransferAmount) + 
-                                               " to customer: " + recipientCustomer.get_name() + " " + recipientCustomer.get_last());
-                            transactionLog.logInterCustomerTransfer(customer, recipientCustomer, account_type, recipientAccountType, interCustomerTransferAmount);
-                        } else {
-                            System.out.println("Transfer failed. Please check account balances or input data.");
-                        }
-                        break;
-                    default:
-                        System.out.println("Invalid option selected");
-                        break;
+                    System.out.println("Please choose a valid option");
                 }
+            } while(!right_option);
+
+            if (option==1){
+                boolean right_user = false;
+                System.out.println("Enter your full name: ");
                 if (kb.hasNextLine()) { 
                     kb.nextLine();
                 }
-                System.out.println("Type EXIT to exit");
-                exit = kb.nextLine().trim(); 
-                browing = exit.equalsIgnoreCase("exit") ? false : true;
-            } while(browing);
-        } else if (option == 2){    
-            do {
-                String account_holder;
-                boolean inquiry_chosen = false;
-                int inquiry_type;
-                int account_number;
+                String username;
                 do {
-                    System.out.println("Please select one of the following options: ");
-                    System.out.println("(1) Inquiry account by name");
-                    System.out.println("(2) Inquiry account by account number");
-                    System.out.println("(3) Process transactions from file");
-                    inquiry_type = kb.nextInt();
-                    if (1 <= inquiry_type && inquiry_type <= 3){
-                        inquiry_chosen = true;
+                    username = kb.nextLine();
+                    if (!users_by_name.containsKey(username)){
+                        System.out.println("Error: please enter a valid name");
                     } else {
-                        System.out.println("Please choose a valid option");
-                    }
-                } while (!inquiry_chosen);
-                
-                if (inquiry_type == 1){
+                        right_user = true;
+                    } 
+                } while(!right_user);
+
+                boolean continueBanking = true;
+                while(continueBanking) {
+                    Customer customer = users_by_name.get(username);
                     boolean valid = false;
+                    int account_type;
                     do {
-                        if (kb.hasNextLine()) { 
-                            kb.nextLine();
-                        }
-                        System.out.println("Whose account would you like to inquire about? (Enter full name as following: FirstName LastName)");
-                        account_holder = kb.nextLine();
-                        if (!users_by_name.containsKey(account_holder)){
-                            System.out.println("Please enter a valid name");
-                        } else {
-                            valid = true;
-                        }
-                    } while (!valid);
-                    Customer customer = users_by_name.get(account_holder);
-                    dislay_account_information_by_name(customer);
-                } else if (inquiry_type == 2){
-                    boolean valid = false;
-                    /*checking the account type */
-                    do {
-                        System.out.println("What is the account type: ");
+                        System.out.println("Select one of the following accounts:");
                         System.out.println("(1) Checkings");
                         System.out.println("(2) Savings");
                         System.out.println("(3) Credit");
@@ -343,7 +79,270 @@ public class RunBank {
                             System.out.println("Please choose a valid account");
                         }
                     } while(!valid);
-                    valid = false;
+
+                    System.out.println("Select one of the transactions below:");
+                    System.out.println("(1) Inquire about balance");
+                    System.out.println("(2) Deposit money to the account");
+                    System.out.println("(3) Withdraw money from the account");
+                    System.out.println("(4) Transfer money between accounts");
+                    System.out.println("(5) Make payment");
+                    System.out.println("(6) Transfer to another customer");
+                    int transaction_option = kb.nextInt();
+                    
+                    switch (transaction_option) {
+                        case 1: 
+                            float balance;
+                            if (account_type == 1) {
+                                balance = Operations.checking_account_balance(customer);
+                            } else if (account_type == 2) {
+                                balance = Operations.saving_account_balance(customer);
+                            } else {
+                                balance = Operations.credit_account_balance(customer);
+                            }
+                            System.out.println("The account balance is: $" + String.format("%.2f", balance));
+                            transactionLog.logBalanceInquiry(customer, account_type);
+                            break;
+                    
+                        case 2:
+                            System.out.println("Enter deposit amount:");
+                            float deposit_amount = kb.nextFloat();
+                            if (deposit_amount <= 0) {
+                                System.out.println("Error: Deposit amount must be greater than zero");
+                                break;
+                            }
+                            
+                            if (account_type == 1) {
+                                Operations.deposit_to_checking(customer, deposit_amount);
+                                System.out.println("Successfully deposited $" + deposit_amount + " to checking account");
+                            } else if (account_type == 2) {
+                                Operations.deposit_to_saving(customer, deposit_amount);
+                                System.out.println("Successfully deposited $" + deposit_amount + " to savings account");
+                            } else {
+                                Operations.deposit_to_credit(customer, deposit_amount);
+                                System.out.println("Successfully deposited $" + deposit_amount + " to credit account");
+                            }
+                            transactionLog.logDeposit(customer, account_type, deposit_amount);
+                            break;
+                    
+                        case 3:
+                            System.out.println("Enter withdraw amount:");
+                            float withdrawal_amount = kb.nextFloat();
+                            if (withdrawal_amount <= 0) {
+                                System.out.println("Error: Withdraw amount must be greater than zero");
+                                break;
+                            }
+                            
+                            if (account_type == 1) {
+                                float checking_balance = Operations.checking_account_balance(customer);
+                                if (checking_balance >= withdrawal_amount) {
+                                    customer.set_checking_account_balance(checking_balance - withdrawal_amount);
+                                    System.out.println("Successfully withdrew $" + withdrawal_amount + " from checking account");
+                                } else {
+                                    System.out.println("Error: Insufficient funds in checking account");
+                                }
+                            } else if (account_type == 2) {
+                                float savings_balance = Operations.saving_account_balance(customer);
+                                if (savings_balance >= withdrawal_amount) {
+                                    customer.set_saving_account_balance(savings_balance - withdrawal_amount);
+                                    System.out.println("Successfully withdrew $" + withdrawal_amount + " from savings account");
+                                } else {
+                                    System.out.println("Error: Insufficient funds in savings account");
+                                }
+                            } else {
+                                System.out.println("Error: Cannot withdraw from credit account");
+                            }
+                            transactionLog.logWithdrawal(customer, account_type, withdrawal_amount);
+                            break;
+                    
+                        case 4:
+                            System.out.println("From which account?");
+                            System.out.println("(1) Checking");
+                            System.out.println("(2) Savings");
+                            System.out.println("(3) Credit");
+                            int source_account = kb.nextInt();
+                            
+                            System.out.println("To which account?");
+                            System.out.println("(1) Checking");
+                            System.out.println("(2) Savings");
+                            System.out.println("(3) Credit");
+                            int dest_account = kb.nextInt();
+                            
+                            if (source_account == dest_account) {
+                                System.out.println("Error: Cannot transfer to the same account");
+                                break;
+                            }
+                            
+                            System.out.println("Enter transfer amount:");
+                            float transfer_amount = kb.nextFloat();
+                            
+                            float source_balance = 0;
+                            if (source_account == 1) {
+                                source_balance = Operations.checking_account_balance(customer);
+                            } else if (source_account == 2) {
+                                source_balance = Operations.saving_account_balance(customer);
+                            } else if (source_account == 3) {
+                                source_balance = Operations.credit_account_balance(customer);
+                            }
+                            
+                            if (source_balance < transfer_amount) {
+                                System.out.println("Error: Insufficient funds in source account");
+                                break;
+                            }
+                            
+                            if (source_account == 1) {
+                                customer.set_checking_account_balance(source_balance - transfer_amount);
+                            } else if (source_account == 2) {
+                                customer.set_saving_account_balance(source_balance - transfer_amount);
+                            } else if (source_account == 3) {
+                                customer.set_credit_account_balance(source_balance - transfer_amount);
+                            }
+                            
+                            if (dest_account == 1) {
+                                Operations.deposit_to_checking(customer, transfer_amount);
+                            } else if (dest_account == 2) {
+                                Operations.deposit_to_saving(customer, transfer_amount);
+                            } else if (dest_account == 3) {
+                                Operations.deposit_to_credit(customer, transfer_amount);
+                            }
+                            
+                            System.out.println("Successfully transferred $" + transfer_amount);
+                            transactionLog.logTransfer(customer, source_account, dest_account, transfer_amount);
+                            break;
+                    
+                        case 5:
+                            if (account_type != 3) {
+                                System.out.println("Error: Payments can only be made from credit account");
+                                break;
+                            }
+                            
+                            System.out.println("Enter payment amount:");
+                            float payment_amount = kb.nextFloat();
+                            if (payment_amount <= 0) {
+                                System.out.println("Error: Payment amount must be greater than zero");
+                                break;
+                            }
+                            
+                            float credit_balance = Operations.credit_account_balance(customer);
+                            if (credit_balance + payment_amount > customer.get_credit_account_max()) {
+                                System.out.println("Error: Payment would exceed credit limit");
+                                break;
+                            }
+                            
+                            customer.set_credit_account_balance(credit_balance + payment_amount);
+                            System.out.println("Successfully made payment of $" + payment_amount);
+                            transactionLog.logPayment(customer, payment_amount);
+                            break;
+                            
+                        case 6:
+                            if (kb.hasNextLine()) { 
+                                kb.nextLine();
+                            }
+                            System.out.println("Enter recipient's name: ");
+                            String recipient_full_name = kb.nextLine();
+                            
+                            if (!users_by_name.containsKey(recipient_full_name)) {
+                                System.out.println("Error: Recipient not found");
+                                break;
+                            }
+                            
+                            Customer recipientCustomer = users_by_name.get(recipient_full_name);
+                            
+                            System.out.println("Select recipient's account type:");
+                            System.out.println("(1) Checking");
+                            System.out.println("(2) Savings");
+                            System.out.println("(3) Credit");
+                            int recipientAccountType = kb.nextInt();
+                            
+                            if (recipientAccountType < 1 || recipientAccountType > 3) {
+                                System.out.println("Error: Invalid account type");
+                                break;
+                            }
+                            
+                            System.out.println("Enter transfer amount:");
+                            float interCustomerTransferAmount = kb.nextFloat();
+                            
+                            if (interCustomerTransferAmount <= 0) {
+                                System.out.println("Error: Transfer amount must be greater than zero");
+                                break;
+                            }
+                            
+                            if (Operations.transferBetweenCustomers(customer, recipientCustomer, account_type, recipientAccountType, interCustomerTransferAmount)) {
+                                System.out.println("Successfully transferred $" + String.format("%.2f", interCustomerTransferAmount) + 
+                                                   " to customer: " + recipientCustomer.get_name() + " " + recipientCustomer.get_last());
+                                transactionLog.logInterCustomerTransfer(customer, recipientCustomer, account_type, recipientAccountType, interCustomerTransferAmount);
+                            } else {
+                                System.out.println("Transfer failed. Please check account balances or input data.");
+                            }
+                            break;
+                        default:
+                            System.out.println("Invalid option selected");
+                            break;
+                    }
+                    
+                    if (kb.hasNextLine()) { 
+                        kb.nextLine();
+                    }
+                    System.out.println("Would you like to exit? (yes/no)");
+                    String response = kb.nextLine().trim().toLowerCase();
+                    continueBanking = !response.equals("yes");
+                }
+                
+                System.out.println("Would you like to exit the program? (yes/no)");
+                String response = kb.nextLine().trim().toLowerCase();
+                continueProgram = !response.equals("yes");
+                
+            } else if (option == 2){    
+                boolean continueTeller = true;
+                while(continueTeller) {
+                    String account_holder;
+                    boolean inquiry_chosen = false;
+                    int inquiry_type;
+                    int account_type;
+                    int account_number;
+                    do {
+                        System.out.println("Please select one of the following options: ");
+                        System.out.println("(1) Inquiry account by name");
+                        System.out.println("(2) Inquiry account by account number");
+                        System.out.println("(3) Process transactions from file");
+                        inquiry_type = kb.nextInt();
+                        if (1 <= inquiry_type && inquiry_type <= 3){
+                            inquiry_chosen = true;
+                        } else {
+                            System.out.println("Please choose a valid option");
+                        }
+                    } while (!inquiry_chosen);
+                    
+                    if (inquiry_type == 1){
+                        boolean valid = false;
+                        do {
+                            if (kb.hasNextLine()) { 
+                                kb.nextLine();
+                            }
+                            System.out.println("Whose account would you like to inquire about? (Enter full name as following: FirstName LastName)");
+                            account_holder = kb.nextLine();
+                            if (!users_by_name.containsKey(account_holder)){
+                                System.out.println("Please enter a valid name");
+                            } else {
+                                valid = true;
+                            }
+                        } while (!valid);
+                        Customer customer = users_by_name.get(account_holder);
+                        dislay_account_information_by_name(customer);
+                    } else if (inquiry_type == 2){
+                        boolean valid = false;
+                        do {
+                            System.out.println("What is the account type: ");
+                            System.out.println("(1) Checkings");
+                            System.out.println("(2) Savings");
+                            System.out.println("(3) Credit");
+                            account_type = kb.nextInt();
+                            if (1 <= account_type && account_type <=3){
+                                valid = true;
+                            } else {
+                                System.out.println("Please choose a valid account");
+                            }
+                        } while(!valid);
+                        valid = false;
                     do {
                         System.out.println("What is the account number?");
                         account_number = kb.nextInt();
@@ -363,13 +362,13 @@ public class RunBank {
                     System.out.print("The transaction process from the file will start shortly...");
                     TransactionReader.transaction_reader("Transactions(1).csv", users_by_name, transactionLog);
                 }
-                System.out.println("Type EXIT to exit");
-                exit = kb.nextLine().trim(); // Read the whole line for exit command
-                browing = exit.equalsIgnoreCase("exit") ? false : true;
-            } while(browing);
+                System.out.println("Would you like to exit? (yes/no)");
+                    String response = kb.nextLine().trim().toLowerCase();
+                    continueTeller = !response.equals("yes");
+                }
             
-        } if (option == 3) {            
-            // Create a new user
+            
+        } else if (option == 3) {            
             Customer customer = userCreation.createNewUser(kb, users_by_name, accounts_by_number);
             if (customer != null) {
                 System.out.println("Account creation completed. You may now login as an Individual Person.");
@@ -377,9 +376,14 @@ public class RunBank {
                 System.out.println("Account creation failed.");
             }
             
+            
+            
+            System.out.println("Would you like to exit? (yes/no)");
+            String response = kb.nextLine().trim().toLowerCase();
+            continueProgram = !response.equals("yes");
         }
-
     }
+}
     /**
      * Displays account information by account number
      * 
