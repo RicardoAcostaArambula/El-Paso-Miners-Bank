@@ -11,7 +11,7 @@ import java.util.List;
  */
 
 public class bankDataUpdater {
-    private static final String CSV_FILE = "bank_users.csv";
+    private static final String CSV_FILE = "new_bank_users.csv";
     private List<String[]> userData;
 
     /**
@@ -59,9 +59,9 @@ public class bankDataUpdater {
      */
     private int getBalanceColumnIndex(int accountType) {
         switch (accountType) {
-            case 1: return 9;  // Checking Starting Balance
-            case 2: return 11; // Savings Starting Balance
-            case 3: return 14; // Credit Starting Balance
+            case 1: return 7;  // Checking Starting Balance
+            case 2: return 9; // Savings Starting Balance
+            case 3: return 12; // Credit Starting Balance
             default: throw new IllegalArgumentException("Invalid account type");
         }
     }

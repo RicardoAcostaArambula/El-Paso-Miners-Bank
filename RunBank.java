@@ -30,6 +30,7 @@ public class RunBank {
         UserCreation userCreation = new UserCreation();
         HashMap <String, Customer> users_by_name = new HashMap<>();
         HashMap <Integer, Customer> accounts_by_number = new HashMap<>();
+        UserCreation.loadUsersFromCSV(users_by_name, accounts_by_number);
         SetupUsers.setup_users(users_by_name, accounts_by_number);
         System.out.println("Welcome to El Paso miners Bank");
         do {

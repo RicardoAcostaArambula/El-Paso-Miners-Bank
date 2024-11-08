@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.ParseException;
@@ -9,6 +12,8 @@ import java.util.Scanner;
 
 public class UserCreation {
     private static Log logger;
+    private static final String CSV_FILE = "new_bank_users.csv";
+
         /*Default constructor*/
         public UserCreation(){
             logger = new Log(); 
@@ -16,6 +21,60 @@ public class UserCreation {
         }
         private static int lastUserId = 0;
         private static int lastAccountNumber = 0;
+
+        private static int generateRandomCreditScore() {
+            Random random = new Random();
+            return random.nextInt(551) + 300; 
+        }
+
+        public static void loadUsersFromCSV(HashMap<String, Customer> users_by_name, 
+                                      HashMap<Integer, Customer> accounts_by_number) {
+        File file = new File(CSV_FILE);
+        if (!file.exists()) {
+            return;
+        }
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+            String line = reader.readLine(); 
+            while ((line = reader.readLine()) != null) {
+                if (line.trim().isEmpty() || line.startsWith("ID,")) {
+                    continue; 
+                }
+                
+                String[] data = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1); 
+                if (data.length < 13) continue; 
+                Customer customer = new Customer();
+                customer.set_account_id(Integer.parseInt(data[0]));
+                customer.set_name(data[1]);
+                customer.set_last(data[2]);
+                customer.set_dob(data[3]);
+                customer.set_address(data[4]);
+                customer.set_phone_number(data[5]);
+                customer.set_checking_account_number(Integer.parseInt(data[6]));
+                customer.set_checking_account_balance(Float.parseFloat(data[7]));
+                customer.set_saving_account_number(Integer.parseInt(data[8]));
+                customer.set_saving_account_balance(Float.parseFloat(data[9]));
+                customer.set_credit_account_number(Integer.parseInt(data[10]));
+                customer.set_credit_account_max(Float.parseFloat(data[11]));
+                customer.set_credit_account_balance(Float.parseFloat(data[12]));
+
+                String key = customer.get_name() + " " + customer.get_last();
+                users_by_name.put(key, customer);
+                accounts_by_number.put(customer.get_checking_account_number(), customer);
+                accounts_by_number.put(customer.get_saving_account_number(), customer);
+                accounts_by_number.put(customer.get_credit_account_number(), customer);
+
+                // Update last IDs
+                lastUserId = Math.max(lastUserId, customer.get_account_id());
+                lastAccountNumber = Math.max(lastAccountNumber, 
+                    Math.max(customer.get_checking_account_number(),
+                    Math.max(customer.get_saving_account_number(),
+                    customer.get_credit_account_number())));
+            }
+        } catch (IOException e) {
+            System.out.println("Error reading from CSV file: " + e.getMessage());
+        }
+    }
     
         public static void initializeLastIds(HashMap<String, Customer> users_by_name) {
             for (Customer customer : users_by_name.values()) {
@@ -53,6 +112,14 @@ public class UserCreation {
     
         public Customer createNewUser(Scanner kb, HashMap<String, Customer> users_by_name, 
                                               HashMap<Integer, Customer> accounts_by_number) {
+            
+
+            try {
+                SetupUsers.setup_users(users_by_name, accounts_by_number);
+            } catch (Exception e) {
+                System.out.println("Error initializing users: " + e.getMessage());
+                return null;
+            }                                   
             // Initialize IDs if not already done
             if (lastUserId == 0) {
                 initializeLastIds(users_by_name);
@@ -96,27 +163,15 @@ public class UserCreation {
             System.out.print("ZIP: ");
             String zip = kb.nextLine();
             
-            String fullAddress = String.format("\"%s, %s, %s %s\"", street, city, state, zip);
+            String fullAddress = String.format("%s, %s, %s %s", street, city, state, zip);
             customer.set_address(fullAddress);
             
             System.out.print("Phone Number (without spaces or dashes): ");
             String phone = kb.nextLine();
             customer.set_phone_number(formatPhoneNumber(phone));
             
-            // Get and validate credit score
-            int creditScore;
-            do {
-                System.out.print("Credit Score (300-850): ");
-                try {
-                    creditScore = Integer.parseInt(kb.nextLine());
-                    if (creditScore >= 300 && creditScore <= 850) {
-                        break;
-                    }
-                    System.out.println("Invalid credit score. Please enter a score between 300 and 850.");
-                } catch (NumberFormatException e) {
-                    System.out.println("Please enter a valid number.");
-                }
-            } while (true);
+            int creditScore = generateRandomCreditScore();
+            System.out.println("Credit Score: " + creditScore);            
             
             // Generate and set account numbers
             int checkingAccountNumber = generateUniqueAccountNumber();
@@ -141,7 +196,9 @@ public class UserCreation {
             users_by_name.put(key, customer);
             accounts_by_number.put(checkingAccountNumber, customer);
             accounts_by_number.put(savingsAccountNumber, customer);
+            accounts_by_number.put(creditAccountNumber, customer);
     
+            saveUsersToCSV(users_by_name);
             logger.logNewAccountCreation(customer);
 
         
@@ -160,30 +217,29 @@ public class UserCreation {
     }
     
     public static void saveUsersToCSV(HashMap<String, Customer> users_by_name) {
-        try (FileWriter writer = new FileWriter("bank_users.csv", false)) { // 'false' to overwrite
-            // Write CSV header
-            writer.append("ID,FirstName,LastName,DOB,Address,Phone,CheckingAccountNumber,CheckingBalance,SavingAccountNumber,SavingBalance,CreditAccountNumber,CreditLimit,CreditBalance\n");
+        try (FileWriter writer = new FileWriter("new_bank_users.csv", false)) {
+            // Write CSV header using the original format exactly
+            writer.append("Identification Number,First Name,Last Name,Date of Birth,Address,Phone Number,Checking Account Number,Checking Starting Balance,Savings Account Number,Savings Starting Balance,Credit Account Number,Credit Max,Credit Starting Balance\n");
             
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MMM-yy");
-            
-            // Write each customer's data
             for (Customer customer : users_by_name.values()) {
-                writer.append(String.valueOf(customer.get_account_id())).append(",")
-                    .append(customer.get_name()).append(",")
-                    .append(customer.get_last()).append(",")
-                    .append(dateFormat.format(parseDate(customer.get_dob()))).append(",")
-                    .append(customer.get_address()).append(",")
-                    .append(formatPhoneNumber(customer.get_phone_number())).append(",") 
-                    .append(String.valueOf(customer.get_checking_account_number())).append(",")
-                    .append(String.format("%.2f", customer.get_checking_account_balance())).append(",") // Two decimals
-                    .append(String.valueOf(customer.get_saving_account_number())).append(",")
-                    .append(String.format("%.2f", customer.get_saving_account_balance())).append(",") // Two decimals
-                    .append(String.valueOf(customer.get_credit_account_number())).append(",")
-                    .append(String.format("%.2f", customer.get_credit_account_max())).append(",") // Two decimals
-                    .append(String.format("%.2f", customer.get_credit_account_balance())).append("\n");
-                    }
+                writer.append(String.format("%.0f,%s,%s,%s,\"%s\",%s,%.0f,%.2f,%.0f,%.2f,%.0f,%.2f,%.2f\n",
+                    (float)customer.get_account_id(),
+                    customer.get_name(),
+                    customer.get_last(),
+                    customer.get_dob(),
+                    customer.get_address(),
+                    customer.get_phone_number(),
+                    (float)customer.get_checking_account_number(),
+                    customer.get_checking_account_balance(),
+                    (float)customer.get_saving_account_number(),
+                    customer.get_saving_account_balance(),
+                    (float)customer.get_credit_account_number(),
+                    customer.get_credit_account_max(),
+                    customer.get_credit_account_balance()
+                ));
+            }
+            
             writer.flush();
-            System.out.println("User data saved successfully to bank_users.csv.");
         } catch (IOException e) {
             System.out.println("Error: could not write to file");
             e.printStackTrace();
