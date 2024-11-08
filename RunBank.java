@@ -21,8 +21,11 @@ public class RunBank {
     public static void main(String[] args){
         boolean continueProgram = true;
         Scanner kb = new Scanner(System.in);
+        Operations userOperations = new UserOperations();
+        Operations managerOperations = new ManagerOperations();
         Log transactionLog = new Log();
         UserCreation userCreation = new UserCreation();
+
         HashMap <String, Customer> users_by_name = new HashMap<>();
         HashMap <Integer, Customer> accounts_by_number = new HashMap<>();
         UserCreation.loadUsersFromCSV(users_by_name, accounts_by_number);
@@ -358,9 +361,18 @@ public class RunBank {
                     Customer customer = accounts_by_number.get(account_number);
                     dislay_account_information_by_account_number(customer, account_number, account_type);
                     transactionLog.logBalanceInquiry(customer, account_type);
-                } else { 
+                } else if (inquiry_type == 3){ 
                     System.out.print("The transaction process from the file will start shortly...");
                     TransactionReader.transaction_reader("Transactions(1).csv", users_by_name, transactionLog);
+                } else if (inquiry_type == 4){
+                    System.out.println("The Generation for the bank statement is being generated...");
+
+                    /**Brainstorm:
+                     * Have a file with the information of every transation with a specific format
+                     * read the information into a list:
+                     *      each entry is a transaction
+                     * print the list 
+                     */
                 }
                 System.out.println("Would you like to exit? (yes/no)");
                     String response = kb.nextLine().trim().toLowerCase();

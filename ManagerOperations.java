@@ -121,4 +121,6 @@ class ManagerOperations implements Operations {
             deposit_to_credit(destCustomer, amount);
         }
         
-        return 
+        return true;
+    }
+}
