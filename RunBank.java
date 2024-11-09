@@ -22,7 +22,7 @@ public class RunBank {
         boolean continueProgram = true;
         Scanner kb = new Scanner(System.in);
         Operations userOperations = new UserOperations();
-        Operations managerOperations = new ManagerOperations();
+        ManagerOperations managerOperations = new ManagerOperations();
         Log transactionLog = new Log();
         UserCreation userCreation = new UserCreation();
 
@@ -96,11 +96,11 @@ public class RunBank {
                         case 1: 
                             float balance;
                             if (account_type == 1) {
-                                balance = Operations.checking_account_balance(customer);
+                                balance = userOperations.checking_account_balance(customer);
                             } else if (account_type == 2) {
-                                balance = Operations.saving_account_balance(customer);
+                                balance = userOperations.saving_account_balance(customer);
                             } else {
-                                balance = Operations.credit_account_balance(customer);
+                                balance = userOperations.credit_account_balance(customer);
                             }
                             System.out.println("The account balance is: $" + String.format("%.2f", balance));
                             transactionLog.logBalanceInquiry(customer, account_type);
@@ -115,13 +115,13 @@ public class RunBank {
                             }
                             
                             if (account_type == 1) {
-                                Operations.deposit_to_checking(customer, deposit_amount);
+                                userOperations.deposit_to_checking(customer, deposit_amount);
                                 System.out.println("Successfully deposited $" + deposit_amount + " to checking account");
                             } else if (account_type == 2) {
-                                Operations.deposit_to_saving(customer, deposit_amount);
+                                userOperations.deposit_to_saving(customer, deposit_amount);
                                 System.out.println("Successfully deposited $" + deposit_amount + " to savings account");
                             } else {
-                                Operations.deposit_to_credit(customer, deposit_amount);
+                                userOperations.deposit_to_credit(customer, deposit_amount);
                                 System.out.println("Successfully deposited $" + deposit_amount + " to credit account");
                             }
                             transactionLog.logDeposit(customer, account_type, deposit_amount);
@@ -136,7 +136,7 @@ public class RunBank {
                             }
                             
                             if (account_type == 1) {
-                                float checking_balance = Operations.checking_account_balance(customer);
+                                float checking_balance = userOperations.checking_account_balance(customer);
                                 if (checking_balance >= withdrawal_amount) {
                                     customer.set_checking_account_balance(checking_balance - withdrawal_amount);
                                     System.out.println("Successfully withdrew $" + withdrawal_amount + " from checking account");
@@ -144,7 +144,7 @@ public class RunBank {
                                     System.out.println("Error: Insufficient funds in checking account");
                                 }
                             } else if (account_type == 2) {
-                                float savings_balance = Operations.saving_account_balance(customer);
+                                float savings_balance = userOperations.saving_account_balance(customer);
                                 if (savings_balance >= withdrawal_amount) {
                                     customer.set_saving_account_balance(savings_balance - withdrawal_amount);
                                     System.out.println("Successfully withdrew $" + withdrawal_amount + " from savings account");
@@ -180,11 +180,11 @@ public class RunBank {
                             
                             float source_balance = 0;
                             if (source_account == 1) {
-                                source_balance = Operations.checking_account_balance(customer);
+                                source_balance = userOperations.checking_account_balance(customer);
                             } else if (source_account == 2) {
-                                source_balance = Operations.saving_account_balance(customer);
+                                source_balance = userOperations.saving_account_balance(customer);
                             } else if (source_account == 3) {
-                                source_balance = Operations.credit_account_balance(customer);
+                                source_balance = userOperations.credit_account_balance(customer);
                             }
                             
                             if (source_balance < transfer_amount) {
@@ -201,11 +201,11 @@ public class RunBank {
                             }
                             
                             if (dest_account == 1) {
-                                Operations.deposit_to_checking(customer, transfer_amount);
+                                userOperations.deposit_to_checking(customer, transfer_amount);
                             } else if (dest_account == 2) {
-                                Operations.deposit_to_saving(customer, transfer_amount);
+                                userOperations.deposit_to_saving(customer, transfer_amount);
                             } else if (dest_account == 3) {
-                                Operations.deposit_to_credit(customer, transfer_amount);
+                                userOperations.deposit_to_credit(customer, transfer_amount);
                             }
                             
                             System.out.println("Successfully transferred $" + transfer_amount);
@@ -225,7 +225,7 @@ public class RunBank {
                                 break;
                             }
                             
-                            float credit_balance = Operations.credit_account_balance(customer);
+                            float credit_balance = userOperations.credit_account_balance(customer);
                             if (credit_balance + payment_amount > customer.get_credit_account_max()) {
                                 System.out.println("Error: Payment would exceed credit limit");
                                 break;
@@ -269,7 +269,7 @@ public class RunBank {
                                 break;
                             }
                             
-                            if (Operations.transferBetweenCustomers(customer, recipientCustomer, account_type, recipientAccountType, interCustomerTransferAmount)) {
+                            if (userOperations.transferBetweenCustomers(customer, recipientCustomer, account_type, recipientAccountType, interCustomerTransferAmount)) {
                                 System.out.println("Successfully transferred $" + String.format("%.2f", interCustomerTransferAmount) + 
                                                    " to customer: " + recipientCustomer.get_name() + " " + recipientCustomer.get_last());
                                 transactionLog.logInterCustomerTransfer(customer, recipientCustomer, account_type, recipientAccountType, interCustomerTransferAmount);
@@ -330,7 +330,7 @@ public class RunBank {
                             }
                         } while (!valid);
                         Customer customer = users_by_name.get(account_holder);
-                        dislay_account_information_by_name(customer);
+                        managerOperations.dislay_account_information_by_name(customer);
                     } else if (inquiry_type == 2){
                         boolean valid = false;
                         do {
@@ -359,14 +359,13 @@ public class RunBank {
                         }
                     } while (!valid);   
                     Customer customer = accounts_by_number.get(account_number);
-                    dislay_account_information_by_account_number(customer, account_number, account_type);
+                    managerOperations.dislay_account_information_by_account_number(customer, account_number, account_type);
                     transactionLog.logBalanceInquiry(customer, account_type);
                 } else if (inquiry_type == 3){ 
                     System.out.print("The transaction process from the file will start shortly...");
                     TransactionReader.transaction_reader("Transactions(1).csv", users_by_name, transactionLog);
                 } else if (inquiry_type == 4){
                     System.out.println("The Generation for the bank statement is being generated...");
-
                     /**Brainstorm:
                      * Have a file with the information of every transation with a specific format
                      * read the information into a list:
@@ -378,80 +377,17 @@ public class RunBank {
                     String response = kb.nextLine().trim().toLowerCase();
                     continueTeller = !response.equals("yes");
                 }
-            
-            
-        } else if (option == 3) {            
-            Customer customer = userCreation.createNewUser(kb, users_by_name, accounts_by_number);
-            if (customer != null) {
-                System.out.println("Account creation completed. You may now login as an Individual Person.");
-            } else {
-                System.out.println("Account creation failed.");
+            } else if (option == 3) {            
+                Customer customer = userCreation.createNewUser(kb, users_by_name, accounts_by_number);
+                if (customer != null) {
+                    System.out.println("Account creation completed. You may now login as an Individual Person.");
+                } else {
+                    System.out.println("Account creation failed.");
+                }
+                System.out.println("Would you like to exit? (yes/no)");
+                String response = kb.nextLine().trim().toLowerCase();
+                continueProgram = !response.equals("yes");
             }
-            
-            
-            
-            System.out.println("Would you like to exit? (yes/no)");
-            String response = kb.nextLine().trim().toLowerCase();
-            continueProgram = !response.equals("yes");
         }
-    }
-}
-    /**
-     * Displays account information by account number
-     * 
-     * @param customer is the target user for the information
-     * @param account_type is an int that represents the account type to dislay the information
-     * @param account_number is an int that represents the account number to display the information
-     */
-
-    public static void dislay_account_information_by_account_number(Customer customer, int account_number, int account_type){
-        String name = customer.get_name();
-        String account;
-        String last = customer.get_last();
-        int id = customer.get_account_id();
-        float balance;
-        if (account_type == 1){
-            balance = customer.get_checking_account_balance();
-            account = "Checking";
-        } else if (account_type == 2){
-            balance = customer.get_saving_account_balance();
-            account = "Saving";
-        } else {
-            balance = customer.get_credit_account_balance();
-            account = "Credit";
-        }
-        System.out.println("Account holder: " + name + " " + last + " with ID: " + id);
-        System.out.println("The Account of type: " + account + ", with number: " + account_number);
-        System.out.println("Balance: " + balance);
-    }
-     /**
-     * Displays account information by name
-     * 
-     * @param customer is the target user for the information
-     * 
-     */
-    public static void dislay_account_information_by_name(Customer customer){
-        String name = customer.get_name();
-        String last = customer.get_last();
-        int id = customer.get_account_id();
-        int account_number_saving, account_number_checking, account_number_credit;
-        float balance_checking, balance_saving, balance_credit;
-
-        account_number_saving = customer.get_checking_account_number();
-        balance_checking = customer.get_checking_account_balance();
-
-        account_number_checking = customer.get_saving_account_number();
-        balance_saving = customer.get_saving_account_balance();
-
-        account_number_credit = customer.get_credit_account_number();
-        balance_credit = customer.get_credit_account_balance();
-
-        System.out.println("Account holder: " + name + " " + last + " with ID: " + id);
-
-        System.out.println("The Account of type: Checkings | number: " + account_number_checking + " | Balance: " + balance_checking);
-
-        System.out.println("The Account of type: Savings | number: " + account_number_saving + " | Balance: " + balance_saving);
-
-        System.out.println("The Account of type: Credit | number: " + account_number_credit + " | Balance: " + balance_credit);
     }
 }
