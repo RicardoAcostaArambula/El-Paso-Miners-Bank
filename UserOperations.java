@@ -47,6 +47,7 @@ class UserOperations implements Operations {
         float current_balance = checking_account_balance(customer);
         float new_balance = current_balance + amount;
         customer.set_checking_account_balance(new_balance);
+        System.out.println("Successfully deposited $" + amount + " to checking account");
     }
 
     /**
@@ -60,6 +61,7 @@ class UserOperations implements Operations {
         float current_balance = saving_account_balance(customer);
         float new_balance = current_balance + amount;
         customer.set_saving_account_balance(new_balance);
+        System.out.println("Successfully deposited $" + amount + " to savings account");
     }
 
     /**
@@ -73,6 +75,7 @@ class UserOperations implements Operations {
         float current_balance = credit_account_balance(customer);
         float new_balance = current_balance + amount;
         customer.set_credit_account_balance(new_balance);
+        System.out.println("Successfully deposited $" + amount + " to credit account");
     }
      /**
      * Transfers funds between two customers' accounts.

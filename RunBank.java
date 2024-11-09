@@ -116,13 +116,10 @@ public class RunBank {
                             
                             if (account_type == 1) {
                                 userOperations.deposit_to_checking(customer, deposit_amount);
-                                System.out.println("Successfully deposited $" + deposit_amount + " to checking account");
                             } else if (account_type == 2) {
                                 userOperations.deposit_to_saving(customer, deposit_amount);
-                                System.out.println("Successfully deposited $" + deposit_amount + " to savings account");
                             } else {
                                 userOperations.deposit_to_credit(customer, deposit_amount);
-                                System.out.println("Successfully deposited $" + deposit_amount + " to credit account");
                             }
                             transactionLog.logDeposit(customer, account_type, deposit_amount);
                             break;
