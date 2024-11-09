@@ -3,7 +3,7 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Scanner;
 class SetupUsers {
-    private SetupUsers(){
+    public SetupUsers(){
 
     }
     /**
@@ -13,7 +13,7 @@ class SetupUsers {
      */
     public static void setup_users(HashMap<String, Customer> users_by_name, HashMap<Integer, Customer> accounts_by_number) {
         try {
-            File file = new File("new_bank_users.csv");
+            File file = new File("bank_users.csv");
             Scanner read = new Scanner(file);
             String line = read.nextLine(); // Skip first header
             

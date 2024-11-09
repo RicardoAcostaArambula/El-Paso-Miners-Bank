@@ -123,4 +123,63 @@ class ManagerOperations implements Operations {
         
         return true;
     }
- 
+    /**
+     * Displays account information by name
+     * 
+     * @param customer is the target user for the information
+     * 
+     */
+    public void dislay_account_information_by_name(Customer customer){
+        String name = customer.get_name();
+        String last = customer.get_last();
+        int id = customer.get_account_id();
+        int account_number_saving, account_number_checking, account_number_credit;
+        float balance_checking, balance_saving, balance_credit;
+
+        account_number_saving = customer.get_checking_account_number();
+        balance_checking = customer.get_checking_account_balance();
+
+        account_number_checking = customer.get_saving_account_number();
+        balance_saving = customer.get_saving_account_balance();
+
+        account_number_credit = customer.get_credit_account_number();
+        balance_credit = customer.get_credit_account_balance();
+
+        System.out.println("Account holder: " + name + " " + last + " with ID: " + id);
+
+        System.out.println("The Account of type: Checkings | number: " + account_number_checking + " | Balance: " + balance_checking);
+
+        System.out.println("The Account of type: Savings | number: " + account_number_saving + " | Balance: " + balance_saving);
+
+        System.out.println("The Account of type: Credit | number: " + account_number_credit + " | Balance: " + balance_credit);
+    }
+
+    /**
+     * Displays account information by account number
+     * 
+     * @param customer is the target user for the information
+     * @param account_type is an int that represents the account type to dislay the information
+     * @param account_number is an int that represents the account number to display the information
+     */
+
+     public void dislay_account_information_by_account_number(Customer customer, int account_number, int account_type){
+        String name = customer.get_name();
+        String account;
+        String last = customer.get_last();
+        int id = customer.get_account_id();
+        float balance;
+        if (account_type == 1){
+            balance = customer.get_checking_account_balance();
+            account = "Checking";
+        } else if (account_type == 2){
+            balance = customer.get_saving_account_balance();
+            account = "Saving";
+        } else {
+            balance = customer.get_credit_account_balance();
+            account = "Credit";
+        }
+        System.out.println("Account holder: " + name + " " + last + " with ID: " + id);
+        System.out.println("The Account of type: " + account + ", with number: " + account_number);
+        System.out.println("Balance: " + balance);
+    }
+}

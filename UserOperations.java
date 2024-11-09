@@ -90,7 +90,6 @@ class UserOperations implements Operations {
     @Override
     public boolean transferBetweenCustomers(Customer sourceCustomer, Customer destCustomer, 
         int sourceAccountType, int destAccountType, float amount) {
-        
         // Get source account balance
         float sourceBalance = 0;
         if (sourceAccountType == 1) {
@@ -124,7 +123,92 @@ class UserOperations implements Operations {
         } else if (destAccountType == 3) {
             deposit_to_credit(destCustomer, amount);
         }
-        
+        System.out.println("Successfully transferred $" + amount);
         return true;
+    }
+    public void check_balance(Customer customer, int account_type){
+        float balance;
+        if (account_type == 1) {
+            balance = checking_account_balance(customer);
+        } else if (account_type == 2) {
+            balance = saving_account_balance(customer);
+        } else {
+            balance = credit_account_balance(customer);
+        }
+        System.out.println("The account balance is: $" + String.format("%.2f", balance));
+    }
+    public void deposit(Customer customer, int account_type, float amount){
+        if (amount <= 0) {
+            System.out.println("Error: Deposit amount must be greater than zero");
+            return;
+        }
+        if (account_type == 1) {
+            deposit_to_checking(customer, amount);
+        } else if (account_type == 2) {
+            deposit_to_saving(customer, amount);
+        } else {
+            deposit_to_credit(customer, amount);
+        }
+    }
+    public void withdraw(Customer customer, int account_type, float amount){
+        if (amount <= 0) {
+            System.out.println("Error: Withdraw amount must be greater than zero");
+            return;
+        }
+
+        if (account_type == 1) {
+            float checking_balance = checking_account_balance(customer);
+            if (checking_balance >= amount) {
+                customer.set_checking_account_balance(checking_balance - amount);
+                System.out.println("Successfully withdrew $" + amount + " from checking account");
+            } else {
+                System.out.println("Error: Insufficient funds in checking account");
+            }
+        } else if (account_type == 2) {
+            float savings_balance = saving_account_balance(customer);
+            if (savings_balance >= amount) {
+                customer.set_saving_account_balance(savings_balance - amount);
+                System.out.println("Successfully withdrew $" + amount + " from savings account");
+            } else {
+                System.out.println("Error: Insufficient funds in savings account");
+            }
+        } else {
+            System.out.println("Error: Cannot withdraw from credit account");
+        }
+    }
+    public void transfer_between_accounts(Customer customer, int source_account, int dest_account, float transfer_amount){
+        if (source_account == dest_account) {
+            System.out.println("Error: Cannot transfer to the same account");
+            return;
+        }
+        float source_balance = 0;
+        if (source_account == 1) {
+            source_balance = checking_account_balance(customer);
+        } else if (source_account == 2) {
+            source_balance = saving_account_balance(customer);
+        } else if (source_account == 3) {
+            source_balance = credit_account_balance(customer);
+        }
+        
+        if (source_balance < transfer_amount) {
+            System.out.println("Error: Insufficient funds in source account");
+            return;
+        }
+        
+        if (source_account == 1) {
+            customer.set_checking_account_balance(source_balance - transfer_amount);
+        } else if (source_account == 2) {
+            customer.set_saving_account_balance(source_balance - transfer_amount);
+        } else if (source_account == 3) {
+            customer.set_credit_account_balance(source_balance - transfer_amount);
+        }
+        
+        if (dest_account == 1) {
+            deposit_to_checking(customer, transfer_amount);
+        } else if (dest_account == 2) {
+            deposit_to_saving(customer, transfer_amount);
+        } else if (dest_account == 3) {
+            deposit_to_credit(customer, transfer_amount);
+        }
     }
 }

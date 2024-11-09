@@ -21,11 +21,10 @@ public class RunBank {
     public static void main(String[] args){
         boolean continueProgram = true;
         Scanner kb = new Scanner(System.in);
-        Operations userOperations = new UserOperations();
+        UserOperations userOperations = new UserOperations();
         ManagerOperations managerOperations = new ManagerOperations();
         Log transactionLog = new Log();
         UserCreation userCreation = new UserCreation();
-
         HashMap <String, Customer> users_by_name = new HashMap<>();
         HashMap <Integer, Customer> accounts_by_number = new HashMap<>();
         UserCreation.loadUsersFromCSV(users_by_name, accounts_by_number);
@@ -94,63 +93,20 @@ public class RunBank {
                     
                     switch (transaction_option) {
                         case 1: 
-                            float balance;
-                            if (account_type == 1) {
-                                balance = userOperations.checking_account_balance(customer);
-                            } else if (account_type == 2) {
-                                balance = userOperations.saving_account_balance(customer);
-                            } else {
-                                balance = userOperations.credit_account_balance(customer);
-                            }
-                            System.out.println("The account balance is: $" + String.format("%.2f", balance));
+                            userOperations.check_balance(customer, account_type);
                             transactionLog.logBalanceInquiry(customer, account_type);
                             break;
-                    
                         case 2:
                             System.out.println("Enter deposit amount:");
                             float deposit_amount = kb.nextFloat();
-                            if (deposit_amount <= 0) {
-                                System.out.println("Error: Deposit amount must be greater than zero");
-                                break;
-                            }
-                            
-                            if (account_type == 1) {
-                                userOperations.deposit_to_checking(customer, deposit_amount);
-                            } else if (account_type == 2) {
-                                userOperations.deposit_to_saving(customer, deposit_amount);
-                            } else {
-                                userOperations.deposit_to_credit(customer, deposit_amount);
-                            }
+                            userOperations.deposit(customer, account_type, deposit_amount);
                             transactionLog.logDeposit(customer, account_type, deposit_amount);
                             break;
                     
                         case 3:
                             System.out.println("Enter withdraw amount:");
                             float withdrawal_amount = kb.nextFloat();
-                            if (withdrawal_amount <= 0) {
-                                System.out.println("Error: Withdraw amount must be greater than zero");
-                                break;
-                            }
-                            
-                            if (account_type == 1) {
-                                float checking_balance = userOperations.checking_account_balance(customer);
-                                if (checking_balance >= withdrawal_amount) {
-                                    customer.set_checking_account_balance(checking_balance - withdrawal_amount);
-                                    System.out.println("Successfully withdrew $" + withdrawal_amount + " from checking account");
-                                } else {
-                                    System.out.println("Error: Insufficient funds in checking account");
-                                }
-                            } else if (account_type == 2) {
-                                float savings_balance = userOperations.saving_account_balance(customer);
-                                if (savings_balance >= withdrawal_amount) {
-                                    customer.set_saving_account_balance(savings_balance - withdrawal_amount);
-                                    System.out.println("Successfully withdrew $" + withdrawal_amount + " from savings account");
-                                } else {
-                                    System.out.println("Error: Insufficient funds in savings account");
-                                }
-                            } else {
-                                System.out.println("Error: Cannot withdraw from credit account");
-                            }
+                            userOperations.withdraw(customer, account_type, withdrawal_amount);
                             transactionLog.logWithdrawal(customer, account_type, withdrawal_amount);
                             break;
                     
@@ -166,46 +122,11 @@ public class RunBank {
                             System.out.println("(2) Savings");
                             System.out.println("(3) Credit");
                             int dest_account = kb.nextInt();
-                            
-                            if (source_account == dest_account) {
-                                System.out.println("Error: Cannot transfer to the same account");
-                                break;
-                            }
-                            
+
                             System.out.println("Enter transfer amount:");
                             float transfer_amount = kb.nextFloat();
                             
-                            float source_balance = 0;
-                            if (source_account == 1) {
-                                source_balance = userOperations.checking_account_balance(customer);
-                            } else if (source_account == 2) {
-                                source_balance = userOperations.saving_account_balance(customer);
-                            } else if (source_account == 3) {
-                                source_balance = userOperations.credit_account_balance(customer);
-                            }
-                            
-                            if (source_balance < transfer_amount) {
-                                System.out.println("Error: Insufficient funds in source account");
-                                break;
-                            }
-                            
-                            if (source_account == 1) {
-                                customer.set_checking_account_balance(source_balance - transfer_amount);
-                            } else if (source_account == 2) {
-                                customer.set_saving_account_balance(source_balance - transfer_amount);
-                            } else if (source_account == 3) {
-                                customer.set_credit_account_balance(source_balance - transfer_amount);
-                            }
-                            
-                            if (dest_account == 1) {
-                                userOperations.deposit_to_checking(customer, transfer_amount);
-                            } else if (dest_account == 2) {
-                                userOperations.deposit_to_saving(customer, transfer_amount);
-                            } else if (dest_account == 3) {
-                                userOperations.deposit_to_credit(customer, transfer_amount);
-                            }
-                            
-                            System.out.println("Successfully transferred $" + transfer_amount);
+                            userOperations.transfer_between_accounts(customer, source_account, dest_account, transfer_amount);
                             transactionLog.logTransfer(customer, source_account, dest_account, transfer_amount);
                             break;
                     
