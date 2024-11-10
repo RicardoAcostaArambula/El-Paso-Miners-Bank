@@ -24,6 +24,7 @@ public class RunBank {
         UserOperations userOperations = new UserOperations();
         ManagerOperations managerOperations = new ManagerOperations();
         Log transactionLog = new Log();
+        Menus menu = new Menus();
         UserCreation userCreation = new UserCreation();
         HashMap <String, Customer> users_by_name = new HashMap<>();
         HashMap <Integer, Customer> accounts_by_number = new HashMap<>();
@@ -31,66 +32,17 @@ public class RunBank {
         SetupUsers.setup_users(users_by_name, accounts_by_number);
         
         while(continueProgram) {
+            System.out.println("===============================");
             System.out.println("Welcome to El Paso miners Bank");
-            boolean right_option = false;
-            int option;
-            
-            do {
-                System.out.println("Please Select the One of the following modes:");
-                System.out.println("1. Individual Person");
-                System.out.println("2. Bank Teller");
-                System.out.println("3. Create New Account");
-                option = kb.nextInt();
-                if (1 <= option && option <=3){
-                    right_option = true;
-                } else {
-                    System.out.println("Please choose a valid option");
-                }
-            } while(!right_option);
-
+            System.out.println("===============================");
+            int option = menu.displayModeMenu();
             if (option==1){
-                boolean right_user = false;
-                System.out.println("Enter your full name: ");
-                if (kb.hasNextLine()) { 
-                    kb.nextLine();
-                }
-                String username;
-                do {
-                    username = kb.nextLine();
-                    if (!users_by_name.containsKey(username)){
-                        System.out.println("Error: please enter a valid name");
-                    } else {
-                        right_user = true;
-                    } 
-                } while(!right_user);
-
+                String username = menu.get_full_name_menu(users_by_name);
                 boolean continueBanking = true;
                 while(continueBanking) {
                     Customer customer = users_by_name.get(username);
-                    boolean valid = false;
-                    int account_type;
-                    do {
-                        System.out.println("Select one of the following accounts:");
-                        System.out.println("(1) Checkings");
-                        System.out.println("(2) Savings");
-                        System.out.println("(3) Credit");
-                        account_type = kb.nextInt();
-                        if (1 <= account_type && account_type <=3){
-                            valid = true;
-                        } else {
-                            System.out.println("Please choose a valid account");
-                        }
-                    } while(!valid);
-
-                    System.out.println("Select one of the transactions below:");
-                    System.out.println("(1) Inquire about balance");
-                    System.out.println("(2) Deposit money to the account");
-                    System.out.println("(3) Withdraw money from the account");
-                    System.out.println("(4) Transfer money between accounts");
-                    System.out.println("(5) Make payment");
-                    System.out.println("(6) Transfer to another customer");
-                    int transaction_option = kb.nextInt();
-                    
+                    int account_type = menu.get_account_type_menu();
+                    int transaction_option =  menu.select_transaction_menu();
                     switch (transaction_option) {
                         case 1: 
                             userOperations.check_balance(customer, account_type);
@@ -198,10 +150,6 @@ public class RunBank {
                         default:
                             System.out.println("Invalid option selected");
                             break;
-                    }
-                    
-                    if (kb.hasNextLine()) { 
-                        kb.nextLine();
                     }
                     System.out.println("Would you like to exit? (yes/no)");
                     String response = kb.nextLine().trim().toLowerCase();
