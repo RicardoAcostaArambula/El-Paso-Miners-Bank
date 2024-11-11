@@ -32,4 +32,57 @@ public class Menus {
         }
         String username;
         do {
-     
+            username = kb.nextLine();
+            if (!users_by_name.containsKey(username)){
+                System.out.println("Error: please enter a valid name");
+            } else {
+                right_user = true;
+            } 
+        } while(!right_user);
+        return username;
+    }
+
+    public int get_account_type_menu(){
+        boolean valid = false;
+        int account_type;
+        do {
+            System.out.println("Select one of the following accounts:");
+            System.out.println("(1) Checkings");
+            System.out.println("(2) Savings");
+            System.out.println("(3) Credit");
+            account_type = kb.nextInt();
+            if (1 <= account_type && account_type <=3){
+                valid = true;
+            } else {
+                System.out.println("Please choose a valid account");
+            }
+        } while(!valid);
+        return account_type;
+    }
+    public int select_transaction_menu(){
+        System.out.println("Select one of the transactions below:");
+        System.out.println("(1) Inquire about balance");
+        System.out.println("(2) Deposit money to the account");
+        System.out.println("(3) Withdraw money from the account");
+        System.out.println("(4) Transfer money between accounts");
+        System.out.println("(5) Make payment");
+        System.out.println("(6) Transfer to another customer");
+        int transaction_option = kb.nextInt();
+        return transaction_option;
+    }
+    public int displayOptions(String userType){
+        int option;
+        if ("user".equalsIgnoreCase(userType)){
+
+        } else if ("manager".equalsIgnoreCase((userType))) {
+
+        } else {
+
+        }
+        option = 0;
+        return option;
+    }
+    public int get_source_account(){
+        return 0;
+    }
+}
