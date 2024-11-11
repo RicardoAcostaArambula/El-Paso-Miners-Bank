@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Scanner;
 class TransactionReader {
+    
     private TransactionReader (){
     }
     /**
@@ -12,6 +13,7 @@ class TransactionReader {
      * @return None
      */
     public static void transaction_reader(String filename, HashMap <String, Customer>  users_by_name, Log transactionLog){
+        UserOperations userOperations = new UserOperations();
         System.out.println("Processing transacitons from file... from another class:)");
         try {
             File file = new File(filename);
@@ -93,7 +95,7 @@ class TransactionReader {
                                 break;
                             }
 
-                            if (Operations.transferBetweenCustomers(from_customer, to_customer, account_type_from, account_type_to, interCustomerTransferAmount)) {
+                            if (userOperations.transferBetweenCustomers(from_customer, to_customer, account_type_from, account_type_to, interCustomerTransferAmount)) {
                                 System.out.println("Successfully transferred $" + String.format("%.2f", interCustomerTransferAmount) + 
                                                    " to customer: " + to_customer.get_name() + " " + to_customer.get_last());
                                 /*recording transaction*/
@@ -124,11 +126,11 @@ class TransactionReader {
                         // Get source account balance
                         float source_balance = 0;
                         if (account_type_from == 1) {
-                            source_balance = Operations.checking_account_balance(customer);
+                            source_balance = userOperations.checking_account_balance(customer);
                         } else if (account_type_from == 2) {
-                            source_balance = Operations.saving_account_balance(customer);
+                            source_balance = userOperations.saving_account_balance(customer);
                         } else if (account_type_from == 3) {
-                            source_balance = Operations.credit_account_balance(customer);
+                            source_balance = userOperations.credit_account_balance(customer);
                         }
 
                         // Check if source has sufficient funds
@@ -149,11 +151,11 @@ class TransactionReader {
                         
                         // Add to destination
                         if (account_type_to == 1) {
-                            Operations.deposit_to_checking(customer, transfer_amount);
+                            userOperations.deposit_to_checking(customer, transfer_amount);
                         } else if (account_type_to == 2) {
-                            Operations.deposit_to_saving(customer, transfer_amount);
+                            userOperations.deposit_to_saving(customer, transfer_amount);
                         } else if (account_type_to == 3) {
-                            Operations.deposit_to_credit(customer, transfer_amount);
+                            userOperations.deposit_to_credit(customer, transfer_amount);
                         }
                         
                         System.out.println("Successfully transferred $" + transfer_amount + " from " +from_where + " to " + to_where + " for account holder: " + from_user);
@@ -178,7 +180,7 @@ class TransactionReader {
 
                         /*processing based on account type */
                         if (account_type_from == 1) {
-                            float checking_balance = Operations.checking_account_balance(customer);
+                            float checking_balance = userOperations.checking_account_balance(customer);
                             if (checking_balance >= withdrawal_amount) {
                                 customer.set_checking_account_balance(checking_balance - withdrawal_amount);
                                 System.out.println("Successfully withdrew $" + withdrawal_amount + " from checking account");
@@ -186,7 +188,7 @@ class TransactionReader {
                                 System.out.println("Error: Insufficient funds in checking account");
                             }
                         } else if (account_type_from == 2) {
-                            float savings_balance = Operations.saving_account_balance(customer);
+                            float savings_balance = userOperations.saving_account_balance(customer);
                             if (savings_balance >= withdrawal_amount) {
                                 customer.set_saving_account_balance(savings_balance - withdrawal_amount);
                                 System.out.println("Successfully withdrew $" + withdrawal_amount + " from savings account");
@@ -216,13 +218,13 @@ class TransactionReader {
                         int account_type = get_account_type(to_where);
                         
                         if (account_type == 1) {
-                            Operations.deposit_to_checking(customer, deposit_amount);
+                            userOperations.deposit_to_checking(customer, deposit_amount);
                             System.out.println("Successfully deposited $" + deposit_amount + " to checking account");
                         } else if (account_type == 2) {
-                            Operations.deposit_to_saving(customer, deposit_amount);
+                            userOperations.deposit_to_saving(customer, deposit_amount);
                             System.out.println("Successfully deposited $" + deposit_amount + " to savings account");
                         } else {
-                            Operations.deposit_to_credit(customer, deposit_amount);
+                            userOperations.deposit_to_credit(customer, deposit_amount);
                             System.out.println("Successfully deposited $" + deposit_amount + " to credit account");
                         }
                         transactionLog.logDeposit(customer, account_type, deposit_amount);
@@ -239,11 +241,11 @@ class TransactionReader {
                         /*implement inquires*/
                         account_type = get_account_type(from_where);
                         if (account_type == 1) {
-                            balance = Operations.checking_account_balance(customer);
+                            balance = userOperations.checking_account_balance(customer);
                         } else if (account_type == 2) {
-                            balance = Operations.saving_account_balance(customer);
+                            balance = userOperations.saving_account_balance(customer);
                         } else {
-                            balance = Operations.credit_account_balance(customer);
+                            balance = userOperations.credit_account_balance(customer);
                         }
                         System.out.println("The account balance is: $" + String.format("%.2f", balance));
                         transactionLog.logBalanceInquiry(customer, account_type);
