@@ -51,13 +51,15 @@ public class RunBank {
                         case 2:
                             System.out.println("Enter deposit amount:");
                             float deposit_amount = kb.nextFloat();
+                            kb.nextLine();
                             userOperations.deposit(customer, account_type, deposit_amount);
                             transactionLog.logDeposit(customer, account_type, deposit_amount);
-                            break;
+                            break;                        
                     
                         case 3:
                             System.out.println("Enter withdraw amount:");
                             float withdrawal_amount = kb.nextFloat();
+                            kb.nextLine();
                             userOperations.withdraw(customer, account_type, withdrawal_amount);
                             transactionLog.logWithdrawal(customer, account_type, withdrawal_amount);
                             break;
@@ -77,7 +79,7 @@ public class RunBank {
 
                             System.out.println("Enter transfer amount:");
                             float transfer_amount = kb.nextFloat();
-                            
+                            kb.nextLine();                            
                             userOperations.transfer_between_accounts(customer, source_account, dest_account, transfer_amount);
                             transactionLog.logTransfer(customer, source_account, dest_account, transfer_amount);
                             break;
@@ -90,6 +92,7 @@ public class RunBank {
                             
                             System.out.println("Enter payment amount:");
                             float payment_amount = kb.nextFloat();
+                            kb.nextLine();
                             if (payment_amount <= 0) {
                                 System.out.println("Error: Payment amount must be greater than zero");
                                 break;
@@ -103,7 +106,7 @@ public class RunBank {
                             
                             customer.set_credit_account_balance(credit_balance + payment_amount);
                             System.out.println("Successfully made payment of $" + payment_amount);
-                            transactionLog.logPayment(customer, payment_amount);
+                            transactionLog.logPayment(customer, payment_amount);                            
                             break;
                             
                         case 6:
@@ -125,6 +128,7 @@ public class RunBank {
                             System.out.println("(2) Savings");
                             System.out.println("(3) Credit");
                             int recipientAccountType = kb.nextInt();
+                            kb.nextLine();
                             
                             if (recipientAccountType < 1 || recipientAccountType > 3) {
                                 System.out.println("Error: Invalid account type");
@@ -133,6 +137,7 @@ public class RunBank {
                             
                             System.out.println("Enter transfer amount:");
                             float interCustomerTransferAmount = kb.nextFloat();
+                            kb.nextLine();
                             
                             if (interCustomerTransferAmount <= 0) {
                                 System.out.println("Error: Transfer amount must be greater than zero");
@@ -154,13 +159,14 @@ public class RunBank {
                     System.out.println("Would you like to exit? (yes/no)");
                     String response = kb.nextLine().trim().toLowerCase();
                     continueBanking = !response.equals("yes");
+                    
                 }
                 
                 System.out.println("Would you like to exit the program? (yes/no)");
                 String response = kb.nextLine().trim().toLowerCase();
                 continueProgram = !response.equals("yes");
                 
-            } else if (option == 2){    
+            } else if (option == 2){   
                 boolean continueTeller = true;
                 while(continueTeller) {
                     String account_holder;
