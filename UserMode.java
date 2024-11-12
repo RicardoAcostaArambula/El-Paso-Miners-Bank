@@ -1,11 +1,26 @@
 import java.util.HashMap;
 import java.util.Scanner;
 class UserMode implements BankMode {
+     /**
+     * enterMode is the starting point for entering UserMode which calls then the process of performTransaction
+     * 
+     * @param users_by_name is a hashmap that contains the customers by name
+     * @param username is how the user is identify 
+     * @param accounts_by_number is a hashmap that contains the customers by account number
+     * @return None 
+     */
     @Override
     public void enterMode(HashMap<String, Customer> users_by_name, String username, HashMap<Integer, Customer> accounts_by_number){
         System.out.println("Entering User Mode...");
         performTransaction(users_by_name, username, accounts_by_number);
     }
+     /**
+     * performTransaction allows user to complete transactions as displayed by the manu for the user
+     * @param users_by_name is a hashmap that contains the customers by name
+     * @param username is how the user is identify 
+     * @param accounts_by_number is a hashmap that contains the customers by account number
+     * @return None 
+     */
     @Override
     public void performTransaction(HashMap<String, Customer> users_by_name, String username, HashMap<Integer, Customer> accounts_by_number){
         TransactionStatement statementGenerator = new TransactionStatement();
@@ -160,6 +175,10 @@ class UserMode implements BankMode {
         }
         exitMode();
     }
+    /** 
+     * ExitMode allows user to return to the main manu
+     * 
+    */
     @Override
     public void exitMode(){
         System.out.println("Exiting User Mode...");

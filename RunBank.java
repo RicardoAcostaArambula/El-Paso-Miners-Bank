@@ -1,6 +1,12 @@
 import java.util.HashMap;
 import java.util.Scanner;
 
+/**
+ * The Run class serves as the starting point for all funcioanlities of the program
+ * 
+ * @author Sebastian Nares & Ricardo Acosta
+ *
+ */
 public class RunBank {
     private BankMode currentMode;
     public void setMode(BankMode mode, HashMap <String, Customer> users_by_name, String username, HashMap<Integer, Customer> accounts_by_number){

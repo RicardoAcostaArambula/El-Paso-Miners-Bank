@@ -1,11 +1,26 @@
 import java.util.HashMap;
 import java.util.Scanner;
 class ManagerMode implements BankMode {
+     /**
+     * enterMode is the starting point for entering managerMode which calls then the process of performTransaction
+     * 
+     * @param users_by_name is a hashmap that contains the customers by name
+     * @param username is how the user is identify 
+     * @param accounts_by_number is a hashmap that contains the customers by account number
+     * @return None 
+     */
     @Override
     public void enterMode(HashMap<String, Customer> users_by_name, String username, HashMap<Integer, Customer> accounts_by_number){
         System.out.println("Entering Manager Mode...");
         performTransaction(users_by_name, username, accounts_by_number);
     }
+    /**
+     * performTransaction allows user to complete transactions as displayed by the menu for the manager
+     * @param users_by_name is a hashmap that contains the customers by name
+     * @param username is how the user is identify 
+     * @param accounts_by_number is a hashmap that contains the customers by account number
+     * @return None 
+     */
     @Override
     public void performTransaction(HashMap<String, Customer> users_by_name, String username, HashMap<Integer, Customer> accounts_by_number){
         boolean continueTeller = true;
@@ -88,6 +103,10 @@ class ManagerMode implements BankMode {
             exitMode();
         }
     }
+    /** 
+     * ExitMode allows user to return to the main manu
+     * 
+    */
     @Override
     public void exitMode(){
         System.out.println("Exiting Manager Mode...");

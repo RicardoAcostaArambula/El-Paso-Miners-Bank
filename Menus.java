@@ -1,6 +1,10 @@
 import java.util.HashMap;
 import java.util.Scanner;
-
+/**
+ * It is a class that serves to display the different menus and take user selection for each of the menus
+ * 
+ * @author Sebastian Nares & Ricardo Acosta
+ */
 public class Menus {
     Scanner kb = new Scanner(System.in);
     HashMap <String, Customer> users_by_name = new HashMap<>();
@@ -8,6 +12,11 @@ public class Menus {
     public Menus(){
 
     }
+    /**
+     * dispalyModeMenu allows user to select between four modes
+     * 
+     * @return option is the users selected option
+     */
     public int displayModeMenu(){
         
         int option;
@@ -30,6 +39,12 @@ public class Menus {
         } while(!right_option);
         return option;
     }
+    /**
+     * prompts the user to enter the full name from the user and verifies if it is a valid user
+     * 
+     * @param users_by_name
+     * @return username is the user full name 
+     */
     public String get_full_name_menu(HashMap <String, Customer> users_by_name){
         boolean right_user = false;
         System.out.println("Enter your full name: ");
@@ -44,7 +59,11 @@ public class Menus {
         } while(!right_user);
         return username;
     }
-
+    /**
+     * Gets the user account type to be worked on
+     * 
+     * @return account_type is the user selected option
+     */
     public int get_account_type_menu(){
         boolean valid = false;
         int account_type;
@@ -65,6 +84,12 @@ public class Menus {
         }
         return account_type;
     }
+
+    /**
+     * Gets the user transaction type to be done
+     * 
+     * @return transaction_option is the user selected option
+     */
     public int select_transaction_menu(){
         System.out.println("Select one of the transactions below:");
         System.out.println("(1) Inquire about balance");
@@ -76,21 +101,18 @@ public class Menus {
         int transaction_option = kb.nextInt();
         return transaction_option;
     }
-    public int displayOptions(String userType){
-        int option;
-        if ("user".equalsIgnoreCase(userType)){
-
-        } else if ("manager".equalsIgnoreCase((userType))) {
-
-        } else {
-
-        }
-        option = 0;
-        return option;
-    }
+    /**
+     * This method is yet to be implemented
+     */
     public int get_source_account(){
         return 0;
     }
+    /**
+     * Ask and generates statement for user
+     * @param users_by_name
+     * @param statementGenerator 
+     * @return None
+     */
     public void displayStatementMenu(HashMap<String, Customer> users_by_name, TransactionStatement statementGenerator) {
         System.out.println("=== Generate Account Statement ===");
         
