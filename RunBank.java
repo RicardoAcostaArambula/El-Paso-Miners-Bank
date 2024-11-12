@@ -103,7 +103,7 @@ public class RunBank {
                             }
 
                             float credit_balance = userOperations.credit_account_balance(customer);
-                            if (credit_balance + payment_amount > customer.get_credit_account_max()) {
+                            if (credit_balance + payment_amount > 0) {
                                 System.out.println("Error: Payment would exceed credit limit");
                                 statementGenerator.recordTransaction(customer, "Failed payment attempt - would exceed credit limit");
                                 break;
@@ -199,6 +199,9 @@ public class RunBank {
                         System.out.println("(2) Inquiry account by account number");
                         System.out.println("(3) Process transactions from file");
                         inquiry_type = kb.nextInt();
+                        if (kb.hasNextLine()) {
+                            kb.nextLine();
+                        }
                         if (1 <= inquiry_type && inquiry_type <= 3) {
                             inquiry_chosen = true;
                         } else {
