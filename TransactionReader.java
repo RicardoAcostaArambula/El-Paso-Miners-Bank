@@ -2,6 +2,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Scanner;
+
+
+/**
+ * TransacitonReader serves as the processor for the transactions provided in the file
+ * 
+ * @author Sebastian Nares & ricardo Acosta
+ */
 class TransactionReader {
     
     private TransactionReader (){
@@ -260,6 +267,13 @@ class TransactionReader {
         }
         System.out.println("Processed all transacitons from file...");
     }
+
+    /**
+     * Gets the user account type to be worked on
+     * 
+     * @return account_type is the user selected option
+     */
+    
     public static int get_account_type(String account){
         int account_type;
         if (account.equalsIgnoreCase("checking")){
