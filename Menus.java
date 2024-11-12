@@ -1,7 +1,10 @@
 import java.util.HashMap;
 import java.util.Scanner;
+
 public class Menus {
     Scanner kb = new Scanner(System.in);
+    HashMap <String, Customer> users_by_name = new HashMap<>();
+    HashMap <Integer, Customer> accounts_by_number = new HashMap<>();
     public Menus(){
 
     }
@@ -14,8 +17,9 @@ public class Menus {
             System.out.println("1. Individual Person");
             System.out.println("2. Bank Teller");
             System.out.println("3. Create New Account");
+            System.out.println("4. Generate account statement");
             option = kb.nextInt();
-            if (1 <= option && option <=3){
+            if (1 <= option && option <=4){
                 right_option = true;
             } else {
                 System.out.println("Please choose a valid option");
@@ -84,5 +88,24 @@ public class Menus {
     }
     public int get_source_account(){
         return 0;
+    }
+    public void displayStatementMenu(HashMap<String, Customer> users_by_name, TransactionStatement statementGenerator) {
+        System.out.println("=== Generate Account Statement ===");
+        
+        // Clear the input buffer
+        if (kb.hasNextLine()) {
+            kb.nextLine();
+        }
+        
+        // Get customer name
+        System.out.println("Enter customer's full name (FirstName LastName):");
+        String customerName = kb.nextLine().trim();
+        
+        if (users_by_name.containsKey(customerName)) {
+            Customer customer = users_by_name.get(customerName);
+            statementGenerator.generateTransactionStatement(customer);
+        } else {
+            System.out.println("Error: Customer not found. Please try again.");
+        }
     }
 }
