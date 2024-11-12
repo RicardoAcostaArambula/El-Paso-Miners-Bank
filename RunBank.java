@@ -2,7 +2,16 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 public class RunBank {
+    private BankMode currentMode;
+    public void setMode(BankMode mode, HashMap <String, Customer> users_by_name){
+        if (currentMode != null){
+            currentMode.exitMode();
+        }
+        currentMode = mode;
+        currentMode.enterMode(users_by_name);
+    }
     public static void main(String[] args) {
+        RunBank bankApp = new RunBank();
         boolean continueProgram = true;
         Scanner kb = new Scanner(System.in);
         UserOperations userOperations = new UserOperations();
@@ -23,6 +32,7 @@ public class RunBank {
             int option = menu.displayModeMenu();
             
             if (option == 1) {
+                bankApp.setMode(new UserMode(), users_by_name );
                 String username = menu.get_full_name_menu(users_by_name);
                 Customer customer = users_by_name.get(username);
                 statementGenerator.startSession(customer);  // Start tracking the session
