@@ -65,11 +65,6 @@ public class TransactionStatement {
             writer.write("     =============================================        \n");
             writer.write("\n");
 
-            // Write header
-            writer.write("     =========== TRANSACTION STATEMENT ===========        \n");
-            writer.write("Session Start: " + session.startTime.format(formatter) + "\n");
-            writer.write("Session End: " + LocalDateTime.now().format(formatter) + "\n\n");
-
             // Write account information
             writer.write("      =========== ACCOUNT INFORMATION ============        \n");
             writer.write(String.format("Customer Name: %s %s\n", customer.get_name(), customer.get_last()));
@@ -99,7 +94,7 @@ public class TransactionStatement {
             writer.write("Statement generated on: " + LocalDateTime.now().format(formatter) + System.lineSeparator());
             writer.write("=================================================\n");
             writer.close();
-            
+
             // Clear the session after generating statement
             activeSessions.remove(customerKey);
 

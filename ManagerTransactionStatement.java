@@ -65,10 +65,6 @@ public class ManagerTransactionStatement {
             writer.write("     =============================================        \n");
             writer.write("\n");
 
-            // Write header       
-            writer.write("     =========== TRANSACTION STATEMENT ===========        \n");
-            writer.write("Session Start: " + session.startTime.format(formatter) + "\n");
-            writer.write("Session End: " + LocalDateTime.now().format(formatter) + "\n\n");
 
             // Write customer information
             writer.write("     =========== CUSTOMER INFORMATION ============         \n");
