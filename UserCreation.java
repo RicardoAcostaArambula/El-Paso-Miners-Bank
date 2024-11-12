@@ -133,10 +133,6 @@ public class UserCreation {
             
             System.out.println("\nEnter user information:");
             
-            if (kb.hasNextLine()) {
-                kb.nextLine();
-            }
-            
             // Get personal information
             System.out.print("First Name: ");
             String firstName = kb.nextLine();

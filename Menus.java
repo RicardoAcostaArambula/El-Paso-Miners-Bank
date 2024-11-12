@@ -19,21 +19,20 @@ public class Menus {
             System.out.println("3. Create New Account");
             System.out.println("4. Generate account statement");
             option = kb.nextInt();
+            if (kb.hasNextLine()) {
+                kb.nextLine();
+            }
             if (1 <= option && option <=4){
                 right_option = true;
             } else {
                 System.out.println("Please choose a valid option");
             }
         } while(!right_option);
-
         return option;
     }
     public String get_full_name_menu(HashMap <String, Customer> users_by_name){
         boolean right_user = false;
         System.out.println("Enter your full name: ");
-        if (kb.hasNextLine()) { 
-            kb.nextLine();
-        }
         String username;
         do {
             username = kb.nextLine();
@@ -61,6 +60,9 @@ public class Menus {
                 System.out.println("Please choose a valid account");
             }
         } while(!valid);
+        if (kb.hasNextLine()){
+            kb.nextLine();
+        }
         return account_type;
     }
     public int select_transaction_menu(){
@@ -91,11 +93,6 @@ public class Menus {
     }
     public void displayStatementMenu(HashMap<String, Customer> users_by_name, TransactionStatement statementGenerator) {
         System.out.println("=== Generate Account Statement ===");
-        
-        // Clear the input buffer
-        if (kb.hasNextLine()) {
-            kb.nextLine();
-        }
         
         // Get customer name
         System.out.println("Enter customer's full name (FirstName LastName):");
