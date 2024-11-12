@@ -23,6 +23,7 @@ public class Customer extends Person {
     private int credit_account_number;
     private float credit_account_balance;
     private float credit_account_max;
+    private String email;
 
     /**
      * Default constructor for {@code Customer}.
@@ -69,6 +70,9 @@ public class Customer extends Person {
      */
     public void set_accounts(List<Account> accounts) {
         this.accounts = accounts;
+    }
+    public void set_email(String email){
+        this.email = email;
     }
 
     /**
@@ -186,6 +190,10 @@ public class Customer extends Person {
      */
     public int get_account_id() {
         return this.customer_id;
+    }
+
+    public String get_email(){
+        return this.email;
     }
 
     /**

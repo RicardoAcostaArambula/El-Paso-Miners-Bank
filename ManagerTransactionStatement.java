@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class TransactionStatement {
+public class ManagerTransactionStatement {
     private static HashMap<String, SessionData> activeSessions = new HashMap<>();
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -52,23 +52,30 @@ public class TransactionStatement {
         }
 
         try {
-            String fileName = String.format("statement_%s_%s_%s.txt",
+            String fileName = String.format("manager_statement_%s_%s_%s.txt",
                 customer.get_name(),
                 customer.get_last(),
                 session.startTime.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
 
             FileWriter writer = new FileWriter(fileName);
-
             writer.write("     =============================================        \n");
             writer.write("                  EL PASO MINERS BANK                     \n");
+            writer.write("                        MANAGER                           \n");
             writer.write("                   ACCOUNT STATEMENT                      \n");
             writer.write("     =============================================        \n");
             writer.write("\n");
 
-            // Write header
+            // Write header       
             writer.write("     =========== TRANSACTION STATEMENT ===========        \n");
             writer.write("Session Start: " + session.startTime.format(formatter) + "\n");
             writer.write("Session End: " + LocalDateTime.now().format(formatter) + "\n\n");
+
+            // Write customer information
+            writer.write("     =========== CUSTOMER INFORMATION ============         \n");
+            writer.write(String.format("Name: %s %s\n", customer.get_name(), customer.get_last()));
+            writer.write(String.format("Address: %s\n", customer.get_address()));
+            writer.write(String.format("Phone: %s\n", customer.get_phone_number()));
+            writer.write(String.format("Email: %s\n\n", customer.get_email()));
 
             // Write account information
             writer.write("      =========== ACCOUNT INFORMATION ============        \n");
@@ -88,18 +95,18 @@ public class TransactionStatement {
             writer.write(String.format("Credit Account:\n  Starting Balance: $%.2f\n  Current Balance: $%.2f\n  Credit Limit: $%.2f\n\n",
                 session.initialBalances[2], customer.get_credit_account_balance(), customer.get_credit_account_max()));
 
-            // Write transactions
+            // Write transactions 
             writer.write("    ============= TRANSACTION HISTORY ===========         \n");
             for (String transaction : session.transactions) {
                 writer.write(transaction + "\n");
             }
-
             writer.write("\n");
             writer.write("=================================================\n");
             writer.write("Statement generated on: " + LocalDateTime.now().format(formatter) + System.lineSeparator());
             writer.write("=================================================\n");
             writer.close();
-            
+            System.out.println("Statement generated: " + fileName);
+
             // Clear the session after generating statement
             activeSessions.remove(customerKey);
 

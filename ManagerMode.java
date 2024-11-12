@@ -25,6 +25,7 @@ class ManagerMode implements BankMode {
     public void performTransaction(HashMap<String, Customer> users_by_name, String username, HashMap<Integer, Customer> accounts_by_number){
         boolean continueTeller = true;
         ManagerOperations managerOperations = new ManagerOperations();
+        ManagerTransactionStatement managerStatement = new ManagerTransactionStatement();
         Log transactionLog = new Log();
         Scanner kb = new Scanner(System.in);
         while (continueTeller) {
@@ -35,8 +36,9 @@ class ManagerMode implements BankMode {
                 System.out.println("(1) Inquiry account by name");
                 System.out.println("(2) Inquiry account by account number");
                 System.out.println("(3) Process transactions from file");
+                System.out.println("(4) Process manager transaction statement");
                 inquiry_type = kb.nextInt();
-                if (1 <= inquiry_type && inquiry_type <= 3) {
+                if (1 <= inquiry_type && inquiry_type <= 4) {
                     inquiry_chosen = true;
                 } else {
                     System.out.println("Please choose a valid option");
@@ -60,6 +62,8 @@ class ManagerMode implements BankMode {
                 } while (!valid);
                 Customer customer = users_by_name.get(account_holder);
                 managerOperations.dislay_account_information_by_name(customer);
+                managerStatement.recordTransaction(customer, String.format("Manager performed account inquiry for %s %s", 
+                customer.get_name(), customer.get_last()));
             } else if (inquiry_type == 2) {
                 boolean valid = false;
                 int account_type;
@@ -92,9 +96,31 @@ class ManagerMode implements BankMode {
                 Customer customer = accounts_by_number.get(account_number);
                 managerOperations.dislay_account_information_by_account_number(customer, account_number, account_type);
                 transactionLog.logBalanceInquiry(customer, account_type);
+                managerStatement.recordTransaction(customer, String.format("Manager performed account inquiry for %s %s", 
+                customer.get_name(), customer.get_last()));
             } else if (inquiry_type == 3) {
                 System.out.print("The transaction process from the file will start shortly...");
                 TransactionReader.transaction_reader("Transactions(1).csv", users_by_name, transactionLog);
+            } else if (inquiry_type == 4) {
+                boolean valid = false;
+                String account_holder;
+                do {
+                    if (kb.hasNextLine()) {
+                        kb.nextLine();
+                    }
+                    System.out.println("For which customer would you like to generate a transaction statement? (Enter full name as following: FirstName LastName)");
+                    account_holder = kb.nextLine();
+                    if (!users_by_name.containsKey(account_holder)) {
+                        System.out.println("Please enter a valid name");
+                    } else {
+                        valid = true;
+                    }
+                } while (!valid);
+                
+                Customer customer = users_by_name.get(account_holder);
+                managerStatement.generateTransactionStatement(customer);
+                managerStatement.recordTransaction(customer, String.format("Manager generated transaction statement for %s %s", 
+                customer.get_name(), customer.get_last()));
             }
 
             System.out.println("Would you like to exit? (yes/no)");
