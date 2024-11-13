@@ -36,7 +36,7 @@ public class RunBank {
             if (option == 1) {
                 String username = menu.get_full_name_menu(users_by_name);
                 Customer customer = users_by_name.get(username);
-                statementGenerator.startSession(customer);  // Start tracking the session
+                statementGenerator.startSession(customer); 
                 bankApp.setMode(new UserMode(), users_by_name, username, accounts_by_number);
                 
                 System.out.println("Would you like to exit the program? (yes/no)");

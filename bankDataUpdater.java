@@ -28,8 +28,17 @@ public class bankDataUpdater {
     private void loadData() {
         try (BufferedReader br = new BufferedReader(new FileReader(CSV_FILE))) {
             String line;
+            int lineNumber = 0;
             while ((line = br.readLine()) != null) {
-                userData.add(line.split(","));
+                lineNumber++;
+                // Use proper CSV parsing
+                String[] fields = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)");
+                if (fields.length != 13) { // Expected number of columns
+                    System.err.println("Warning: Incorrect number of fields at line " + 
+                        lineNumber + ": " + fields.length);
+                    continue;
+                }
+                userData.add(fields);
             }
         } catch (IOException e) {
             System.err.println("Error loading bank data: " + e.getMessage());
@@ -78,8 +87,15 @@ public class bankDataUpdater {
         if (rowIndex == -1) {
             throw new IllegalArgumentException("Customer not found: " + customerId);
         }
-
+    
         int columnIndex = getBalanceColumnIndex(accountType);
+        // Add validation
+        String currentValue = userData.get(rowIndex)[columnIndex];
+        if (!currentValue.matches("-?\\d*\\.?\\d+")) {
+            throw new IllegalStateException("Invalid balance format at column " + columnIndex + 
+                " for customer " + customerId);
+        }
+        
         String[] row = userData.get(rowIndex);
         row[columnIndex] = String.format("%.2f", newBalance);
     }

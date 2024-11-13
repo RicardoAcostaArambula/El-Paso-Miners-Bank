@@ -35,41 +35,46 @@ public class UserCreation {
         }
 
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line = reader.readLine(); 
+            String line = reader.readLine(); // Skip header
             while ((line = reader.readLine()) != null) {
-                if (line.trim().isEmpty() || line.startsWith("ID,")) {
-                    continue; 
-                }
+                if (line.trim().isEmpty()) continue;
                 
-                String[] data = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1); 
-                if (data.length < 13) continue; 
-                Customer customer = new Customer();
-                customer.set_account_id(Integer.parseInt(data[0]));
-                customer.set_name(data[1]);
-                customer.set_last(data[2]);
-                customer.set_dob(data[3]);
-                customer.set_address(data[4]);
-                customer.set_phone_number(data[5]);
-                customer.set_checking_account_number(Integer.parseInt(data[6]));
-                customer.set_checking_account_balance(Float.parseFloat(data[7]));
-                customer.set_saving_account_number(Integer.parseInt(data[8]));
-                customer.set_saving_account_balance(Float.parseFloat(data[9]));
-                customer.set_credit_account_number(Integer.parseInt(data[10]));
-                customer.set_credit_account_max(Float.parseFloat(data[11]));
-                customer.set_credit_account_balance(Float.parseFloat(data[12]));
+                String[] data = line.split(",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)", -1);
+                if (data.length < 13) continue;
 
-                String key = customer.get_name() + " " + customer.get_last();
-                users_by_name.put(key, customer);
-                accounts_by_number.put(customer.get_checking_account_number(), customer);
-                accounts_by_number.put(customer.get_saving_account_number(), customer);
-                accounts_by_number.put(customer.get_credit_account_number(), customer);
+                try {
+                    Customer customer = new Customer();
+                    // Parse numeric values properly
+                    customer.set_account_id(Integer.parseInt(data[0].trim()));
+                    customer.set_name(data[1].trim());
+                    customer.set_last(data[2].trim());
+                    customer.set_dob(data[3].trim());
+                    customer.set_address(data[4].replace("\"", "").trim());
+                    customer.set_phone_number(data[5].trim());
+                    customer.set_checking_account_number(Integer.parseInt(data[6].trim()));
+                    customer.set_checking_account_balance(Float.parseFloat(data[7].trim()));
+                    customer.set_saving_account_number(Integer.parseInt(data[8].trim()));
+                    customer.set_saving_account_balance(Float.parseFloat(data[9].trim()));
+                    customer.set_credit_account_number(Integer.parseInt(data[10].trim()));
+                    customer.set_credit_account_max(Float.parseFloat(data[11].trim()));
+                    customer.set_credit_account_balance(Float.parseFloat(data[12].trim()));
 
-                // Update last IDs
-                lastUserId = Math.max(lastUserId, customer.get_account_id());
-                lastAccountNumber = Math.max(lastAccountNumber, 
-                    Math.max(customer.get_checking_account_number(),
-                    Math.max(customer.get_saving_account_number(),
-                    customer.get_credit_account_number())));
+                    String key = customer.get_name() + " " + customer.get_last();
+                    users_by_name.put(key, customer);
+                    accounts_by_number.put(customer.get_checking_account_number(), customer);
+                    accounts_by_number.put(customer.get_saving_account_number(), customer);
+                    accounts_by_number.put(customer.get_credit_account_number(), customer);
+
+                    // Update last IDs
+                    lastUserId = Math.max(lastUserId, customer.get_account_id());
+                    lastAccountNumber = Math.max(lastAccountNumber, 
+                        Math.max(customer.get_checking_account_number(),
+                        Math.max(customer.get_saving_account_number(),
+                        customer.get_credit_account_number())));
+                } catch (NumberFormatException e) {
+                    System.out.println("Error parsing numeric values for customer record: " + line);
+                    continue;
+                }
             }
         } catch (IOException e) {
             System.out.println("Error reading from CSV file: " + e.getMessage());
@@ -213,28 +218,29 @@ public class UserCreation {
     }
     
     public static void saveUsersToCSV(HashMap<String, Customer> users_by_name) {
-        try (FileWriter writer = new FileWriter("new_bank_users.csv", false)) {
-            // Write CSV header using the original format exactly
+        try (FileWriter writer = new FileWriter(CSV_FILE, false)) {
+            // Write CSV header
             writer.append("Identification Number,First Name,Last Name,Date of Birth,Address,Phone Number,Checking Account Number,Checking Starting Balance,Savings Account Number,Savings Starting Balance,Credit Account Number,Credit Max,Credit Starting Balance\n");
             
             for (Customer customer : users_by_name.values()) {
-                writer.append(String.format("%.0f,%s,%s,%s,\"%s\",%s,%.0f,%.2f,%.0f,%.2f,%.0f,%.2f,%.2f\n",
-                    (float)customer.get_account_id(),
+                // Format numbers as integers where appropriate and ensure proper decimal formatting for balances
+                String line = String.format("%d,%s,%s,%s,\"%s\",%s,%d,%.2f,%d,%.2f,%d,%.2f,%.2f\n",
+                    customer.get_account_id(),
                     customer.get_name(),
                     customer.get_last(),
                     customer.get_dob(),
                     customer.get_address(),
                     customer.get_phone_number(),
-                    (float)customer.get_checking_account_number(),
+                    customer.get_checking_account_number(),
                     customer.get_checking_account_balance(),
-                    (float)customer.get_saving_account_number(),
+                    customer.get_saving_account_number(),
                     customer.get_saving_account_balance(),
-                    (float)customer.get_credit_account_number(),
+                    customer.get_credit_account_number(),
                     customer.get_credit_account_max(),
                     customer.get_credit_account_balance()
-                ));
+                );
+                writer.append(line);
             }
-            
             writer.flush();
         } catch (IOException e) {
             System.out.println("Error: could not write to file");

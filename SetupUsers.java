@@ -24,8 +24,14 @@ class SetupUsers {
                     continue;
                 }
                 
+                // Process the line
                 line = remove_commas_inside_quotations(line);
                 String[] items = line.split(",");
+                
+                // Clean up the fields - remove quotes and restore special characters
+                for (int i = 0; i < items.length; i++) {
+                    items[i] = items[i].replace("\"", "").replace("|", ",").trim();
+                }
                 
                 // Validate that we have all required fields
                 if (items.length < 13) {
@@ -34,33 +40,34 @@ class SetupUsers {
                 }
     
                 try {
+                    // Only parse numeric fields - skip phone number field
                     int id = Integer.parseInt(items[0]);
                     String name = items[1];
                     String last = items[2];
                     String dob = items[3];
                     String address = items[4];
-                    String phone_number = items[5];
+                    String phone_number = items[5]; // Don't parse this as a number
                     int checking_account_number = Integer.parseInt(items[6]);
-                    float checking_account_balance = Float.parseFloat((items[7]));
+                    float checking_account_balance = Float.parseFloat(items[7]);
                     int saving_account_number = Integer.parseInt(items[8]);
-                    float saving_account_balance = Float.parseFloat((items[9]));
+                    float saving_account_balance = Float.parseFloat(items[9]);
                     int credit_account_number = Integer.parseInt(items[10]);
-                    float credit_account_max = Float.parseFloat((items[11]));
-                    float credit_account_balance = Float.parseFloat((items[12]));
+                    float credit_account_max = Float.parseFloat(items[11]);
+                    float credit_account_balance = Float.parseFloat(items[12]);
     
-                    /*Create object*/
+                    // Create customer object and set fields
                     Customer customer = new Customer();
                     customer.set_account_id(id);
                     customer.set_name(name);
                     customer.set_last(last);
                     customer.set_dob(dob);
                     customer.set_address(address);
-                    customer.set_phone_number(phone_number);
+                    customer.set_phone_number(phone_number); // Store as string
                     customer.set_checking_account_number(checking_account_number);
                     customer.set_checking_account_balance(checking_account_balance);
                     customer.set_saving_account_number(saving_account_number);
                     customer.set_saving_account_balance(saving_account_balance);
-                    customer.set_credit_account_number(credit_account_number); // Fixed: was setting balance instead of number
+                    customer.set_credit_account_number(credit_account_number);
                     customer.set_credit_account_max(credit_account_max);
                     customer.set_credit_account_balance(credit_account_balance);
                     
@@ -68,9 +75,10 @@ class SetupUsers {
                     users_by_name.put(key, customer);
                     accounts_by_number.put(checking_account_number, customer);
                     accounts_by_number.put(saving_account_number, customer);
-                    accounts_by_number.put(credit_account_number, customer); // Added missing credit account mapping
+                    accounts_by_number.put(credit_account_number, customer);
                 } catch (NumberFormatException e) {
-                    System.out.println("Skipping invalid data line: " + line);
+                    System.out.println("Error parsing numeric data in line: " + line);
+                    System.out.println("Specific error: " + e.getMessage());
                     continue;
                 }
             }
@@ -86,15 +94,18 @@ class SetupUsers {
      * @param line the line from which to remove commas inside quotations
      * @return the modified line with commas removed
      */
-    public static String remove_commas_inside_quotations(String line){
+    public static String remove_commas_inside_quotations(String line) {
         StringBuilder new_line = new StringBuilder();
         boolean inside_quotes = false;
-        for (int i = 0; i < line.length(); i++){
+        for (int i = 0; i < line.length(); i++) {
             char current_char = line.charAt(i);
-            if (current_char == '"'){
+            if (current_char == '"') {
                 inside_quotes = !inside_quotes;
-            } else if(current_char == ',' && inside_quotes){
-                continue;
+                // Keep the quotes to maintain field boundaries
+                new_line.append(current_char);
+            } else if (current_char == ',' && inside_quotes) {
+                // Replace commas inside quotes with a special character
+                new_line.append('|');
             } else {
                 new_line.append(current_char);
             }
