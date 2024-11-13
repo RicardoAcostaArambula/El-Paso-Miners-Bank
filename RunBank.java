@@ -62,7 +62,7 @@ public class RunBank {
             } else if (option == 2) {
                 
                 bankApp.setMode(new ManagerMode(), users_by_name, "Manager", accounts_by_number);
-                
+        
                 System.out.println("Would you like to exit the program? (yes/no)");
                 String response = kb.nextLine().trim().toLowerCase();
                 continueProgram = !response.equals("yes");
