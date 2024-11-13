@@ -71,6 +71,10 @@ public class Customer extends Person {
     public void set_accounts(List<Account> accounts) {
         this.accounts = accounts;
     }
+    /**
+     * Sets the list of email associated with the customer.
+     * @param email The email of user.
+     */
     public void set_email(String email){
         this.email = email;
     }

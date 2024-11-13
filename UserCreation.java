@@ -9,11 +9,18 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Scanner;
-
+/**
+ * The {@code UserCreation} class is responsible for handling the creation of new users, managing 
+ * user account information, generating unique account numbers and user IDs, and saving the data to a CSV file.
+ * It interacts with user input to gather necessary information and updates the user's records in a set of HashMaps.
+ */
 public class UserCreation {
     private static Log logger;
     private static final String CSV_FILE = "new_bank_users.csv";
-
+        /**
+         * Default constructor for the {@code UserCreation} class.
+         * Initializes the logger.
+         */
         /*Default constructor*/
         public UserCreation(){
             logger = new Log(); 
@@ -21,12 +28,23 @@ public class UserCreation {
         }
         private static int lastUserId = 0;
         private static int lastAccountNumber = 0;
-
+        
+        /**
+         * Generates a random credit score between 300 and 850.
+         * 
+         * @return A random integer between 300 and 850 representing the credit score.
+         */
         private static int generateRandomCreditScore() {
             Random random = new Random();
             return random.nextInt(551) + 300; 
         }
 
+         /**
+         * Loads user data from a CSV file and updates the provided HashMaps with the user information.
+         * 
+         * @param users_by_name A HashMap to store users by their full name.
+         * @param accounts_by_number A HashMap to store users by their account numbers.
+         */
         public static void loadUsersFromCSV(HashMap<String, Customer> users_by_name, 
                                       HashMap<Integer, Customer> accounts_by_number) {
         File file = new File(CSV_FILE);
@@ -80,7 +98,11 @@ public class UserCreation {
             System.out.println("Error reading from CSV file: " + e.getMessage());
         }
     }
-    
+        /**
+         * Initializes the last user ID and last account number by iterating through all users.
+         * 
+         * @param users_by_name A HashMap that contains user information.
+         */
         public static void initializeLastIds(HashMap<String, Customer> users_by_name) {
             for (Customer customer : users_by_name.values()) {
                 lastUserId = Math.max(lastUserId, customer.get_account_id());
@@ -90,15 +112,28 @@ public class UserCreation {
                     customer.get_credit_account_number())));
             }
         }
-        
+        /**
+         * Generates a unique user ID by incrementing the last user ID.
+         * 
+         * @return A unique user ID.
+         */
         private static int generateUniqueUserId() {
             return ++lastUserId;
         }
-        
+        /**
+         * Generates a unique account number by incrementing the last account number.
+         * 
+         * @return A unique account number.
+         */
         private static int generateUniqueAccountNumber() {
             return ++lastAccountNumber;
         }
-        
+        /**
+         * Generates a credit limit based on the provided credit score.
+         * 
+         * @param creditScore The credit score used to determine the credit limit.
+         * @return The generated credit limit based on the credit score.
+        */
         private static float generateCreditLimit(int creditScore) {
             Random random = new Random();
     
@@ -114,7 +149,15 @@ public class UserCreation {
                 return 16000 + random.nextFloat() * (25000 - 16000);
             }
         }
-    
+        /**
+         * Creates a new user account by interacting with the user to gather necessary information.
+         * It also generates unique user and account IDs, credit scores, and credit limits.
+         * 
+         * @param kb A Scanner object used to read user input.
+         * @param users_by_name A HashMap to store users by their full name.
+         * @param accounts_by_number A HashMap to store users by their account numbers.
+         * @return The created {@code Customer} object.
+         */
         public Customer createNewUser(Scanner kb, HashMap<String, Customer> users_by_name, 
                                               HashMap<Integer, Customer> accounts_by_number) {
             
@@ -216,7 +259,10 @@ public class UserCreation {
         
         return customer;
     }
-    
+    /**
+     * Saves new user's to the new CSV file.
+     * @param users_by_name A hashmap to store users by their full name.
+     */
     public static void saveUsersToCSV(HashMap<String, Customer> users_by_name) {
         try (FileWriter writer = new FileWriter(CSV_FILE, false)) {
             // Write CSV header
@@ -248,7 +294,13 @@ public class UserCreation {
         }
     }
     
-    
+    /**
+     * Parses a string representing a date in the format "dd-MMM-yy" into a {@code Date} object.
+     * If the string cannot be parsed, it returns the current date.
+     * 
+     * @param dateStr The string representing the date to be parsed. The format should be "dd-MMM-yy".
+     * @return A {@code Date} object representing the parsed date, or the current date if parsing fails.
+     */
     private static Date parseDate(String dateStr) {
         SimpleDateFormat inputFormat = new SimpleDateFormat("dd-MMM-yy"); // Change to match the input format
         try {
@@ -258,6 +310,14 @@ public class UserCreation {
             return new Date(); // Return current date or handle accordingly
         }
     }
+    /**
+     * Formats a phone number into the standard format "(XXX) XXX-XXXX".
+     * Assumes the input phone number is a 10-digit string (e.g., "9159159159") and formats it accordingly.
+     * If the input does not have 10 digits, it returns the original phone number as is.
+     * 
+     * @param phone The 10-digit phone number to be formatted.
+     * @return The formatted phone number in the format "(XXX) XXX-XXXX", or the original phone number if invalid.
+     */
     
     private static String formatPhoneNumber(String phone) {
         // Assume the phone is provided in the format "9159159159" and you want "(915) 915-9159"

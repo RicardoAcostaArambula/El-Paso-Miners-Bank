@@ -1,3 +1,7 @@
+/**
+ * The TransactionStatement class is responsible for managing customer transaction sessions,
+ * recording transactions, and generating detailed account statements.
+ */
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -10,18 +14,33 @@ public class TransactionStatement {
     private static HashMap<String, SessionData> activeSessions = new HashMap<>();
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+     /**
+     * SessionData is a private inner class that holds data related to a customer's session,
+     * including the start time, initial balances, and a list of recorded transactions.
+     */
     private static class SessionData {
         LocalDateTime startTime;
         float[] initialBalances;
         List<String> transactions;
 
+         /**
+         * Constructs a new SessionData instance.
+         *
+         * @param checkingBalance Initial checking account balance
+         * @param savingsBalance Initial savings account balance
+         * @param creditBalance Initial credit account balance
+         */
         SessionData(float checkingBalance, float savingsBalance, float creditBalance) {
             this.startTime = LocalDateTime.now();
             this.initialBalances = new float[]{checkingBalance, savingsBalance, creditBalance};
             this.transactions = new ArrayList<>();
         }
     }
-
+    /**
+     * Starts a session for the given customer by recording the initial account balances.
+     *
+     * @param customer The customer for whom the session is being started
+     */
     public void startSession(Customer customer) {
         String customerKey = customer.get_name() + " " + customer.get_last();
         float[] initialBalances = {
@@ -31,7 +50,12 @@ public class TransactionStatement {
         };
         activeSessions.put(customerKey, new SessionData(initialBalances[0], initialBalances[1], initialBalances[2]));
     }
-
+    /**
+     * Records a transaction for the given customer.
+     *
+     * @param customer The customer for whom the transaction is being recorded
+     * @param transaction The description of the transaction
+     */
     public void recordTransaction(Customer customer, String transaction) {
         String customerKey = customer.get_name() + " " + customer.get_last();
         SessionData session = activeSessions.get(customerKey);
@@ -41,7 +65,12 @@ public class TransactionStatement {
                 transaction));
         }
     }
-
+    /**
+     * Generates a transaction statement for the given customer and writes it to a file.
+     * The file includes account details, initial and current balances, and transaction history.
+     *
+     * @param customer The customer for whom the transaction statement is being generated
+     */
     public void generateTransactionStatement(Customer customer) {
         String customerKey = customer.get_name() + " " + customer.get_last();
         SessionData session = activeSessions.get(customerKey);
