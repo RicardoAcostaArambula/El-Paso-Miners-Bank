@@ -84,6 +84,9 @@ public class Customer extends Person {
      */
     @Override
     public void set_name(String name) {
+        if (!name.matches("[a-zA-Z]+")) {
+            throw new IllegalArgumentException();
+        }
         this.name = name;
     }
 
@@ -93,6 +96,9 @@ public class Customer extends Person {
      * @param last The last name of the customer.
      */
     public void set_last(String last) {
+        if (!last.matches("[a-zA-Z\\s\\-]+")) {
+            throw new IllegalArgumentException();
+        }
         this.last = last;
     }
 

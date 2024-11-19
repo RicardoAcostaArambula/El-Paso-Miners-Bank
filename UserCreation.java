@@ -182,13 +182,30 @@ public class UserCreation {
             System.out.println("\nEnter user information:");
             
             // Get personal information
-            System.out.print("First Name: ");
-            String firstName = kb.nextLine();
-            customer.set_name(firstName);
+            String firstName;
+            while (true) {
+                try {
+                    System.out.print("First Name: ");
+                    firstName = kb.nextLine();
+                    customer.set_name(firstName);
+                    break;
+                } catch (IllegalArgumentException e) {
+                    System.out.println("First name must contain only letters. Please try again.");
+                }
+            }
             
-            System.out.print("Last Name: ");
-            String lastName = kb.nextLine();
-            customer.set_last(lastName);
+            // Get Last Name 
+            String lastName;
+            while (true) {
+                try {
+                    System.out.print("Last Name: ");
+                    lastName = kb.nextLine();
+                    customer.set_last(lastName);
+                    break;
+                } catch (IllegalArgumentException e) {
+                    System.out.println("Last name can only contain letters, spaces, or hyphens. Please try again.");
+                }
+            }
             
             System.out.print("Date of Birth (DD-Month-YY): ");
             String dob = kb.nextLine();

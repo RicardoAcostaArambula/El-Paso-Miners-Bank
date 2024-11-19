@@ -1,6 +1,6 @@
 /**Operations is an interface that will serve as the base for all operations for users and managers 
  * 
- * @author Sebastian Nares & Ricardo Acosta
+ * @author Sebastian Nares and Ricardo Acosta
 */
 public interface Operations {
     public float checking_account_balance(Customer customer);

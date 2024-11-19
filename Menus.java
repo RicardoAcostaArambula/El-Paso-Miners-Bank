@@ -3,7 +3,7 @@ import java.util.Scanner;
 /**
  * It is a class that serves to display the different menus and take user selection for each of the menus
  * 
- * @author Sebastian Nares & Ricardo Acosta
+ * @author Sebastian Nares and Ricardo Acosta
  */
 public class Menus {
     Scanner kb = new Scanner(System.in);
@@ -42,7 +42,7 @@ public class Menus {
     /**
      * prompts the user to enter the full name from the user and verifies if it is a valid user
      * 
-     * @param users_by_name
+     * @param users_by_name A HashMap that contains user information
      * @return username is the user full name 
      */
     public String get_full_name_menu(HashMap <String, Customer> users_by_name){
@@ -103,15 +103,16 @@ public class Menus {
     }
     /**
      * This method is yet to be implemented
+     * @return Gets source account.
      */
     public int get_source_account(){
         return 0;
     }
     /**
      * Ask and generates statement for user
-     * @param users_by_name
-     * @param statementGenerator 
-     * @return None
+     * @param users_by_name A HashMap that contains user information.
+     * @param statementGenerator Generates Statement.
+     * 
      */
     public void displayStatementMenu(HashMap<String, Customer> users_by_name, TransactionStatement statementGenerator) {
         System.out.println("=== Generate Account Statement ===");

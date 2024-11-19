@@ -6,7 +6,7 @@ import java.util.Scanner;
  * It facilitates different modes of operation, such as User Mode, Manager Mode, and Account Creation Mode.
  * It handles user input and manages transitions between these modes.
  * 
- * @author Sebastian Nares & Ricardo Acosta
+ * @author Sebastian Nares and Ricardo Acosta
  */
 public class RunBank {
     private BankMode currentMode;

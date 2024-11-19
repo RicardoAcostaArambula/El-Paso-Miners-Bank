@@ -216,11 +216,11 @@ public class Log {
     /**
  * Logs a transfer transaction between two customers' accounts.
  * 
- * @param sender         The customer sending the money.
- * @param recipient      The customer receiving the money.
- * @param senderType     The type of the sender's account (1 for Checking, 2 for Savings, 3 for Credit).
- * @param recipientType  The type of the recipient's account (1 for Checking, 2 for Savings, 3 for Credit).
- * @param transferAmount The amount transferred.
+ * @param customer        The customer sending the money.
+ * @param recipientCustomer      The customer receiving the money.
+ * @param account_type     The type of the sender's account (1 for Checking, 2 for Savings, 3 for Credit).
+ * @param recipientAccountType  The type of the recipient's account (1 for Checking, 2 for Savings, 3 for Credit).
+ * @param interCustomerTransferAmount The amount transferred.
  */
 public void logInterCustomerTransfer(Customer customer, Customer recipientCustomer, int account_type, int recipientAccountType, float interCustomerTransferAmount) {
     // Validate transfer amount
