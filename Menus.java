@@ -24,9 +24,10 @@ public class Menus {
         do {
             System.out.println("Please Select the one of the following modes:");
             System.out.println("1. Individual Person");
-            System.out.println("2. Bank Teller");
-            System.out.println("3. Create New Account");
-            System.out.println("4. Generate account statement");
+            System.out.println("2. Manager Mode");
+            System.out.println("3. Generate account statement");
+            // System.out.println("3. Create New Account");
+            // System.out.println("4. Generate account statement");
             option = kb.nextInt();
             if (kb.hasNextLine()) {
                 kb.nextLine();

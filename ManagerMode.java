@@ -37,8 +37,10 @@ class ManagerMode implements BankMode {
                 System.out.println("(2) Inquiry account by account number");
                 System.out.println("(3) Process transactions from file");
                 System.out.println("(4) Process manager transaction statement");
+                System.out.println("(5) Create New Account");
                 inquiry_type = kb.nextInt();
-                if (1 <= inquiry_type && inquiry_type <= 4) {
+                kb.nextLine();
+                if (1 <= inquiry_type && inquiry_type <= 5) {
                     inquiry_chosen = true;
                 } else {
                     System.out.println("Please choose a valid option");
@@ -121,13 +123,15 @@ class ManagerMode implements BankMode {
                 managerStatement.generateTransactionStatement(customer);
                 managerStatement.recordTransaction(customer, String.format("Manager generated transaction statement for %s %s", 
                 customer.get_name(), customer.get_last()));
+            } else if (inquiry_type == 5){
+                RunBank bankApp = new RunBank();
+                bankApp.setMode(new AccountCreationMode(), users_by_name, username, accounts_by_number);
             }
-
             System.out.println("Would you like to exit? (yes/no)");
             String response = kb.nextLine().trim().toLowerCase();
             continueTeller = !response.equals("yes");
-            exitMode();
         }
+        exitMode();
     }
     /** 
      * ExitMode allows user to return to the main manu

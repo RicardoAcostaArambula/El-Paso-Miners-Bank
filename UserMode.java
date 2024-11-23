@@ -11,11 +11,17 @@ class UserMode implements BankMode {
      */
     @Override
     public void enterMode(HashMap<String, Customer> users_by_name, String username, HashMap<Integer, Customer> accounts_by_number){
-        System.out.println("Entering User Mode...");
         // Start the manager transaction session for this user
         Customer customer = users_by_name.get(username);
+        // VerifyUser verifyUser = new VerifyUser();
         ManagerTransactionStatement managerStatement = new ManagerTransactionStatement();
         managerStatement.startSession(customer);
+        performTransaction(users_by_name, username, accounts_by_number);
+        // System.out.println("=== Welcome back! ===");
+        // if (!verifyUser.promptPassword(customer)) 
+        //     exitMode();
+        // else    
+        //     performTransaction(users_by_name, username, accounts_by_number);
         performTransaction(users_by_name, username, accounts_by_number);
     }
 
