@@ -62,6 +62,7 @@ class ManagerMode implements BankMode {
                         valid = true;
                     }
                 } while (!valid);
+                
                 Customer customer = users_by_name.get(account_holder);
                 managerOperations.dislay_account_information_by_name(customer);
                 managerStatement.recordTransaction(customer, String.format("Manager performed account inquiry for %s %s", 

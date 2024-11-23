@@ -2,7 +2,7 @@ import java.util.HashMap;
 import java.util.Scanner;
 class UserMode implements BankMode {
     /**
-     * enterMode is the starting point for entering UserMode which calls then the process of performTransaction
+     * enterMode is the starting point for entering UserMode which calls then the process of performTransaction if log in was successfull 
      * 
      * @param users_by_name is a hashmap that contains the customers by name
      * @param username is how the user is identify 
@@ -13,16 +13,17 @@ class UserMode implements BankMode {
     public void enterMode(HashMap<String, Customer> users_by_name, String username, HashMap<Integer, Customer> accounts_by_number){
         // Start the manager transaction session for this user
         Customer customer = users_by_name.get(username);
-        // VerifyUser verifyUser = new VerifyUser();
+        VerifyUser verifyUser = new VerifyUser();
         ManagerTransactionStatement managerStatement = new ManagerTransactionStatement();
         managerStatement.startSession(customer);
-        performTransaction(users_by_name, username, accounts_by_number);
-        // System.out.println("=== Welcome back! ===");
-        // if (!verifyUser.promptPassword(customer)) 
-        //     exitMode();
-        // else    
-        //     performTransaction(users_by_name, username, accounts_by_number);
-        performTransaction(users_by_name, username, accounts_by_number);
+        // performTransaction(users_by_name, username, accounts_by_number);
+        System.out.println("===============================");
+        System.out.println("Welcome back " + customer.get_name()+ "!");
+        System.out.println("===============================");
+        if (!verifyUser.promptPassword(customer)) 
+            exitMode();
+        else    
+            performTransaction(users_by_name, username, accounts_by_number);
     }
 
     /**

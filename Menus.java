@@ -23,8 +23,8 @@ public class Menus {
         boolean right_option = false;
         do {
             System.out.println("Please Select the one of the following modes:");
-            System.out.println("1. Individual Person");
-            System.out.println("2. Manager Mode");
+            System.out.println("1. Customer");
+            System.out.println("2. Bank Manager");
             System.out.println("3. Generate account statement");
             // System.out.println("3. Create New Account");
             // System.out.println("4. Generate account statement");
