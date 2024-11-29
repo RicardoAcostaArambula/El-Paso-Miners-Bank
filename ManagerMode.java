@@ -39,7 +39,7 @@ class ManagerMode implements BankMode {
                 System.out.println("(4) Process manager transaction statement");
                 System.out.println("(5) Create New Account");
                 inquiry_type = kb.nextInt();
-                kb.nextLine();
+                
                 if (1 <= inquiry_type && inquiry_type <= 5) {
                     inquiry_chosen = true;
                 } else {
