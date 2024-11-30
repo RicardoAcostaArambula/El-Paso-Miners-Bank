@@ -14,9 +14,11 @@ class TransactionReader {
     private TransactionReader (){
     }
     /**
-     * reads and performs all transactions in the file
+     * Reads and performs all transactions in the file
      * 
-     * @param filename is the name of the file that contains the transactions
+     * @param filename Is the name of the file that contains the transactions
+     * @param usersByName A hashmap to store users by their full name.
+     * @param transactionLog Keeps log of transactions 
      * @return None
      */
     public static void transactionReader(String filename, HashMap <String, Customer>  usersByName, Log transactionLog){
