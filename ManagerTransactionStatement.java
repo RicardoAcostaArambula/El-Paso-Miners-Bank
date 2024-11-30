@@ -41,11 +41,11 @@ public class ManagerTransactionStatement {
      * @param customer The customer for whom the session is being started
      */
     public void startSession(Customer customer) {
-        String customerKey = customer.get_name() + " " + customer.get_last();
+        String customerKey = customer.getName() + " " + customer.getLast();
         float[] initialBalances = {
-            customer.get_checking_account_balance(),
-            customer.get_saving_account_balance(),
-            customer.get_credit_account_balance()
+            customer.getCheckingAccountBalance(),
+            customer.getSavingAccountBalance(),
+            customer.getCreditAccountBalance()
         };
         activeSessions.put(customerKey, new SessionData(initialBalances[0], initialBalances[1], initialBalances[2]));
     }
@@ -56,7 +56,7 @@ public class ManagerTransactionStatement {
      * @param transaction The description of the transaction
      */
     public void recordTransaction(Customer customer, String transaction) {
-        String customerKey = customer.get_name() + " " + customer.get_last();
+        String customerKey = customer.getName() + " " + customer.getLast();
         SessionData session = activeSessions.get(customerKey);
         if (session != null) {
             session.transactions.add(String.format("[%s] %s", 
@@ -71,7 +71,7 @@ public class ManagerTransactionStatement {
      * @param customer The customer for whom the transaction statement is being generated
      */
     public void generateTransactionStatement(Customer customer) {
-        String customerKey = customer.get_name() + " " + customer.get_last();
+        String customerKey = customer.getName() + " " + customer.getLast();
         SessionData session = activeSessions.get(customerKey);
         
         if (session == null) {
@@ -81,8 +81,8 @@ public class ManagerTransactionStatement {
 
         try {
             String fileName = String.format("manager_statement_%s_%s_%s.txt",
-                customer.get_name(),
-                customer.get_last(),
+                customer.getName(),
+                customer.getLast(),
                 session.startTime.format(DateTimeFormatter.ofPattern("yyyyMMdd")));
 
             FileWriter writer = new FileWriter(fileName);
@@ -96,28 +96,28 @@ public class ManagerTransactionStatement {
 
             // Write customer information
             writer.write("     =========== CUSTOMER INFORMATION ============         \n");
-            writer.write(String.format("Name: %s %s\n", customer.get_name(), customer.get_last()));
-            writer.write(String.format("Address: %s\n", customer.get_address()));
-            writer.write(String.format("Phone: %s\n", customer.get_phone_number()));
-            writer.write(String.format("Email: %s\n\n", customer.get_email()));
+            writer.write(String.format("Name: %s %s\n", customer.getName(), customer.getLast()));
+            writer.write(String.format("Address: %s\n", customer.getAddress()));
+            writer.write(String.format("Phone: %s\n", customer.getPhoneNumber()));
+            writer.write(String.format("Email: %s\n\n", customer.getEmail()));
 
             // Write account information
             writer.write("      =========== ACCOUNT INFORMATION ============        \n");
-            writer.write(String.format("Customer Name: %s %s\n", customer.get_name(), customer.get_last()));
-            writer.write(String.format("Account ID: %d\n\n", customer.get_account_id()));
+            writer.write(String.format("Customer Name: %s %s\n", customer.getName(), customer.getLast()));
+            writer.write(String.format("Account ID: %d\n\n", customer.getAccountId()));
 
-            writer.write("Checking Account Number: " + customer.get_checking_account_number() + "\n");
-            writer.write("Savings Account Number: " + customer.get_saving_account_number() + "\n");
-            writer.write("Credit Account Number: " + customer.get_credit_account_number() + "\n\n");
+            writer.write("Checking Account Number: " + customer.getCheckingAccountNumber() + "\n");
+            writer.write("Savings Account Number: " + customer.getSavingAccountNumber() + "\n");
+            writer.write("Credit Account Number: " + customer.getCreditAccountNumber() + "\n\n");
 
             // Write balance summary
             writer.write("      =========== BALANCE SUMMARY ================        \n");
             writer.write(String.format("Checking Account:\n  Starting Balance: $%.2f\n  Current Balance: $%.2f\n\n",
-                session.initialBalances[0], customer.get_checking_account_balance()));
+                session.initialBalances[0], customer.getCheckingAccountBalance()));
             writer.write(String.format("Savings Account:\n  Starting Balance: $%.2f\n  Current Balance: $%.2f\n\n",
-                session.initialBalances[1], customer.get_saving_account_balance()));
+                session.initialBalances[1], customer.getSavingAccountBalance()));
             writer.write(String.format("Credit Account:\n  Starting Balance: $%.2f\n  Current Balance: $%.2f\n  Credit Limit: $%.2f\n\n",
-                session.initialBalances[2], customer.get_credit_account_balance(), customer.get_credit_account_max()));
+                session.initialBalances[2], customer.getCreditAccountBalance(), customer.getCreditAccountMax()));
 
             // Write transactions 
             writer.write("    ============= TRANSACTION HISTORY ===========         \n");

@@ -7,8 +7,8 @@
  */
 public class Employee extends Person {
     // Attributes
-    private String employee_id;
-    private boolean is_a_manager;
+    private String employeeId;
+    private boolean isAManager;
 
     /**
      * Default constructor for {@code Employee}.
@@ -22,13 +22,13 @@ public class Employee extends Person {
      * Constructs an {@code Employee} object with the specified name, employee ID, and managerial status.
      * 
      * @param name         The name of the employee.
-     * @param employee_id  The ID of the employee.
-     * @param is_a_manager {@code true} if the employee is a manager, {@code false} otherwise.
+     * @param employeeId  The ID of the employee.
+     * @param isAManager {@code true} if the employee is a manager, {@code false} otherwise.
      */
-    public Employee(String name, String employee_id, boolean is_a_manager) {
+    public Employee(String name, String employeeId, boolean isAManager) {
         super(name); 
-        this.employee_id = employee_id;
-        this.is_a_manager = is_a_manager;
+        this.employeeId = employeeId;
+        this.isAManager = isAManager;
     }
 
     /**
@@ -38,31 +38,31 @@ public class Employee extends Person {
      * @param name         The name of the employee.
      * @param address      The address of the employee.
      * @param ssn          The social security number of the employee.
-     * @param employee_id  The ID of the employee.
-     * @param is_a_manager {@code true} if the employee is a manager, {@code false} otherwise.
+     * @param employeeId  The ID of the employee.
+     * @param isAManager {@code true} if the employee is a manager, {@code false} otherwise.
      */
-    public Employee(String name, String address, int ssn, String employee_id, boolean is_a_manager) {
+    public Employee(String name, String address, int ssn, String employeeId, boolean isAManager) {
         super(name, address, ssn); 
-        this.employee_id = employee_id;
-        this.is_a_manager = is_a_manager;
+        this.employeeId = employeeId;
+        this.isAManager = isAManager;
     }
 
     /**
      * Sets the employee ID.
      * 
-     * @param employee_id The new employee ID to be set.
+     * @param employeeId The new employee ID to be set.
      */
-    public void set_employee_id(String employee_id) {
-        this.employee_id = employee_id;
+    public void setEmployeeId(String employeeId) {
+        this.employeeId = employeeId;
     }
 
     /**
      * Sets whether the employee is a manager.
      * 
-     * @param is_a_manager {@code true} if the employee is a manager, {@code false} otherwise.
+     * @param isAManager {@code true} if the employee is a manager, {@code false} otherwise.
      */
-    public void set_is_a_manager(boolean is_a_manager) {
-        this.is_a_manager = is_a_manager;
+    public void setIsAManager(boolean isAManager) {
+        this.isAManager = isAManager;
     }
 
     /**
@@ -70,8 +70,8 @@ public class Employee extends Person {
      * 
      * @return The name of the employee.
      */
-    public String get_employee_name() {
-        return get_name(); 
+    public String getEmployeeName() {
+        return getName(); 
     }
 
     /**
@@ -79,8 +79,8 @@ public class Employee extends Person {
      * 
      * @return The employee ID.
      */
-    public String get_employee_id() {
-        return this.employee_id;
+    public String getEmployeeId() {
+        return this.employeeId;
     }
 
     /**
@@ -88,7 +88,7 @@ public class Employee extends Person {
      * 
      * @return {@code true} if the employee is a manager, {@code false} otherwise.
      */
-    public boolean get_is_a_manager() {
-        return this.is_a_manager;
+    public boolean getIsAManager() {
+        return this.isAManager;
     }
 }

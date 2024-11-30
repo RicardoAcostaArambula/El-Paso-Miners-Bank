@@ -19,7 +19,7 @@ class TransactionReader {
      * @param filename is the name of the file that contains the transactions
      * @return None
      */
-    public static void transaction_reader(String filename, HashMap <String, Customer>  users_by_name, Log transactionLog){
+    public static void transactionReader(String filename, HashMap <String, Customer>  usersByName, Log transactionLog){
         UserOperations userOperations = new UserOperations();
         System.out.println("Processing transacitons from file... from another class:)");
         try {
@@ -31,46 +31,46 @@ class TransactionReader {
                 line = read.nextLine();
                 String[] items = line.split(",");
                 /*From First Name */
-                String from_first_name;
+                String fromFirstName;
                 /*From Last Name*/
-                String from_last_name;
+                String fromLastName;
                 /*From Where*/
-                String from_where = "";
+                String fromWhere = "";
                 /*Action */
                 String action = "";
                 /*To First Name*/
-                String to_first_name = "";
+                String toFirstName = "";
                 /*To Last Name*/
-                String to_last_name = "";
+                String toLastName = "";
                 /*To Where*/
-                String to_where = "";
+                String toWhere = "";
                 /*Amount*/
                 String amount = "";
-                String from_user;
-                float withdrawal_amount;
+                String fromUser;
+                float withdrawalAmount;
                 if (items.length == 4){
-                    from_first_name = items[0];
+                    fromFirstName = items[0];
                     /*From Last Name*/
-                    from_last_name = items[1];
+                    fromLastName = items[1];
                     /*From Where*/
-                    from_where = items[2];
+                    fromWhere = items[2];
                     /*Action */
                     action = items[3];
                 } else {
                     /*From First Name */
-                    from_first_name = items[0];
+                    fromFirstName = items[0];
                     /*From Last Name*/
-                    from_last_name = items[1];
+                    fromLastName = items[1];
                     /*From Where*/
-                    from_where = items[2];
+                    fromWhere = items[2];
                     /*Action */
                     action = items[3];
                     /*To First Name*/
-                    to_first_name = items[4];
+                    toFirstName = items[4];
                     /*To Last Name*/
-                    to_last_name = items[5];
+                    toLastName = items[5];
                     /*To Where*/
-                    to_where = items[6];
+                    toWhere = items[6];
                     /*Amount*/
                     amount = items[7];
                 }
@@ -79,34 +79,34 @@ class TransactionReader {
                 switch (action){
                     /*Mickey,Mouse,Checking,pays,Donald,Duck,Checking,100 */
                     case "pays":
-                        from_user = from_first_name + " " + from_last_name;
-                        String to_user = to_first_name + " " + to_last_name;
-                        if (!users_by_name.containsKey(from_user)) {
-                            System.out.println("The customer with Name: " + from_first_name + " and last name: " + from_last_name + " was not found");
-                        } else if (!users_by_name.containsKey(to_user)){
-                            System.out.println("The customer with Name: " + to_first_name + " and last name: " + to_last_name + " was not found");
+                        fromUser = fromFirstName + " " + fromLastName;
+                        String toUser = toFirstName + " " + toLastName;
+                        if (!usersByName.containsKey(fromUser)) {
+                            System.out.println("The customer with Name: " + fromFirstName + " and last name: " + fromLastName + " was not found");
+                        } else if (!usersByName.containsKey(toUser)){
+                            System.out.println("The customer with Name: " + toFirstName + " and last name: " + toLastName + " was not found");
                         } else {
                             /*get the customer object for each person */
-                            Customer from_customer = users_by_name.get(from_user);
-                            Customer to_customer = users_by_name.get(to_user);
+                            Customer fromCustomer = usersByName.get(fromUser);
+                            Customer toCustomer = usersByName.get(toUser);
                             float interCustomerTransferAmount = Float.parseFloat(amount);
                             if (interCustomerTransferAmount <= 0) {
                                 System.out.println("Error: Transfer amount must be greater than zero");
                                 break;
                             }
                             /*get account type*/
-                            int account_type_from = get_account_type(from_where);
-                            int account_type_to = get_account_type(from_where);
-                            if (account_type_from == -1 || account_type_to==-1){
+                            int accountTypeFrom = getAccountType(fromWhere);
+                            int accountTypeTo = getAccountType(fromWhere);
+                            if (accountTypeFrom == -1 || accountTypeTo==-1){
                                 System.out.println("There was an error getting the account type");
                                 break;
                             }
 
-                            if (userOperations.transferBetweenCustomers(from_customer, to_customer, account_type_from, account_type_to, interCustomerTransferAmount)) {
+                            if (userOperations.transferBetweenCustomers(fromCustomer, toCustomer, accountTypeFrom, accountTypeTo, interCustomerTransferAmount)) {
                                 System.out.println("Successfully transferred $" + String.format("%.2f", interCustomerTransferAmount) + 
-                                                   " to customer: " + to_customer.get_name() + " " + to_customer.get_last());
+                                                   " to customer: " + toCustomer.getName() + " " + toCustomer.getLast());
                                 /*recording transaction*/
-                                transactionLog.logInterCustomerTransfer(from_customer, to_customer, account_type_from, account_type_to, interCustomerTransferAmount);
+                                transactionLog.logInterCustomerTransfer(fromCustomer, toCustomer, accountTypeFrom, accountTypeTo, interCustomerTransferAmount);
                             } else {
                                 System.out.println("Transfer failed. Please check account balances or input data.");
                             }
@@ -114,148 +114,148 @@ class TransactionReader {
                         break;
                     case "transfers":
                         /*Gets customer name*/
-                        from_user = from_first_name + " " + from_last_name;
-                        if (!users_by_name.containsKey(from_user)) {
-                            System.out.println("The customer with Name: " + from_first_name + " and last name: " + from_last_name + " was not found");
+                        fromUser = fromFirstName + " " + fromLastName;
+                        if (!usersByName.containsKey(fromUser)) {
+                            System.out.println("The customer with Name: " + fromFirstName + " and last name: " + fromLastName + " was not found");
                             break;
                         } 
-                        Customer customer = users_by_name.get(from_user);
-                        int account_type_from = get_account_type(from_where);
-                        int account_type_to = get_account_type(to_where);
-                        float transfer_amount = Float.parseFloat(amount);
-                        if (account_type_from == -1 || account_type_to== -1){
+                        Customer customer = usersByName.get(fromUser);
+                        int accountTypeFrom = getAccountType(fromWhere);
+                        int accountTypeTo = getAccountType(toWhere);
+                        float transferAmount = Float.parseFloat(amount);
+                        if (accountTypeFrom == -1 || accountTypeTo== -1){
                             System.out.println("There was an error getting the account type");
                             break;
-                        } else if (account_type_from == account_type_to) {
+                        } else if (accountTypeFrom == accountTypeTo) {
                             System.out.println("Error: Cannot transfer to the same account");
                             break;
                         }
                         // Get source account balance
-                        float source_balance = 0;
-                        if (account_type_from == 1) {
-                            source_balance = userOperations.checking_account_balance(customer);
-                        } else if (account_type_from == 2) {
-                            source_balance = userOperations.saving_account_balance(customer);
-                        } else if (account_type_from == 3) {
-                            source_balance = userOperations.credit_account_balance(customer);
+                        float sourceBalance = 0;
+                        if (accountTypeFrom == 1) {
+                            sourceBalance = userOperations.checkingAccountBalance(customer);
+                        } else if (accountTypeFrom == 2) {
+                            sourceBalance = userOperations.savingAccountBalance(customer);
+                        } else if (accountTypeFrom == 3) {
+                            sourceBalance = userOperations.creditAccountBalance(customer);
                         }
 
                         // Check if source has sufficient funds
-                        if (source_balance < transfer_amount) {
+                        if (sourceBalance < transferAmount) {
                             System.out.println("Error: Insufficient funds in source account");
                             break;
                         }
 
                         // Perform transfer
                         // Deduct from source
-                        if (account_type_from == 1) {
-                            customer.set_checking_account_balance(source_balance - transfer_amount);
-                        } else if (account_type_from == 2) {
-                            customer.set_saving_account_balance(source_balance - transfer_amount);
-                        } else if (account_type_from == 3) {
-                            customer.set_credit_account_balance(source_balance - transfer_amount);
+                        if (accountTypeFrom == 1) {
+                            customer.setCheckingAccountBalance(sourceBalance - transferAmount);
+                        } else if (accountTypeFrom == 2) {
+                            customer.setSavingAccountBalance(sourceBalance - transferAmount);
+                        } else if (accountTypeFrom == 3) {
+                            customer.setCreditAccountBalance(sourceBalance - transferAmount);
                         }
                         
                         // Add to destination
-                        if (account_type_to == 1) {
-                            userOperations.deposit_to_checking(customer, transfer_amount);
-                        } else if (account_type_to == 2) {
-                            userOperations.deposit_to_saving(customer, transfer_amount);
-                        } else if (account_type_to == 3) {
-                            userOperations.deposit_to_credit(customer, transfer_amount);
+                        if (accountTypeTo == 1) {
+                            userOperations.depositToChecking(customer, transferAmount);
+                        } else if (accountTypeTo == 2) {
+                            userOperations.depositToSaving(customer, transferAmount);
+                        } else if (accountTypeTo == 3) {
+                            userOperations.depositToCredit(customer, transferAmount);
                         }
                         
-                        System.out.println("Successfully transferred $" + transfer_amount + " from " +from_where + " to " + to_where + " for account holder: " + from_user);
-                        transactionLog.logTransfer(customer, account_type_from,  account_type_to, transfer_amount);
+                        System.out.println("Successfully transferred $" + transferAmount + " from " +fromWhere + " to " + toWhere + " for account holder: " + fromUser);
+                        transactionLog.logTransfer(customer, accountTypeFrom,  accountTypeTo, transferAmount);
                         break;
                     case "withdraws":
-                        withdrawal_amount = Float.parseFloat(amount);
-                        if (withdrawal_amount <= 0) {
+                        withdrawalAmount = Float.parseFloat(amount);
+                        if (withdrawalAmount <= 0) {
                             System.out.println("Error: Withdraw amount must be greater than zero");
                             break;
                         }
                         
                         /*Gets customer name*/
-                        from_user = from_first_name + " " + from_last_name;
-                        if (!users_by_name.containsKey(from_user)) {
-                            System.out.println("The customer with Name: " + from_first_name + " and last name: " + from_last_name + " was not found");
+                        fromUser = fromFirstName + " " + fromLastName;
+                        if (!usersByName.containsKey(fromUser)) {
+                            System.out.println("The customer with Name: " + fromFirstName + " and last name: " + fromLastName + " was not found");
                             break;
                         } 
-                        customer = users_by_name.get(from_user);
+                        customer = usersByName.get(fromUser);
                         /*gets account type */
-                        account_type_from = get_account_type(from_where);
+                        accountTypeFrom = getAccountType(fromWhere);
 
                         /*processing based on account type */
-                        if (account_type_from == 1) {
-                            float checking_balance = userOperations.checking_account_balance(customer);
-                            if (checking_balance >= withdrawal_amount) {
-                                customer.set_checking_account_balance(checking_balance - withdrawal_amount);
-                                System.out.println("Successfully withdrew $" + withdrawal_amount + " from checking account");
+                        if (accountTypeFrom == 1) {
+                            float checkingBalance = userOperations.checkingAccountBalance(customer);
+                            if (checkingBalance >= withdrawalAmount) {
+                                customer.setCheckingAccountBalance(checkingBalance - withdrawalAmount);
+                                System.out.println("Successfully withdrew $" + withdrawalAmount + " from checking account");
                             } else {
                                 System.out.println("Error: Insufficient funds in checking account");
                             }
-                        } else if (account_type_from == 2) {
-                            float savings_balance = userOperations.saving_account_balance(customer);
-                            if (savings_balance >= withdrawal_amount) {
-                                customer.set_saving_account_balance(savings_balance - withdrawal_amount);
-                                System.out.println("Successfully withdrew $" + withdrawal_amount + " from savings account");
+                        } else if (accountTypeFrom == 2) {
+                            float savingsBalance = userOperations.savingAccountBalance(customer);
+                            if (savingsBalance >= withdrawalAmount) {
+                                customer.setSavingAccountBalance(savingsBalance - withdrawalAmount);
+                                System.out.println("Successfully withdrew $" + withdrawalAmount + " from savings account");
                             } else {
                                 System.out.println("Error: Insufficient funds in savings account");
                             }
                         } else {
                             System.out.println("Error: Cannot withdraw from credit account");
                         }
-                        transactionLog.logWithdrawal(customer, account_type_from, withdrawal_amount);
+                        transactionLog.logWithdrawal(customer, accountTypeFrom, withdrawalAmount);
                         break;
 
                     case "deposits":
-                        float deposit_amount = Float.parseFloat(amount);
-                        if (deposit_amount <= 0) {
+                        float depositAmount = Float.parseFloat(amount);
+                        if (depositAmount <= 0) {
                             System.out.println("Error: Deposit amount must be greater than zero");
                             break;
                         }
 
                         /*Gets customer name*/
-                        to_user = to_first_name + " " + to_last_name;
-                        if (!users_by_name.containsKey(to_user)) {
-                            System.out.println("The customer with Name: " + to_first_name + " and last name: " + to_last_name + " was not found");
+                        toUser = toFirstName + " " + toLastName;
+                        if (!usersByName.containsKey(toUser)) {
+                            System.out.println("The customer with Name: " + toFirstName + " and last name: " + toLastName + " was not found");
                             break;
                         } 
-                        customer = users_by_name.get(to_user);
-                        int account_type = get_account_type(to_where);
+                        customer = usersByName.get(toUser);
+                        int accountType = getAccountType(toWhere);
                         
-                        if (account_type == 1) {
-                            userOperations.deposit_to_checking(customer, deposit_amount);
-                            System.out.println("Successfully deposited $" + deposit_amount + " to checking account");
-                        } else if (account_type == 2) {
-                            userOperations.deposit_to_saving(customer, deposit_amount);
-                            System.out.println("Successfully deposited $" + deposit_amount + " to savings account");
+                        if (accountType == 1) {
+                            userOperations.depositToChecking(customer, depositAmount);
+                            System.out.println("Successfully deposited $" + depositAmount + " to checking account");
+                        } else if (accountType == 2) {
+                            userOperations.depositToSaving(customer, depositAmount);
+                            System.out.println("Successfully deposited $" + depositAmount + " to savings account");
                         } else {
-                            userOperations.deposit_to_credit(customer, deposit_amount);
-                            System.out.println("Successfully deposited $" + deposit_amount + " to credit account");
+                            userOperations.depositToCredit(customer, depositAmount);
+                            System.out.println("Successfully deposited $" + depositAmount + " to credit account");
                         }
-                        transactionLog.logDeposit(customer, account_type, deposit_amount);
+                        transactionLog.logDeposit(customer, accountType, depositAmount);
                         break;
                     case "inquires":
                         /*Gets customer name*/
-                        from_user = from_first_name + " " + from_last_name;
-                        if (!users_by_name.containsKey(from_user)) {
-                            System.out.println("The customer with Name: " + from_first_name + " and last name: " + from_last_name + " was not found");
+                        fromUser = fromFirstName + " " + fromLastName;
+                        if (!usersByName.containsKey(fromUser)) {
+                            System.out.println("The customer with Name: " + fromFirstName + " and last name: " + fromLastName + " was not found");
                             break;
                         } 
-                        customer = users_by_name.get(from_user);
+                        customer = usersByName.get(fromUser);
                         Float balance;
                         /*implement inquires*/
-                        account_type = get_account_type(from_where);
-                        if (account_type == 1) {
-                            balance = userOperations.checking_account_balance(customer);
-                        } else if (account_type == 2) {
-                            balance = userOperations.saving_account_balance(customer);
+                        accountType = getAccountType(fromWhere);
+                        if (accountType == 1) {
+                            balance = userOperations.checkingAccountBalance(customer);
+                        } else if (accountType == 2) {
+                            balance = userOperations.savingAccountBalance(customer);
                         } else {
-                            balance = userOperations.credit_account_balance(customer);
+                            balance = userOperations.creditAccountBalance(customer);
                         }
                         System.out.println("The account balance is: $" + String.format("%.2f", balance));
-                        transactionLog.logBalanceInquiry(customer, account_type);
+                        transactionLog.logBalanceInquiry(customer, accountType);
                         break;
                     default:
                         System.out.println("there was an error selecting the action");
@@ -271,20 +271,20 @@ class TransactionReader {
     /**
      * Gets the user account type to be worked on
      * 
-     * @return account_type is the user selected option
+     * @return accountType is the user selected option
      */
     
-    public static int get_account_type(String account){
-        int account_type;
+    public static int getAccountType(String account){
+        int accountType;
         if (account.equalsIgnoreCase("checking")){
-            account_type = 1;
+            accountType = 1;
         } else if (account.equalsIgnoreCase("savings")){
-            account_type = 2;
+            accountType = 2;
         } else if (account.equalsIgnoreCase("credit")){
-            account_type = 3;
+            accountType = 3;
         } else {
-            account_type = -1;
+            accountType = -1;
         }
-        return account_type;
+        return accountType;
     }
 }

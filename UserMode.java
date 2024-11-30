@@ -4,37 +4,37 @@ class UserMode implements BankMode {
     /**
      * enterMode is the starting point for entering UserMode which calls then the process of performTransaction if log in was successfull 
      * 
-     * @param users_by_name is a hashmap that contains the customers by name
-     * @param username is how the user is identify 
-     * @param accounts_by_number is a hashmap that contains the customers by account number
+     * @param usersByName is a hashmap that contains the customers by name
+     * @param userName is how the user is identify 
+     * @param accountsByNumber is a hashmap that contains the customers by account number
      * @return None 
      */
     @Override
-    public void enterMode(HashMap<String, Customer> users_by_name, String username, HashMap<Integer, Customer> accounts_by_number){
+    public void enterMode(HashMap<String, Customer> usersByName, String userName, HashMap<Integer, Customer> accountsByNumber){
         // Start the manager transaction session for this user
-        Customer customer = users_by_name.get(username);
+        Customer customer = usersByName.get(userName);
         VerifyUser verifyUser = new VerifyUser();
         ManagerTransactionStatement managerStatement = new ManagerTransactionStatement();
         managerStatement.startSession(customer);
-        // performTransaction(users_by_name, username, accounts_by_number);
+        // performTransaction(usersByName, userName, accountsByNumber);
         System.out.println("===============================");
-        System.out.println("Welcome back " + customer.get_name()+ "!");
+        System.out.println("Welcome back " + customer.getName()+ "!");
         System.out.println("===============================");
         if (!verifyUser.promptPassword(customer)) 
             exitMode();
         else    
-            performTransaction(users_by_name, username, accounts_by_number);
+            performTransaction(usersByName, userName, accountsByNumber);
     }
 
     /**
      * performTransaction allows user to complete transactions as displayed by the manu for the user
-     * @param users_by_name is a hashmap that contains the customers by name
-     * @param username is how the user is identify 
-     * @param accounts_by_number is a hashmap that contains the customers by account number
+     * @param usersByName is a hashmap that contains the customers by name
+     * @param userName is how the user is identify 
+     * @param accountsByNumber is a hashmap that contains the customers by account number
      * @return None 
      */
     @Override
-    public void performTransaction(HashMap<String, Customer> users_by_name, String username, HashMap<Integer, Customer> accounts_by_number){
+    public void performTransaction(HashMap<String, Customer> usersByName, String userName, HashMap<Integer, Customer> accountsByNumber){
         TransactionStatement statementGenerator = new TransactionStatement();
         Scanner kb = new Scanner(System.in);
         Log transactionLog = new Log();
@@ -43,75 +43,75 @@ class UserMode implements BankMode {
         ManagerOperations managerOperations = new ManagerOperations();
         Menus menu = new Menus();
         boolean continueBanking = true;
-        Customer customer = users_by_name.get(username);
+        Customer customer = usersByName.get(userName);
 
         while(continueBanking) {
-            int account_type = menu.get_account_type_menu();
-            int transaction_option =  menu.select_transaction_menu();
-            switch (transaction_option) {
+            int accountType = menu.getAccountTypeMenu();
+            int transactionOption =  menu.selectTransactionMenu();
+            switch (transactionOption) {
                 case 1: 
-                    userOperations.check_balance(customer, account_type);
-                    transactionLog.logBalanceInquiry(customer, account_type);
+                    userOperations.checkBalance(customer, accountType);
+                    transactionLog.logBalanceInquiry(customer, accountType);
                     statementGenerator.recordTransaction(customer, "Balance inquiry for " +
-                                (account_type == 1 ? "Checking" : account_type == 2 ? "Savings" : "Credit") + " account");
+                                (accountType == 1 ? "Checking" : accountType == 2 ? "Savings" : "Credit") + " account");
                     managerStatement.recordTransaction(customer, String.format("Balance inquiry for %s account - Current balance: $%.2f",
-                            account_type == 1 ? "Checking" : account_type == 2 ? "Savings" : "Credit",
-                            account_type == 1 ? customer.get_checking_account_balance() :
-                            account_type == 2 ? customer.get_saving_account_balance() :
-                            customer.get_credit_account_balance()));
+                            accountType == 1 ? "Checking" : accountType == 2 ? "Savings" : "Credit",
+                            accountType == 1 ? customer.getCheckingAccountBalance() :
+                            accountType == 2 ? customer.getSavingAccountBalance() :
+                            customer.getCreditAccountBalance()));
                     break;
                 case 2:
                     System.out.println("Enter deposit amount:");
-                    float deposit_amount = kb.nextFloat();
+                    float depositAmount = kb.nextFloat();
                     kb.nextLine();
-                    userOperations.deposit(customer, account_type, deposit_amount);
-                    transactionLog.logDeposit(customer, account_type, deposit_amount);
+                    userOperations.deposit(customer, accountType, depositAmount);
+                    transactionLog.logDeposit(customer, accountType, depositAmount);
                     statementGenerator.recordTransaction(customer, String.format("Deposit of $%.2f to %s account",
-                                deposit_amount,
-                                account_type == 1 ? "Checking" : account_type == 2 ? "Savings" : "Credit"));
+                                depositAmount,
+                                accountType == 1 ? "Checking" : accountType == 2 ? "Savings" : "Credit"));
                     managerStatement.recordTransaction(customer, String.format("Deposit of $%.2f to %s account",
-                                deposit_amount,
-                                account_type == 1 ? "Checking" : account_type == 2 ? "Savings" : "Credit"));
+                                depositAmount,
+                                accountType == 1 ? "Checking" : accountType == 2 ? "Savings" : "Credit"));
                     break;
                 case 3:
                     System.out.println("Enter withdraw amount:");
-                    float withdrawal_amount = kb.nextFloat();
-                    userOperations.withdraw(customer, account_type, withdrawal_amount);
-                    transactionLog.logWithdrawal(customer, account_type, withdrawal_amount);
+                    float withdrawalAmount = kb.nextFloat();
+                    userOperations.withdraw(customer, accountType, withdrawalAmount);
+                    transactionLog.logWithdrawal(customer, accountType, withdrawalAmount);
                     statementGenerator.recordTransaction(customer, String.format("Withdrawal of $%.2f from %s account",
-                                withdrawal_amount,
-                                account_type == 1 ? "Checking" : account_type == 2 ? "Savings" : "Credit"));
+                                withdrawalAmount,
+                                accountType == 1 ? "Checking" : accountType == 2 ? "Savings" : "Credit"));
                     managerStatement.recordTransaction(customer, String.format("Withdrawal of $%.2f from %s account",
-                                withdrawal_amount,
-                                account_type == 1 ? "Checking" : account_type == 2 ? "Savings" : "Credit"));
+                                withdrawalAmount,
+                                accountType == 1 ? "Checking" : accountType == 2 ? "Savings" : "Credit"));
                     break;
                 case 4:
                     System.out.println("From which account?");
                     System.out.println("(1) Checking");
                     System.out.println("(2) Savings");
                     System.out.println("(3) Credit");
-                    int source_account = kb.nextInt();
+                    int sourceAccount = kb.nextInt();
                     
                     System.out.println("To which account?");
                     System.out.println("(1) Checking");
                     System.out.println("(2) Savings");
                     System.out.println("(3) Credit");
-                    int dest_account = kb.nextInt();
+                    int destAccount = kb.nextInt();
 
                     System.out.println("Enter transfer amount:");
-                    float transfer_amount = kb.nextFloat();
+                    float transferAmount = kb.nextFloat();
                     
-                    userOperations.transfer_between_accounts(customer, source_account, dest_account, transfer_amount);
-                    transactionLog.logTransfer(customer, source_account, dest_account, transfer_amount);
+                    userOperations.transferBetweenAccounts(customer, sourceAccount, destAccount, transferAmount);
+                    transactionLog.logTransfer(customer, sourceAccount, destAccount, transferAmount);
                     String transferMsg = String.format("Transfer of $%.2f from %s account to %s account",
-                                transfer_amount,
-                                source_account == 1 ? "Checking" : source_account == 2 ? "Savings" : "Credit",
-                                dest_account == 1 ? "Checking" : dest_account == 2 ? "Savings" : "Credit");
+                                transferAmount,
+                                sourceAccount == 1 ? "Checking" : sourceAccount == 2 ? "Savings" : "Credit",
+                                destAccount == 1 ? "Checking" : destAccount == 2 ? "Savings" : "Credit");
                     statementGenerator.recordTransaction(customer, transferMsg);
                     managerStatement.recordTransaction(customer, transferMsg);
                     break;
                 case 5:
-                    if (account_type != 3) {
+                    if (accountType != 3) {
                         System.out.println("Error: Payments can only be made from credit account");
                         String errorMsg = "Failed payment attempt - invalid account type";
                         statementGenerator.recordTransaction(customer, errorMsg);
@@ -120,8 +120,8 @@ class UserMode implements BankMode {
                     }
                     
                     System.out.println("Enter payment amount:");
-                    float payment_amount = kb.nextFloat();
-                    if (payment_amount <= 0) {
+                    float paymentAmount = kb.nextFloat();
+                    if (paymentAmount <= 0) {
                         System.out.println("Error: Payment amount must be greater than zero");
                         String errorMsg = "Failed payment attempt - invalid amount";
                         statementGenerator.recordTransaction(customer, errorMsg);
@@ -129,8 +129,8 @@ class UserMode implements BankMode {
                         break;
                     }
                     
-                    float credit_balance = userOperations.credit_account_balance(customer);
-                    if (credit_balance + payment_amount > customer.get_credit_account_max()) {
+                    float creditBalance = userOperations.creditAccountBalance(customer);
+                    if (creditBalance + paymentAmount > customer.getCreditAccountMax()) {
                         System.out.println("Error: Payment would exceed credit limit");
                         String errorMsg = "Failed payment attempt - would exceed credit limit";
                         statementGenerator.recordTransaction(customer, errorMsg);
@@ -138,26 +138,26 @@ class UserMode implements BankMode {
                         break;
                     }
                     
-                    customer.set_credit_account_balance(credit_balance + payment_amount);
-                    System.out.println("Successfully made payment of $" + payment_amount);
-                    transactionLog.logPayment(customer, payment_amount);
-                    String paymentMsg = String.format("Payment of $%.2f made to credit account", payment_amount);
+                    customer.setCreditAccountBalance(creditBalance + paymentAmount);
+                    System.out.println("Successfully made payment of $" + paymentAmount);
+                    transactionLog.logPayment(customer, paymentAmount);
+                    String paymentMsg = String.format("Payment of $%.2f made to credit account", paymentAmount);
                     statementGenerator.recordTransaction(customer, paymentMsg);
                     managerStatement.recordTransaction(customer, paymentMsg);
                     break;
                 case 6:
                     System.out.println("Enter recipient's name: ");
-                    String recipient_full_name = kb.nextLine();
+                    String recipientFullName = kb.nextLine();
                     
-                    if (!users_by_name.containsKey(recipient_full_name)) {
+                    if (!usersByName.containsKey(recipientFullName)) {
                         System.out.println("Error: Recipient not found");
-                        String errorMsg = "Failed transfer attempt - recipient not found: " + recipient_full_name;
+                        String errorMsg = "Failed transfer attempt - recipient not found: " + recipientFullName;
                         statementGenerator.recordTransaction(customer, errorMsg);
                         managerStatement.recordTransaction(customer, errorMsg);
                         break;
                     }
                     
-                    Customer recipientCustomer = users_by_name.get(recipient_full_name);
+                    Customer recipientCustomer = usersByName.get(recipientFullName);
                     
                     System.out.println("Select recipient's account type:");
                     System.out.println("(1) Checking");
@@ -184,16 +184,16 @@ class UserMode implements BankMode {
                         break;
                     }
                     
-                    if (userOperations.transferBetweenCustomers(customer, recipientCustomer, account_type, recipientAccountType, interCustomerTransferAmount)) {
+                    if (userOperations.transferBetweenCustomers(customer, recipientCustomer, accountType, recipientAccountType, interCustomerTransferAmount)) {
                         System.out.println("Successfully transferred $" + String.format("%.2f", interCustomerTransferAmount) + 
-                                            " to customer: " + recipientCustomer.get_name() + " " + recipientCustomer.get_last());
-                        transactionLog.logInterCustomerTransfer(customer, recipientCustomer, account_type, recipientAccountType, interCustomerTransferAmount);
+                                            " to customer: " + recipientCustomer.getName() + " " + recipientCustomer.getLast());
+                        transactionLog.logInterCustomerTransfer(customer, recipientCustomer, accountType, recipientAccountType, interCustomerTransferAmount);
                         String transferSuccessMsg = String.format(
                                     "Transfer of $%.2f from %s account to %s %s's %s account",
                                     interCustomerTransferAmount,
-                                    account_type == 1 ? "Checking" : account_type == 2 ? "Savings" : "Credit",
-                                    recipientCustomer.get_name(),
-                                    recipientCustomer.get_last(),
+                                    accountType == 1 ? "Checking" : accountType == 2 ? "Savings" : "Credit",
+                                    recipientCustomer.getName(),
+                                    recipientCustomer.getLast(),
                                     recipientAccountType == 1 ? "Checking" : recipientAccountType == 2 ? "Savings" : "Credit");
                         statementGenerator.recordTransaction(customer, transferSuccessMsg);
                         managerStatement.recordTransaction(customer, transferSuccessMsg);
@@ -206,7 +206,7 @@ class UserMode implements BankMode {
                     break;
                 default:
                     System.out.println("Invalid option selected");
-                    String errorMsg = "Invalid transaction option selected: " + transaction_option;
+                    String errorMsg = "Invalid transaction option selected: " + transactionOption;
                     statementGenerator.recordTransaction(customer, errorMsg);
                     managerStatement.recordTransaction(customer, errorMsg);
                     break;

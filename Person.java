@@ -55,7 +55,7 @@ public class Person {
      * 
      * @param name The new name of the person.
      */
-    public void set_name(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 
@@ -64,7 +64,7 @@ public class Person {
      * 
      * @param address The new address of the person.
      */
-    public void set_address(String address) {
+    public void setAddress(String address) {
         this.address = address;
     }
 
@@ -73,7 +73,7 @@ public class Person {
      * 
      * @param ssn The new Social Security Number of the person.
      */
-    public void set_ssn(int ssn) {
+    public void setSsn(int ssn) {
         this.ssn = ssn;
     }
 
@@ -84,7 +84,7 @@ public class Person {
      * 
      * @return The name of the person.
      */
-    public String get_name() {
+    public String getName() {
         return this.name;
     }
 
@@ -93,7 +93,7 @@ public class Person {
      * 
      * @return The address of the person.
      */
-    public String get_address() {
+    public String getAddress() {
         return this.address;
     }
 
@@ -102,7 +102,7 @@ public class Person {
      * 
      * @return The Social Security Number of the person.
      */
-    public int get_ssn() {
+    public int getSsn() {
         return this.ssn;
     }
 }

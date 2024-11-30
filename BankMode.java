@@ -5,7 +5,7 @@ import java.util.HashMap;
  * @author Sebastian Nares & Ricardo Acosta
  */
 interface BankMode {
-    void enterMode(HashMap<String, Customer> users_by_name, String username, HashMap<Integer, Customer> accounts_by_number);
-    void performTransaction(HashMap<String, Customer> users_by_name, String username, HashMap<Integer, Customer> accounts_by_number);
+    void enterMode(HashMap<String, Customer> usersByName, String userName, HashMap<Integer, Customer> accountsByNumber);
+    void performTransaction(HashMap<String, Customer> usersByName, String userName, HashMap<Integer, Customer> accountsByNumber);
     void exitMode();
 }

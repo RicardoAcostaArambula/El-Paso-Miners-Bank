@@ -8,10 +8,10 @@ class SetupUsers {
     }
     /**
      * Sets up users from a CSV file and populates the users HashMap.
-     * @param users_by_name the HashMap to be populated with Customer objects
-     * @param accounts_by_number the HashMap to be pupulated with Customer objects
+     * @param usersByName the HashMap to be populated with Customer objects
+     * @param accountsByNumber the HashMap to be pupulated with Customer objects
      */
-    public static void setup_users(HashMap<String, Customer> users_by_name, HashMap<Integer, Customer> accounts_by_number) {
+    public static void setUpUsers(HashMap<String, Customer> usersByName, HashMap<Integer, Customer> accountsByNumber) {
         try {
             File file = new File("bank_users.csv");
             Scanner read = new Scanner(file);
@@ -25,7 +25,7 @@ class SetupUsers {
                 }
                 
                 // Process the line
-                line = remove_commas_inside_quotations(line);
+                line = removeCommasInsideQuotations(line);
                 String[] items = line.split(",");
                 
                 // Clean up the fields - remove quotes and restore special characters
@@ -46,36 +46,36 @@ class SetupUsers {
                     String last = items[2];
                     String dob = items[3];
                     String address = items[4];
-                    String phone_number = items[5]; // Don't parse this as a number
-                    int checking_account_number = Integer.parseInt(items[6]);
-                    float checking_account_balance = Float.parseFloat(items[7]);
-                    int saving_account_number = Integer.parseInt(items[8]);
-                    float saving_account_balance = Float.parseFloat(items[9]);
-                    int credit_account_number = Integer.parseInt(items[10]);
-                    float credit_account_max = Float.parseFloat(items[11]);
-                    float credit_account_balance = Float.parseFloat(items[12]);
+                    String phoneNumber = items[5]; // Don't parse this as a number
+                    int checkingAccountNumber = Integer.parseInt(items[6]);
+                    float checkingAccountBalance = Float.parseFloat(items[7]);
+                    int savingAccountNumber = Integer.parseInt(items[8]);
+                    float savingAccountBalance = Float.parseFloat(items[9]);
+                    int creditAccountNumber = Integer.parseInt(items[10]);
+                    float creditAccountMax = Float.parseFloat(items[11]);
+                    float creditAccountBalance = Float.parseFloat(items[12]);
     
                     // Create customer object and set fields
                     Customer customer = new Customer();
-                    customer.set_account_id(id);
-                    customer.set_name(name);
-                    customer.set_last(last);
-                    customer.set_dob(dob);
-                    customer.set_address(address);
-                    customer.set_phone_number(phone_number); // Store as string
-                    customer.set_checking_account_number(checking_account_number);
-                    customer.set_checking_account_balance(checking_account_balance);
-                    customer.set_saving_account_number(saving_account_number);
-                    customer.set_saving_account_balance(saving_account_balance);
-                    customer.set_credit_account_number(credit_account_number);
-                    customer.set_credit_account_max(credit_account_max);
-                    customer.set_credit_account_balance(credit_account_balance);
+                    customer.setAccountId(id);
+                    customer.setName(name);
+                    customer.setLast(last);
+                    customer.setDob(dob);
+                    customer.setAddress(address);
+                    customer.setPhoneNumber(phoneNumber); // Store as string
+                    customer.setCheckingAccountNumber(checkingAccountNumber);
+                    customer.setCheckingAccountBalance(checkingAccountBalance);
+                    customer.setSavingAccountNumber(savingAccountNumber);
+                    customer.setSavingAccountBalance(savingAccountBalance);
+                    customer.setCreditAccountNumber(creditAccountNumber);
+                    customer.setCreditAccountMax(creditAccountMax);
+                    customer.setCreditAccountBalance(creditAccountBalance);
                     
                     String key = name + " " + last;
-                    users_by_name.put(key, customer);
-                    accounts_by_number.put(checking_account_number, customer);
-                    accounts_by_number.put(saving_account_number, customer);
-                    accounts_by_number.put(credit_account_number, customer);
+                    usersByName.put(key, customer);
+                    accountsByNumber.put(checkingAccountNumber, customer);
+                    accountsByNumber.put(savingAccountNumber, customer);
+                    accountsByNumber.put(creditAccountNumber, customer);
                 } catch (NumberFormatException e) {
                     System.out.println("Error parsing numeric data in line: " + line);
                     System.out.println("Specific error: " + e.getMessage());
@@ -94,22 +94,22 @@ class SetupUsers {
      * @param line the line from which to remove commas inside quotations
      * @return the modified line with commas removed
      */
-    public static String remove_commas_inside_quotations(String line) {
-        StringBuilder new_line = new StringBuilder();
-        boolean inside_quotes = false;
+    public static String removeCommasInsideQuotations(String line) {
+        StringBuilder newLine = new StringBuilder();
+        boolean insideQuotes = false;
         for (int i = 0; i < line.length(); i++) {
-            char current_char = line.charAt(i);
-            if (current_char == '"') {
-                inside_quotes = !inside_quotes;
+            char currentChar = line.charAt(i);
+            if (currentChar == '"') {
+                insideQuotes = !insideQuotes;
                 // Keep the quotes to maintain field boundaries
-                new_line.append(current_char);
-            } else if (current_char == ',' && inside_quotes) {
+                newLine.append(currentChar);
+            } else if (currentChar == ',' && insideQuotes) {
                 // Replace commas inside quotes with a special character
-                new_line.append('|');
+                newLine.append('|');
             } else {
-                new_line.append(current_char);
+                newLine.append(currentChar);
             }
         }
-        return new_line.toString();
+        return newLine.toString();
     }
 }

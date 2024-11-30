@@ -9,20 +9,20 @@ import java.util.List;
  */
 public class Customer extends Person {
     /* Attributes */
-    private int customer_id;
+    private int customerId;
     private List<Account> accounts;
     private String name;
     private String last;
     private String dob;
     private String address;
-    private String phone_number;
-    private int checking_account_number;
-    private float checking_account_balance;
-    private int saving_account_number;
-    private float saving_account_balance;
-    private int credit_account_number;
-    private float credit_account_balance;
-    private float credit_account_max;
+    private String phoneNumber;
+    private int checkingAccountNumber;
+    private float checkingAccountBalance;
+    private int savingAccountNumber;
+    private float savingAccountBalance;
+    private int creditAccountNumber;
+    private float creditAccountBalance;
+    private float creditAccountMax;
     private String email;
 
     /**
@@ -35,20 +35,20 @@ public class Customer extends Person {
     /**
      * Constructs a {@code Customer} with a specified customer ID.
      * 
-     * @param customer_id The unique identifier for the customer.
+     * @param customerId The unique identifier for the customer.
      */
-    public Customer(int customer_id) {
-        this.customer_id = customer_id;
+    public Customer(int customerId) {
+        this.customerId = customerId;
     }
 
     /**
      * Constructs a {@code Customer} with a specified customer ID and list of accounts.
      * 
-     * @param customer_id The unique identifier for the customer.
+     * @param customerId The unique identifier for the customer.
      * @param accounts The list of accounts associated with the customer.
      */
-    public Customer(int customer_id, List<Account> accounts) {
-        this.customer_id = customer_id;
+    public Customer(int customerId, List<Account> accounts) {
+        this.customerId = customerId;
         this.accounts = accounts;
     }
 
@@ -57,10 +57,10 @@ public class Customer extends Person {
     /**
      * Sets the customer ID.
      * 
-     * @param customer_id The unique identifier for the customer.
+     * @param customerId The unique identifier for the customer.
      */
-    public void set_account_id(int customer_id) {
-        this.customer_id = customer_id;
+    public void setAccountId(int customerId) {
+        this.customerId = customerId;
     }
 
     /**
@@ -68,14 +68,14 @@ public class Customer extends Person {
      * 
      * @param accounts The list of {@code Account} objects.
      */
-    public void set_accounts(List<Account> accounts) {
+    public void setAccounts(List<Account> accounts) {
         this.accounts = accounts;
     }
     /**
      * Sets the list of email associated with the customer.
      * @param email The email of user.
      */
-    public void set_email(String email){
+    public void setEmail(String email){
         this.email = email;
     }
 
@@ -83,7 +83,7 @@ public class Customer extends Person {
      * {@inheritDoc}
      */
     @Override
-    public void set_name(String name) {
+    public void setName(String name) {
         if (!name.matches("[a-zA-Z]+")) {
             throw new IllegalArgumentException();
         }
@@ -95,7 +95,7 @@ public class Customer extends Person {
      * 
      * @param last The last name of the customer.
      */
-    public void set_last(String last) {
+    public void setLast(String last) {
         if (!last.matches("[a-zA-Z\\s\\-]+")) {
             throw new IllegalArgumentException();
         }
@@ -107,7 +107,7 @@ public class Customer extends Person {
      * 
      * @param dob The date of birth in {@code String} format.
      */
-    public void set_dob(String dob) {
+    public void setDob(String dob) {
         this.dob = dob;
     }
 
@@ -115,44 +115,44 @@ public class Customer extends Person {
      * {@inheritDoc}
      */
     @Override
-    public void set_address(String address) {
+    public void setAddress(String address) {
         this.address = address;
     }
 
     /**
      * Sets the phone number of the customer.
      * 
-     * @param phone_number The phone number of the customer.
+     * @param phoneNumber The phone number of the customer.
      */
-    public void set_phone_number(String phone_number) {
-        this.phone_number = phone_number;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     /**
      * Sets the checking account number for the customer.
      * 
-     * @param checking_account_number The checking account number.
+     * @param checkingAccountNumber The checking account number.
      */
-    public void set_checking_account_number(int checking_account_number) {
-        this.checking_account_number = checking_account_number;
+    public void setCheckingAccountNumber(int checkingAccountNumber) {
+        this.checkingAccountNumber = checkingAccountNumber;
     }
 
     /**
      * Sets the checking account balance.
      * 
-     * @param checking_account_balance The balance of the checking account.
+     * @param checkingAccountBalance The balance of the checking account.
      */
-    public void set_checking_account_balance(float checking_account_balance) {
-        this.checking_account_balance = checking_account_balance;
+    public void setCheckingAccountBalance(float checkingAccountBalance) {
+        this.checkingAccountBalance = checkingAccountBalance;
     }
 
     /**
      * Sets the saving account number for the customer.
      * 
-     * @param saving_account_number The saving account number.
+     * @param savingAccountNumber The saving account number.
      */
-    public void set_saving_account_number(int saving_account_number) {
-        this.saving_account_number = saving_account_number;
+    public void setSavingAccountNumber(int savingAccountNumber) {
+        this.savingAccountNumber = savingAccountNumber;
     }
 
     /**
@@ -160,35 +160,35 @@ public class Customer extends Person {
      * 
      * @param saving_account_balance The balance of the saving account.
      */
-    public void set_saving_account_balance(float saving_account_balance) {
-        this.saving_account_balance = saving_account_balance;
+    public void setSavingAccountBalance(float savingAccountBalance) {
+        this.savingAccountBalance = savingAccountBalance;
     }
 
     /**
      * Sets the credit account number for the customer.
      * 
-     * @param credit_account_number The credit account number.
+     * @param creditAccountNumber The credit account number.
      */
-    public void set_credit_account_number(int credit_account_number) {
-        this.credit_account_number = credit_account_number;
+    public void setCreditAccountNumber(int creditAccountNumber) {
+        this.creditAccountNumber = creditAccountNumber;
     }
 
     /**
      * Sets the credit account balance.
      * 
-     * @param credit_account_balance The balance of the credit account.
+     * @param creditAccountBalance The balance of the credit account.
      */
-    public void set_credit_account_balance(float credit_account_balance) {
-        this.credit_account_balance = credit_account_balance;
+    public void setCreditAccountBalance(float creditAccountBalance) {
+        this.creditAccountBalance = creditAccountBalance;
     }
 
     /**
      * Sets the maximum credit limit for the credit account.
      * 
-     * @param credit_account_max The maximum allowed credit limit.
+     * @param creditAccountMax The maximum allowed credit limit.
      */
-    public void set_credit_account_max(float credit_account_max) {
-        this.credit_account_max = credit_account_max;
+    public void setCreditAccountMax(float creditAccountMax) {
+        this.creditAccountMax = creditAccountMax;
     }
 
     /* Getters */
@@ -198,11 +198,11 @@ public class Customer extends Person {
      * 
      * @return The customer ID as an integer.
      */
-    public int get_account_id() {
-        return this.customer_id;
+    public int getAccountId() {
+        return this.customerId;
     }
 
-    public String get_email(){
+    public String getEmail(){
         return this.email;
     }
 
@@ -211,7 +211,7 @@ public class Customer extends Person {
      * 
      * @return A list of {@code Account} objects.
      */
-    public List<Account> get_accounts() {
+    public List<Account> getAccounts() {
         return this.accounts;
     }
 
@@ -219,7 +219,7 @@ public class Customer extends Person {
      * {@inheritDoc}
      */
     @Override
-    public String get_name() {
+    public String getName() {
         return this.name;
     }
 
@@ -228,7 +228,7 @@ public class Customer extends Person {
      * 
      * @return The last name as a {@code String}.
      */
-    public String get_last() {
+    public String getLast() {
         return this.last;
     }
 
@@ -237,7 +237,7 @@ public class Customer extends Person {
      * 
      * @return The date of birth as a {@code String}.
      */
-    public String get_dob() {
+    public String getDob() {
         return this.dob;
     }
 
@@ -245,7 +245,7 @@ public class Customer extends Person {
      * {@inheritDoc}
      */
     @Override
-    public String get_address() {
+    public String getAddress() {
         return this.address;
     }
 
@@ -254,8 +254,8 @@ public class Customer extends Person {
      * 
      * @return The phone number as a {@code String}.
      */
-    public String get_phone_number() {
-        return this.phone_number;
+    public String getPhoneNumber() {
+        return this.phoneNumber;
     }
 
     /**
@@ -263,8 +263,8 @@ public class Customer extends Person {
      * 
      * @return The checking account number as an integer.
      */
-    public int get_checking_account_number() {
-        return this.checking_account_number;
+    public int getCheckingAccountNumber() {
+        return this.checkingAccountNumber;
     }
 
     /**
@@ -272,8 +272,8 @@ public class Customer extends Person {
      * 
      * @return The balance of the checking account as a float.
      */
-    public float get_checking_account_balance() {
-        return this.checking_account_balance;
+    public float getCheckingAccountBalance() {
+        return this.checkingAccountBalance;
     }
 
     /**
@@ -281,8 +281,8 @@ public class Customer extends Person {
      * 
      * @return The saving account number as an integer.
      */
-    public int get_saving_account_number() {
-        return this.saving_account_number;
+    public int getSavingAccountNumber() {
+        return this.savingAccountNumber;
     }
 
     /**
@@ -290,8 +290,8 @@ public class Customer extends Person {
      * 
      * @return The balance of the saving account as a float.
      */
-    public float get_saving_account_balance() {
-        return this.saving_account_balance;
+    public float getSavingAccountBalance() {
+        return this.savingAccountBalance;
     }
 
     /**
@@ -299,8 +299,8 @@ public class Customer extends Person {
      * 
      * @return The credit account number as an integer.
      */
-    public int get_credit_account_number() {
-        return this.credit_account_number;
+    public int getCreditAccountNumber() {
+        return this.creditAccountNumber;
     }
 
     /**
@@ -308,8 +308,8 @@ public class Customer extends Person {
      * 
      * @return The balance of the credit account as a float.
      */
-    public float get_credit_account_balance() {
-        return this.credit_account_balance;
+    public float getCreditAccountBalance() {
+        return this.creditAccountBalance;
     }
 
     /**
@@ -317,7 +317,7 @@ public class Customer extends Person {
      * 
      * @return The maximum credit limit as a float.
      */
-    public float get_credit_account_max() {
-        return this.credit_account_max;
+    public float getCreditAccountMax() {
+        return this.creditAccountMax;
     }
 }

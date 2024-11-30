@@ -6,11 +6,12 @@ class ManagerOperations implements Operations {
      *
      * @param customer the customer whose checking account balance is requested
      * @return the checking account balance
+     * @author Sebastian Nares, Ricardo Acosta
      */
     /*returns checking account balance */
     @Override
-    public float checking_account_balance(Customer customer){
-        return customer.get_checking_account_balance();
+    public float checkingAccountBalance(Customer customer){
+        return customer.getCheckingAccountBalance();
     }
     /**
      * Returns the savings account balance for a customer.
@@ -19,8 +20,8 @@ class ManagerOperations implements Operations {
      * @return the savings account balance
      */
     @Override
-    public float saving_account_balance(Customer customer){
-        return customer.get_saving_account_balance();
+    public float savingAccountBalance(Customer customer){
+        return customer.getSavingAccountBalance();
     }
 
     /**
@@ -31,8 +32,8 @@ class ManagerOperations implements Operations {
      */
 
      @Override
-    public float credit_account_balance(Customer customer){
-        return customer.get_credit_account_balance();
+    public float creditAccountBalance(Customer customer){
+        return customer.getCreditAccountBalance();
     }
 
     /**
@@ -42,10 +43,10 @@ class ManagerOperations implements Operations {
      * @param amount the amount to be deposited
      */
     @Override
-    public void deposit_to_checking(Customer customer, float amount){
-        float current_balance = checking_account_balance(customer);
-        float new_balance = current_balance + amount;
-        customer.set_checking_account_balance(new_balance);
+    public void depositToChecking(Customer customer, float amount){
+        float currentBalance = checkingAccountBalance(customer);
+        float newBalance = currentBalance + amount;
+        customer.setCheckingAccountBalance(newBalance);
     }
 
     /**
@@ -55,10 +56,10 @@ class ManagerOperations implements Operations {
      * @param amount the amount to be deposited
      */
     @Override
-    public void deposit_to_saving(Customer customer, float amount){
-        float current_balance = saving_account_balance(customer);
-        float new_balance = current_balance + amount;
-        customer.set_saving_account_balance(new_balance);
+    public void depositToSaving(Customer customer, float amount){
+        float currentBalance = savingAccountBalance(customer);
+        float newBalance = currentBalance + amount;
+        customer.setSavingAccountBalance(newBalance);
     }
 
     /**
@@ -68,10 +69,10 @@ class ManagerOperations implements Operations {
      * @param amount the amount to be deposited
      */
     @Override
-    public void deposit_to_credit(Customer customer, float amount){
-        float current_balance = credit_account_balance(customer);
-        float new_balance = current_balance + amount;
-        customer.set_credit_account_balance(new_balance);
+    public void depositToCredit(Customer customer, float amount){
+        float currentBalance = creditAccountBalance(customer);
+        float newBalance = currentBalance + amount;
+        customer.setCreditAccountBalance(newBalance);
     }
      /**
      * Transfers funds between two customers' accounts.
@@ -90,11 +91,11 @@ class ManagerOperations implements Operations {
         // Get source account balance
         float sourceBalance = 0;
         if (sourceAccountType == 1) {
-            sourceBalance = checking_account_balance(sourceCustomer);
+            sourceBalance = checkingAccountBalance(sourceCustomer);
         } else if (sourceAccountType == 2) {
-            sourceBalance = saving_account_balance(sourceCustomer);
+            sourceBalance = savingAccountBalance(sourceCustomer);
         } else if (sourceAccountType == 3) {
-            sourceBalance = credit_account_balance(sourceCustomer);
+            sourceBalance = creditAccountBalance(sourceCustomer);
         }
         
         // Check if source has sufficient funds
@@ -105,20 +106,20 @@ class ManagerOperations implements Operations {
         
         // Deduct from source account
         if (sourceAccountType == 1) {
-            sourceCustomer.set_checking_account_balance(sourceBalance - amount);
+            sourceCustomer.setCheckingAccountBalance(sourceBalance - amount);
         } else if (sourceAccountType == 2) {
-            sourceCustomer.set_saving_account_balance(sourceBalance - amount);
+            sourceCustomer.setSavingAccountBalance(sourceBalance - amount);
         } else if (sourceAccountType == 3) {
-            sourceCustomer.set_credit_account_balance(sourceBalance - amount);
+            sourceCustomer.setCreditAccountBalance(sourceBalance - amount);
         }
         
         // Add to destination account
         if (destAccountType == 1) {
-            deposit_to_checking(destCustomer, amount);
+            depositToChecking(destCustomer, amount);
         } else if (destAccountType == 2) {
-            deposit_to_saving(destCustomer, amount);
+            depositToSaving(destCustomer, amount);
         } else if (destAccountType == 3) {
-            deposit_to_credit(destCustomer, amount);
+            depositToCredit(destCustomer, amount);
         }
         
         return true;
@@ -129,57 +130,57 @@ class ManagerOperations implements Operations {
      * @param customer is the target user for the information
      * 
      */
-    public void dislay_account_information_by_name(Customer customer){
-        String name = customer.get_name();
-        String last = customer.get_last();
-        int id = customer.get_account_id();
-        int account_number_saving, account_number_checking, account_number_credit;
-        float balance_checking, balance_saving, balance_credit;
+    public void dislayAccountInformationByName(Customer customer){
+        String name = customer.getName();
+        String last = customer.getLast();
+        int id = customer.getAccountId();
+        int accountNumberSaving, accountNumberChecking, accountNumberCredit;
+        float balanceChecking, balanceSaving, balanceCredit;
 
-        account_number_saving = customer.get_checking_account_number();
-        balance_checking = customer.get_checking_account_balance();
+        accountNumberSaving = customer.getCheckingAccountNumber();
+        balanceChecking = customer.getCheckingAccountBalance();
 
-        account_number_checking = customer.get_saving_account_number();
-        balance_saving = customer.get_saving_account_balance();
+        accountNumberChecking = customer.getSavingAccountNumber();
+        balanceSaving = customer.getSavingAccountBalance();
 
-        account_number_credit = customer.get_credit_account_number();
-        balance_credit = customer.get_credit_account_balance();
+        accountNumberCredit = customer.getCreditAccountNumber();
+        balanceCredit = customer.getCreditAccountBalance();
 
         System.out.println("Account holder: " + name + " " + last + " with ID: " + id);
 
-        System.out.println("The Account of type: Checkings | number: " + account_number_checking + " | Balance: " + balance_checking);
+        System.out.println("The Account of type: Checkings | number: " + accountNumberChecking + " | Balance: " + balanceChecking);
 
-        System.out.println("The Account of type: Savings | number: " + account_number_saving + " | Balance: " + balance_saving);
+        System.out.println("The Account of type: Savings | number: " + accountNumberSaving + " | Balance: " + balanceSaving);
 
-        System.out.println("The Account of type: Credit | number: " + account_number_credit + " | Balance: " + balance_credit);
+        System.out.println("The Account of type: Credit | number: " + accountNumberCredit + " | Balance: " + balanceCredit);
     }
 
     /**
      * Displays account information by account number
      * 
      * @param customer is the target user for the information
-     * @param account_type is an int that represents the account type to dislay the information
-     * @param account_number is an int that represents the account number to display the information
+     * @param accountType is an int that represents the account type to dislay the information
+     * @param accountNumber is an int that represents the account number to display the information
      */
 
-     public void dislay_account_information_by_account_number(Customer customer, int account_number, int account_type){
-        String name = customer.get_name();
+     public void dislayAccountInformationByAccountNumber(Customer customer, int accountNumber, int accountType){
+        String name = customer.getName();
         String account;
-        String last = customer.get_last();
-        int id = customer.get_account_id();
+        String last = customer.getLast();
+        int id = customer.getAccountId();
         float balance;
-        if (account_type == 1){
-            balance = customer.get_checking_account_balance();
+        if (accountType == 1){
+            balance = customer.getCheckingAccountBalance();
             account = "Checking";
-        } else if (account_type == 2){
-            balance = customer.get_saving_account_balance();
+        } else if (accountType == 2){
+            balance = customer.getSavingAccountBalance();
             account = "Saving";
         } else {
-            balance = customer.get_credit_account_balance();
+            balance = customer.getCreditAccountBalance();
             account = "Credit";
         }
         System.out.println("Account holder: " + name + " " + last + " with ID: " + id);
-        System.out.println("The Account of type: " + account + ", with number: " + account_number);
+        System.out.println("The Account of type: " + account + ", with number: " + accountNumber);
         System.out.println("Balance: " + balance);
     }
     public void createAccount(){

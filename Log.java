@@ -64,8 +64,8 @@ public class Log {
         float balance = getAccountBalance(customer, accountType);
         
         String message = String.format("%s %s, made a balance inquiry on %s-%d. Balance: $%.2f",
-            customer.get_name(),
-            customer.get_last(),
+            customer.getName(),
+            customer.getLast(),
             accountName,
             accountNumber,
             balance
@@ -78,18 +78,18 @@ public class Log {
      * 
      * @param customer      The customer making the deposit.
      * @param accountType   The type of account (1 for Checking, 2 for Savings, 3 for Credit).
-     * @param deposit_amount The amount deposited.
+     * @param depositAmount The amount deposited.
      */
-    public void logDeposit(Customer customer, int accountType, float deposit_amount) {
-        bankDataUpdater.processDeposit(customer.get_account_id(), accountType, deposit_amount);
+    public void logDeposit(Customer customer, int accountType, float depositAmount) {
+        bankDataUpdater.processDeposit(customer.getAccountId(), accountType, depositAmount);
         String accountName = getAccountName(accountType);
         int accountNumber = getAccountNumber(customer, accountType);
         float newBalance = getAccountBalance(customer, accountType);
         
         String message = String.format("%s %s, deposited $%.2f to %s-%d. New Balance: $%.2f",
-            customer.get_name(),
-            customer.get_last(),
-            deposit_amount,
+            customer.getName(),
+            customer.getLast(),
+            depositAmount,
             accountName,
             accountNumber,
             newBalance
@@ -104,18 +104,18 @@ public class Log {
      * 
      * @param customer          The customer making the withdrawal.
      * @param accountType       The type of account (1 for Checking, 2 for Savings, 3 for Credit).
-     * @param withdrawal_amount The amount withdrawn.
+     * @param withdrawalAmount The amount withdrawn.
      */
-    public void logWithdrawal(Customer customer, int accountType, float withdrawal_amount) {
-        bankDataUpdater.processWithdrawal(customer.get_account_id(), accountType, withdrawal_amount);
+    public void logWithdrawal(Customer customer, int accountType, float withdrawalAmount) {
+        bankDataUpdater.processWithdrawal(customer.getAccountId(), accountType, withdrawalAmount);
         String accountName = getAccountName(accountType);
         int accountNumber = getAccountNumber(customer, accountType);
         float newBalance = getAccountBalance(customer, accountType);
         
         String message = String.format("%s %s, withdrew $%.2f from %s-%d. New Balance: $%.2f",
-            customer.get_name(),
-            customer.get_last(),
-            withdrawal_amount,
+            customer.getName(),
+            customer.getLast(),
+            withdrawalAmount,
             accountName,
             accountNumber,
             newBalance
@@ -131,10 +131,10 @@ public class Log {
      * @param customer       The customer making the transfer.
      * @param sourceType     The type of the source account (1 for Checking, 2 for Savings, 3 for Credit).
      * @param destType       The type of the destination account (1 for Checking, 2 for Savings, 3 for Credit).
-     * @param transfer_amount The amount transferred.
+     * @param transferAmount The amount transferred.
      */
-    public void logTransfer(Customer customer, int sourceType, int destType, float transfer_amount) {
-        bankDataUpdater.processTransfer(customer.get_account_id(), sourceType, destType, transfer_amount);
+    public void logTransfer(Customer customer, int sourceType, int destType, float transferAmount) {
+        bankDataUpdater.processTransfer(customer.getAccountId(), sourceType, destType, transferAmount);
         String sourceAccount = getAccountName(sourceType);
         String destAccount = getAccountName(destType);
         int sourceNumber = getAccountNumber(customer, sourceType);
@@ -145,9 +145,9 @@ public class Log {
         String message = String.format(
             "%s %s, transferred $%.2f from %s-%d to %s-%d. " +
             "Source Balance: $%.2f. Destination Balance: $%.2f",
-            customer.get_name(),
-            customer.get_last(),
-            transfer_amount,
+            customer.getName(),
+            customer.getLast(),
+            transferAmount,
             sourceAccount,
             sourceNumber,
             destAccount,
@@ -164,17 +164,17 @@ public class Log {
      * Logs a payment transaction for the specified customer.
      * 
      * @param customer        The customer making the payment.
-     * @param payment_amount  The amount paid.
+     * @param paymentAmount  The amount paid.
      */
-    public void logPayment(Customer customer, float payment_amount) {
-        bankDataUpdater.processPayment(customer.get_account_id(), payment_amount);
-        int creditNumber = customer.get_credit_account_number();
-        float newBalance = customer.get_credit_account_balance();
+    public void logPayment(Customer customer, float paymentAmount) {
+        bankDataUpdater.processPayment(customer.getAccountId(), paymentAmount);
+        int creditNumber = customer.getCreditAccountNumber();
+        float newBalance = customer.getCreditAccountBalance();
         
         String message = String.format("%s %s, made a payment of $%.2f on Credit-%d. New Balance: $%.2f",
-            customer.get_name(),
-            customer.get_last(),
-            payment_amount,
+            customer.getName(),
+            customer.getLast(),
+            paymentAmount,
             creditNumber,
             newBalance
         );
@@ -207,9 +207,9 @@ public class Log {
      */
     private int getAccountNumber(Customer customer, int accountType) {
         switch (accountType) {
-            case 1: return customer.get_checking_account_number();
-            case 2: return customer.get_saving_account_number();
-            case 3: return customer.get_credit_account_number();
+            case 1: return customer.getCheckingAccountNumber();
+            case 2: return customer.getSavingAccountNumber();
+            case 3: return customer.getCreditAccountNumber();
             default: return 0;
         }
     }
@@ -218,11 +218,11 @@ public class Log {
  * 
  * @param customer        The customer sending the money.
  * @param recipientCustomer      The customer receiving the money.
- * @param account_type     The type of the sender's account (1 for Checking, 2 for Savings, 3 for Credit).
+ * @param accountType     The type of the sender's account (1 for Checking, 2 for Savings, 3 for Credit).
  * @param recipientAccountType  The type of the recipient's account (1 for Checking, 2 for Savings, 3 for Credit).
  * @param interCustomerTransferAmount The amount transferred.
  */
-public void logInterCustomerTransfer(Customer customer, Customer recipientCustomer, int account_type, int recipientAccountType, float interCustomerTransferAmount) {
+public void logInterCustomerTransfer(Customer customer, Customer recipientCustomer, int accountType, int recipientAccountType, float interCustomerTransferAmount) {
     // Validate transfer amount
     if (interCustomerTransferAmount <= 0) {
         System.out.println("Transfer amount must be greater than zero.");
@@ -230,28 +230,28 @@ public void logInterCustomerTransfer(Customer customer, Customer recipientCustom
     }
     
     // Process withdrawal and deposit
-    bankDataUpdater.processWithdrawal(customer.get_account_id(), account_type, interCustomerTransferAmount);
-    bankDataUpdater.processDeposit(recipientCustomer.get_account_id(), recipientAccountType, interCustomerTransferAmount);
+    bankDataUpdater.processWithdrawal(customer.getAccountId(), accountType, interCustomerTransferAmount);
+    bankDataUpdater.processDeposit(recipientCustomer.getAccountId(), recipientAccountType, interCustomerTransferAmount);
     
     // Get account names, numbers, and balances for logging
-    String senderAccountName = getAccountName(account_type);
+    String senderAccountName = getAccountName(accountType);
     String recipientAccountName = getAccountName(recipientAccountType);
-    int senderAccountNumber = getAccountNumber(customer, account_type);
+    int senderAccountNumber = getAccountNumber(customer, accountType);
     int recipientAccountNumber = getAccountNumber(recipientCustomer, recipientAccountType);
-    float senderNewBalance = getAccountBalance(customer, account_type);
+    float senderNewBalance = getAccountBalance(customer, accountType);
     float recipientNewBalance = getAccountBalance(recipientCustomer, recipientAccountType);
     
     // Create the log message
     String message = String.format(
         "%s %s transferred $%.2f from %s-%d to %s %s's %s-%d. " +
         "Sender New Balance: $%.2f. Recipient New Balance: $%.2f",
-        customer.get_name(),
-        customer.get_last(),
+        customer.getName(),
+        customer.getLast(),
         interCustomerTransferAmount,
         senderAccountName,
         senderAccountNumber,
-        recipientCustomer.get_name(),
-        recipientCustomer.get_last(),
+        recipientCustomer.getName(),
+        recipientCustomer.getLast(),
         recipientAccountName,
         recipientAccountNumber,
         senderNewBalance,
@@ -275,21 +275,21 @@ public void logInterCustomerTransfer(Customer customer, Customer recipientCustom
      */
     private float getAccountBalance(Customer customer, int accountType) {
         switch (accountType) {
-            case 1: return customer.get_checking_account_balance();
-            case 2: return customer.get_saving_account_balance();
-            case 3: return customer.get_credit_account_balance();
+            case 1: return customer.getCheckingAccountBalance();
+            case 2: return customer.getSavingAccountBalance();
+            case 3: return customer.getCreditAccountBalance();
             default: return 0.0f;
         }
     }
     public void logNewAccountCreation(Customer customer) {
         String message = String.format(
             "%s %s created a new account. Checking Account: %d, Savings Account: %d, Credit Account: %d, Credit Limit: $%.2f",
-            customer.get_name(),
-            customer.get_last(),
-            customer.get_checking_account_number(),
-            customer.get_saving_account_number(),
-            customer.get_credit_account_number(),
-            customer.get_credit_account_max()
+            customer.getName(),
+            customer.getLast(),
+            customer.getCheckingAccountNumber(),
+            customer.getSavingAccountNumber(),
+            customer.getCreditAccountNumber(),
+            customer.getCreditAccountMax()
         );
     
         writeToLog(message);

@@ -4,36 +4,36 @@ import java.util.Scanner;
 /**
  * This class implements the BankMode interface which allows the program user to create accounts
  * 
- * @author Sebastian Nares & Ricardo Acosta
+ * @author Sebastian Nares, Ricardo Acosta
  */
 
 class AccountCreationMode implements BankMode {
     /**
      * enterMode is the starting point for entering AccountCreationMode which calls then the process of performTransaction
      * 
-     * @param users_by_name is a hashmap that contains the customers by name
-     * @param username is how the user is identify 
-     * @param accounts_by_number is a hashmap that contains the customers by account number
+     * @param usersByName is a hashmap that contains the customers by name
+     * @param userName is how the user is identify 
+     * @param accountsByNumber is a hashmap that contains the customers by account number
      * @return None 
      */
     @Override
-    public void enterMode(HashMap<String, Customer> users_by_name, String username, HashMap<Integer, Customer> accounts_by_number){
+    public void enterMode(HashMap<String, Customer> usersByName, String userName, HashMap<Integer, Customer> accountsByNumber){
         System.out.println("Entering Account Creation Mode...");
-        performTransaction(users_by_name, username, accounts_by_number);
+        performTransaction(usersByName, userName, accountsByNumber);
     }
 
     /**
      * performTransaction allows user to create a new user
-     * @param users_by_name is a hashmap that contains the customers by name
-     * @param username is how the user is identify 
-     * @param accounts_by_number is a hashmap that contains the customers by account number
+     * @param usersByName is a hashmap that contains the customers by name
+     * @param userName is how the user is identify 
+     * @param accountsByNumber is a hashmap that contains the customers by account number
      * @return None 
      */
     @Override
-    public void performTransaction(HashMap<String, Customer> users_by_name, String username, HashMap<Integer, Customer> accounts_by_number){
+    public void performTransaction(HashMap<String, Customer> usersByName, String userName, HashMap<Integer, Customer> accountsByNumber){
         Scanner kb = new Scanner(System.in);
         UserCreation userCreation = new UserCreation();
-        Customer customer = userCreation.createNewUser(kb, users_by_name, accounts_by_number);
+        Customer customer = userCreation.createNewUser(kb, usersByName, accountsByNumber);
         if (customer != null) {
             System.out.println("Account creation completed. You may now login as an Individual Person.");
         } else {

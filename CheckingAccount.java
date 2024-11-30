@@ -6,9 +6,9 @@
  */
 public class CheckingAccount extends Account {
     // Attributes
-    private String account_id;
-    private String account_type;
-    private float account_balance;
+    private String accountId;
+    private String accountType;
+    private float accountBalance;
 
     /**
      * Default constructor for {@code CheckingAccount}, calls the no-argument constructor of the {@code Account} class.
@@ -20,27 +20,27 @@ public class CheckingAccount extends Account {
     /**
      * Constructs a {@code CheckingAccount} with specified routing number, account ID, account type, and balance.
      * 
-     * @param routing_number The routing number associated with the account.
-     * @param account_id The unique identifier for the checking account.
-     * @param account_type The type of the account (e.g., "checking").
-     * @param account_balance The initial balance of the account.
+     * @param routingNumber The routing number associated with the account.
+     * @param accountId The unique identifier for the checking account.
+     * @param accountType The type of the account (e.g., "checking").
+     * @param accountBalance The initial balance of the account.
      */
-    public CheckingAccount(String routing_number, String account_id, String account_type, float account_balance) {
-        super(routing_number); 
-        this.account_id = account_id;
-        this.account_type = account_type;
-        this.account_balance = account_balance;
+    public CheckingAccount(String routingNumber, String accountId, String accountType, float accountBalance) {
+        super(routingNumber); 
+        this.accountId = accountId;
+        this.accountType = accountType;
+        this.accountBalance = accountBalance;
     }
 
     /**
      * Sets the account ID for the checking account.
      * 
-     * @param account_id The account ID to be set.
+     * @param accountId The account ID to be set.
      * @return {@code true} if the account ID is valid and successfully set; {@code false} otherwise.
      */
-    public boolean set_account_id(String account_id) {
-        if (account_id != null && !account_id.isEmpty()) {
-            this.account_id = account_id;
+    public boolean setAccountId(String accountId) {
+        if (accountId != null && !accountId.isEmpty()) {
+            this.accountId = accountId;
             return true;
         }
         return false;
@@ -49,21 +49,21 @@ public class CheckingAccount extends Account {
     /**
      * Sets the account type for the checking account.
      * 
-     * @param account_type The type of the account (e.g., "checking").
+     * @param accountType The type of the account (e.g., "checking").
      */
-    public void set_account_type(String account_type) {
-        this.account_type = account_type;
+    public void setAccountType(String accountType) {
+        this.accountType = accountType;
     }
 
     /**
      * Sets the account balance for the checking account.
      * 
-     * @param account_balance The new balance to be set.
+     * @param accountBalance The new balance to be set.
      * @return {@code true} if the balance is non-negative and successfully set; {@code false} otherwise.
      */
-    public boolean set_account_balance(float account_balance) {
-        if (account_balance >= 0) {
-            this.account_balance = account_balance;
+    public boolean setAccountBalance(float accountBalance) {
+        if (accountBalance >= 0) {
+            this.accountBalance = accountBalance;
             return true;
         }
         return false;
@@ -74,8 +74,8 @@ public class CheckingAccount extends Account {
      * 
      * @return The account ID as a {@code String}.
      */
-    public String get_account_id() {
-        return this.account_id;
+    public String getAccountId() {
+        return this.accountId;
     }
 
     /**
@@ -83,8 +83,8 @@ public class CheckingAccount extends Account {
      * 
      * @return The account type as a {@code String}.
      */
-    public String get_account_type() {
-        return this.account_type;
+    public String getAccountType() {
+        return this.accountType;
     }
 
     /**
@@ -92,7 +92,7 @@ public class CheckingAccount extends Account {
      * 
      * @return The current balance as a {@code float}.
      */
-    public float get_account_balance() {
-        return this.account_balance;
+    public float getAccountBalance() {
+        return this.accountBalance;
     }
 }

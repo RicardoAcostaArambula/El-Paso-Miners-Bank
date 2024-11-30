@@ -9,7 +9,7 @@ import java.util.Date;
  * */
 public class CreditAccount extends Account {
     // Attributes
-    private float CreditAccountLimit;
+    private float creditAccountLimit;
     private String goodStanding;
     private Date paymentDate;
 
@@ -23,15 +23,15 @@ public class CreditAccount extends Account {
     /**
      * Constructs a {@code CreditAccount} with specified routing number, credit limit, good standing status, and payment date.
      * 
-     * @param routing_number The routing number associated with the account.
-     * @param CreditAccountLimit The credit limit of the account.
+     * @param routingNumber The routing number associated with the account.
+     * @param creditAccountLimit The credit limit of the account.
      * @param goodStanding The status indicating whether the account is in good standing.
      * @param paymentDate The next payment due date.
      */
-    public CreditAccount(String routing_number, float CreditAccountLimit, String goodStanding, Date paymentDate) {
+    public CreditAccount(String routingNumber, float creditAccountLimit, String goodStanding, Date paymentDate) {
         // Calls the constructor of the Account class
-        super(routing_number); 
-        this.CreditAccountLimit = CreditAccountLimit;
+        super(routingNumber); 
+        this.creditAccountLimit = creditAccountLimit;
         this.goodStanding = goodStanding;
         this.paymentDate = paymentDate;
     }
@@ -41,9 +41,9 @@ public class CreditAccount extends Account {
      * 
      * @param CreditAccountLimit The credit limit to be set.
      */
-    public void set_CreditAccount_limit(float CreditAccountLimit) {
+    public void setCreditAccountLimit(float CreditAccountLimit) {
         if (CreditAccountLimit >= 0) {
-            this.CreditAccountLimit = CreditAccountLimit;
+            this.creditAccountLimit = creditAccountLimit;
         }
     }
 
@@ -53,7 +53,7 @@ public class CreditAccount extends Account {
      * @param goodStanding The status to be set (e.g., "Good" or "Not Good").
      * @return {@code true} if the good standing status is valid and successfully set; {@code false} otherwise.
      */
-    public boolean set_good_standing(String goodStanding) {
+    public boolean setGoodStanding(String goodStanding) {
         if (goodStanding != null && !goodStanding.isEmpty()) {
             this.goodStanding = goodStanding;
             return true;
@@ -66,7 +66,7 @@ public class CreditAccount extends Account {
      * 
      * @param paymentDate The new payment date to be set.
      */
-    public void set_payment_date(Date paymentDate) {
+    public void setPaymentDate(Date paymentDate) {
         if (paymentDate != null) {
             this.paymentDate = paymentDate;
         }
@@ -77,8 +77,8 @@ public class CreditAccount extends Account {
      * 
      * @return The credit limit as a {@code float}.
      */
-    public float get_CreditAccount_limit() {
-        return this.CreditAccountLimit;
+    public float getCreditAccountLimit() {
+        return this.creditAccountLimit;
     }
 
     /**
@@ -86,7 +86,7 @@ public class CreditAccount extends Account {
      * 
      * @return The good standing status as a {@code String}.
      */
-    public String get_good_standing() {
+    public String getGoodStanding() {
         return this.goodStanding;
     }
 
@@ -95,7 +95,7 @@ public class CreditAccount extends Account {
      * 
      * @return The current payment date as a {@code Date} object.
      */
-    public Date get_payment_date() {
+    public Date getPaymentDate() {
         return this.paymentDate;
     }
 }

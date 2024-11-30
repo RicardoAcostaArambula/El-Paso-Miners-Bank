@@ -42,11 +42,11 @@ public class UserCreation {
          /**
          * Loads user data from a CSV file and updates the provided HashMaps with the user information.
          * 
-         * @param users_by_name A HashMap to store users by their full name.
-         * @param accounts_by_number A HashMap to store users by their account numbers.
+         * @param usersByName A HashMap to store users by their full name.
+         * @param accountsByNumber A HashMap to store users by their account numbers.
          */
-        public static void loadUsersFromCSV(HashMap<String, Customer> users_by_name, 
-                                      HashMap<Integer, Customer> accounts_by_number) {
+        public static void loadUsersFromCSV(HashMap<String, Customer> usersByName, 
+                                      HashMap<Integer, Customer> accountsByNumber) {
         File file = new File(CSV_FILE);
         if (!file.exists()) {
             return;
@@ -63,32 +63,32 @@ public class UserCreation {
                 try {
                     Customer customer = new Customer();
                     // Parse numeric values properly
-                    customer.set_account_id(Integer.parseInt(data[0].trim()));
-                    customer.set_name(data[1].trim());
-                    customer.set_last(data[2].trim());
-                    customer.set_dob(data[3].trim());
-                    customer.set_address(data[4].replace("\"", "").trim());
-                    customer.set_phone_number(data[5].trim());
-                    customer.set_checking_account_number(Integer.parseInt(data[6].trim()));
-                    customer.set_checking_account_balance(Float.parseFloat(data[7].trim()));
-                    customer.set_saving_account_number(Integer.parseInt(data[8].trim()));
-                    customer.set_saving_account_balance(Float.parseFloat(data[9].trim()));
-                    customer.set_credit_account_number(Integer.parseInt(data[10].trim()));
-                    customer.set_credit_account_max(Float.parseFloat(data[11].trim()));
-                    customer.set_credit_account_balance(Float.parseFloat(data[12].trim()));
+                    customer.setAccountId(Integer.parseInt(data[0].trim()));
+                    customer.setName(data[1].trim());
+                    customer.setLast(data[2].trim());
+                    customer.setDob(data[3].trim());
+                    customer.setAddress(data[4].replace("\"", "").trim());
+                    customer.setPhoneNumber(data[5].trim());
+                    customer.setCheckingAccountNumber(Integer.parseInt(data[6].trim()));
+                    customer.setCheckingAccountBalance(Float.parseFloat(data[7].trim()));
+                    customer.setSavingAccountNumber(Integer.parseInt(data[8].trim()));
+                    customer.setSavingAccountBalance(Float.parseFloat(data[9].trim()));
+                    customer.setCreditAccountNumber(Integer.parseInt(data[10].trim()));
+                    customer.setCreditAccountMax(Float.parseFloat(data[11].trim()));
+                    customer.setCreditAccountBalance(Float.parseFloat(data[12].trim()));
 
-                    String key = customer.get_name() + " " + customer.get_last();
-                    users_by_name.put(key, customer);
-                    accounts_by_number.put(customer.get_checking_account_number(), customer);
-                    accounts_by_number.put(customer.get_saving_account_number(), customer);
-                    accounts_by_number.put(customer.get_credit_account_number(), customer);
+                    String key = customer.getName() + " " + customer.getLast();
+                    usersByName.put(key, customer);
+                    accountsByNumber.put(customer.getCheckingAccountNumber(), customer);
+                    accountsByNumber.put(customer.getSavingAccountNumber(), customer);
+                    accountsByNumber.put(customer.getCreditAccountNumber(), customer);
 
                     // Update last IDs
-                    lastUserId = Math.max(lastUserId, customer.get_account_id());
+                    lastUserId = Math.max(lastUserId, customer.getAccountId());
                     lastAccountNumber = Math.max(lastAccountNumber, 
-                        Math.max(customer.get_checking_account_number(),
-                        Math.max(customer.get_saving_account_number(),
-                        customer.get_credit_account_number())));
+                        Math.max(customer.getCheckingAccountNumber(),
+                        Math.max(customer.getSavingAccountNumber(),
+                        customer.getCreditAccountNumber())));
                 } catch (NumberFormatException e) {
                     System.out.println("Error parsing numeric values for customer record: " + line);
                     continue;
@@ -101,15 +101,15 @@ public class UserCreation {
         /**
          * Initializes the last user ID and last account number by iterating through all users.
          * 
-         * @param users_by_name A HashMap that contains user information.
+         * @param usersByName A HashMap that contains user information.
          */
-        public static void initializeLastIds(HashMap<String, Customer> users_by_name) {
-            for (Customer customer : users_by_name.values()) {
-                lastUserId = Math.max(lastUserId, customer.get_account_id());
+        public static void initializeLastIds(HashMap<String, Customer> usersByName) {
+            for (Customer customer : usersByName.values()) {
+                lastUserId = Math.max(lastUserId, customer.getAccountId());
                 lastAccountNumber = Math.max(lastAccountNumber, 
-                    Math.max(customer.get_checking_account_number(), 
-                    Math.max(customer.get_saving_account_number(), 
-                    customer.get_credit_account_number())));
+                    Math.max(customer.getCheckingAccountNumber(), 
+                    Math.max(customer.getSavingAccountNumber(), 
+                    customer.getCreditAccountNumber())));
             }
         }
         /**
@@ -154,30 +154,30 @@ public class UserCreation {
          * It also generates unique user and account IDs, credit scores, and credit limits.
          * 
          * @param kb A Scanner object used to read user input.
-         * @param users_by_name A HashMap to store users by their full name.
-         * @param accounts_by_number A HashMap to store users by their account numbers.
+         * @param usersByName A HashMap to store users by their full name.
+         * @param accountsByNumber A HashMap to store users by their account numbers.
          * @return The created {@code Customer} object.
          */
-        public Customer createNewUser(Scanner kb, HashMap<String, Customer> users_by_name, 
-                                              HashMap<Integer, Customer> accounts_by_number) {
+        public Customer createNewUser(Scanner kb, HashMap<String, Customer> usersByName, 
+                                              HashMap<Integer, Customer> accountsByNumber) {
             
 
             try {
-                SetupUsers.setup_users(users_by_name, accounts_by_number);
+                SetupUsers.setUpUsers(usersByName, accountsByNumber);
             } catch (Exception e) {
                 System.out.println("Error initializing users: " + e.getMessage());
                 return null;
             }                                   
             // Initialize IDs if not already done
             if (lastUserId == 0) {
-                initializeLastIds(users_by_name);
+                initializeLastIds(usersByName);
             }
             
             Customer customer = new Customer();
             
             // Generate unique ID
             int userId = generateUniqueUserId();
-            customer.set_account_id(userId);
+            customer.setAccountId(userId);
             
             System.out.println("\nEnter user information:");
             
@@ -187,7 +187,7 @@ public class UserCreation {
                 try {
                     System.out.print("First Name: ");
                     firstName = kb.nextLine();
-                    customer.set_name(firstName);
+                    customer.setName(firstName);
                     break;
                 } catch (IllegalArgumentException e) {
                     System.out.println("First name must contain only letters. Please try again.");
@@ -200,7 +200,7 @@ public class UserCreation {
                 try {
                     System.out.print("Last Name: ");
                     lastName = kb.nextLine();
-                    customer.set_last(lastName);
+                    customer.setLast(lastName);
                     break;
                 } catch (IllegalArgumentException e) {
                     System.out.println("Last name can only contain letters, spaces, or hyphens. Please try again.");
@@ -209,7 +209,7 @@ public class UserCreation {
             
             System.out.print("Date of Birth (DD-Month-YY): ");
             String dob = kb.nextLine();
-            customer.set_dob(dob);
+            customer.setDob(dob);
             
             // Get address information
             System.out.print("Street Address: ");
@@ -225,11 +225,11 @@ public class UserCreation {
             String zip = kb.nextLine();
             
             String fullAddress = String.format("%s, %s, %s %s", street, city, state, zip);
-            customer.set_address(fullAddress);
+            customer.setAddress(fullAddress);
             
             System.out.print("Phone Number (without spaces or dashes): ");
             String phone = kb.nextLine();
-            customer.set_phone_number(formatPhoneNumber(phone));
+            customer.setPhoneNumber(formatPhoneNumber(phone));
             
             int creditScore = generateRandomCreditScore();
             System.out.println("Credit Score: " + creditScore);            
@@ -239,27 +239,27 @@ public class UserCreation {
             int savingsAccountNumber = generateUniqueAccountNumber();
             int creditAccountNumber = generateUniqueAccountNumber();
             
-            customer.set_checking_account_number(checkingAccountNumber);
-            customer.set_saving_account_number(savingsAccountNumber);
-            customer.set_credit_account_number(creditAccountNumber);
+            customer.setCheckingAccountNumber(checkingAccountNumber);
+            customer.setSavingAccountNumber(savingsAccountNumber);
+            customer.setCreditAccountNumber(creditAccountNumber);
             
             // Set initial balances
-            customer.set_checking_account_balance(0.0f);
-            customer.set_saving_account_balance(0.0f);
+            customer.setCheckingAccountBalance(0.0f);
+            customer.setSavingAccountBalance(0.0f);
             
             // Set credit limit and initial balance
             float creditLimit = generateCreditLimit(creditScore);
-            customer.set_credit_account_max(creditLimit);
-            customer.set_credit_account_balance(-creditLimit); 
-            
+            customer.setCreditAccountMax(creditLimit);
+            customer.setCreditAccountBalance(-creditLimit);
+    
             // Add to HashMaps
             String key = firstName + " " + lastName;
-            users_by_name.put(key, customer);
-            accounts_by_number.put(checkingAccountNumber, customer);
-            accounts_by_number.put(savingsAccountNumber, customer);
-            accounts_by_number.put(creditAccountNumber, customer);
+            usersByName.put(key, customer);
+            accountsByNumber.put(checkingAccountNumber, customer);
+            accountsByNumber.put(savingsAccountNumber, customer);
+            accountsByNumber.put(creditAccountNumber, customer);
     
-            saveUsersToCSV(users_by_name);
+            saveUsersToCSV(usersByName);
             logger.logNewAccountCreation(customer);
 
         
@@ -272,35 +272,35 @@ public class UserCreation {
         System.out.println("Credit Limit: $" + String.format("%.2f", creditLimit));
         
         // Save user data to CSV after creation
-        saveUsersToCSV(users_by_name);
+        saveUsersToCSV(usersByName);
         
         return customer;
     }
     /**
      * Saves new user's to the new CSV file.
-     * @param users_by_name A hashmap to store users by their full name.
+     * @param usersByName A hashmap to store users by their full name.
      */
-    public static void saveUsersToCSV(HashMap<String, Customer> users_by_name) {
+    public static void saveUsersToCSV(HashMap<String, Customer> usersByName) {
         try (FileWriter writer = new FileWriter(CSV_FILE, false)) {
             // Write CSV header
             writer.append("Identification Number,First Name,Last Name,Date of Birth,Address,Phone Number,Checking Account Number,Checking Starting Balance,Savings Account Number,Savings Starting Balance,Credit Account Number,Credit Max,Credit Starting Balance\n");
             
-            for (Customer customer : users_by_name.values()) {
+            for (Customer customer : usersByName.values()) {
                 // Format numbers as integers where appropriate and ensure proper decimal formatting for balances
                 String line = String.format("%d,%s,%s,%s,\"%s\",%s,%d,%.2f,%d,%.2f,%d,%.2f,%.2f\n",
-                    customer.get_account_id(),
-                    customer.get_name(),
-                    customer.get_last(),
-                    customer.get_dob(),
-                    customer.get_address(),
-                    customer.get_phone_number(),
-                    customer.get_checking_account_number(),
-                    customer.get_checking_account_balance(),
-                    customer.get_saving_account_number(),
-                    customer.get_saving_account_balance(),
-                    customer.get_credit_account_number(),
-                    customer.get_credit_account_max(),
-                    customer.get_credit_account_balance()
+                    customer.getAccountId(),
+                    customer.getName(),
+                    customer.getLast(),
+                    customer.getDob(),
+                    customer.getAddress(),
+                    customer.getPhoneNumber(),
+                    customer.getCheckingAccountNumber(),
+                    customer.getCheckingAccountBalance(),
+                    customer.getSavingAccountNumber(),
+                    customer.getSavingAccountBalance(),
+                    customer.getCreditAccountNumber(),
+                    customer.getCreditAccountMax(),
+                    customer.getCreditAccountBalance()
                 );
                 writer.append(line);
             }

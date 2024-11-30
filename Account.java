@@ -10,36 +10,36 @@
 abstract class Account {
     private int accountNumber;
     private float balance;
-    private String routing_number;
+    private String routingNumber;
     /**
      * 
      * Constructs an {@code Account} with the specified account number and starting balance.
      *
      * @param accountNumber the unique account number associated with the account
      * @param startingBalance the initial balance of the account
-     * @param routing_number the routing number of the account
+     * @param routingNumber the routing number of the account
      */
     // Constructor
     public Account() {
     	
     }
-    public Account(String routing_number) {
-    	this.routing_number = routing_number;
+    public Account(String routingNumber) {
+    	this.routingNumber = routingNumber;
     }
-    public Account(int accountNumber, float startingBalance, String routing_number) {
+    public Account(int accountNumber, float startingBalance, String routingNumber) {
         this.accountNumber = accountNumber;
         this.balance = startingBalance;
-        this.routing_number = routing_number;
+        this.routingNumber = routingNumber;
     }
-    public void set_routing_number(String routing_number){
-        this.routing_number = routing_number;
+    public void setRoutingNumber(String routingNumber){
+        this.routingNumber = routingNumber;
     }
     /**
      * Returns the account number of the account.
      *
      * @return the account number
      */
-    public int get_account_number() {
+    public int getAccountNumber() {
         return accountNumber;
     }
      /**
@@ -47,15 +47,15 @@ abstract class Account {
      *
      * @return the current balance
      */
-    public float get_balance() {
+    public float getBalance() {
         return balance;
     }
      /**
      * Gets the routing number.
      * @return Returns the routing number
      */
-    public String get_routing_number(){
-        return this.routing_number;
+    public String getRoutingNumber(){
+        return this.routingNumber;
     }
     /**
      * 

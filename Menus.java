@@ -7,8 +7,8 @@ import java.util.Scanner;
  */
 public class Menus {
     Scanner kb = new Scanner(System.in);
-    HashMap <String, Customer> users_by_name = new HashMap<>();
-    HashMap <Integer, Customer> accounts_by_number = new HashMap<>();
+    HashMap <String, Customer> usersByName = new HashMap<>();
+    HashMap <Integer, Customer> accountsByNumber = new HashMap<>();
     public Menus(){
 
     }
@@ -20,7 +20,7 @@ public class Menus {
     public int displayModeMenu(){
         
         int option;
-        boolean right_option = false;
+        boolean rightOption = false;
         do {
             System.out.println("Please Select the one of the following modes:");
             System.out.println("1. Customer");
@@ -33,48 +33,48 @@ public class Menus {
                 kb.nextLine();
             }
             if (1 <= option && option <=4){
-                right_option = true;
+                rightOption = true;
             } else {
                 System.out.println("Please choose a valid option");
             }
-        } while(!right_option);
+        } while(!rightOption);
         return option;
     }
     /**
      * prompts the user to enter the full name from the user and verifies if it is a valid user
      * 
-     * @param users_by_name A HashMap that contains user information
-     * @return username is the user full name 
+     * @param usersByName A HashMap that contains user information
+     * @return userName is the user full name 
      */
-    public String get_full_name_menu(HashMap <String, Customer> users_by_name){
-        boolean right_user = false;
+    public String getFullNameMenu(HashMap <String, Customer> usersByName){
+        boolean rightUser = false;
         System.out.println("Enter your full name: ");
-        String username;
+        String userName;
         do {
-            username = kb.nextLine();
-            if (!users_by_name.containsKey(username)){
+            userName = kb.nextLine();
+            if (!usersByName.containsKey(userName)){
                 System.out.println("Error: please enter a valid name");
             } else {
-                right_user = true;
+                rightUser = true;
             } 
-        } while(!right_user);
-        return username;
+        } while(!rightUser);
+        return userName;
     }
     /**
      * Gets the user account type to be worked on
      * 
      * @return account_type is the user selected option
      */
-    public int get_account_type_menu(){
+    public int getAccountTypeMenu(){
         boolean valid = false;
-        int account_type;
+        int accountType;
         do {
             System.out.println("Select one of the following accounts:");
             System.out.println("(1) Checkings");
             System.out.println("(2) Savings");
             System.out.println("(3) Credit");
-            account_type = kb.nextInt();
-            if (1 <= account_type && account_type <=3){
+            accountType = kb.nextInt();
+            if (1 <= accountType && accountType <=3){
                 valid = true;
             } else {
                 System.out.println("Please choose a valid account");
@@ -83,15 +83,15 @@ public class Menus {
         if (kb.hasNextLine()){
             kb.nextLine();
         }
-        return account_type;
+        return accountType;
     }
 
     /**
      * Gets the user transaction type to be done
      * 
-     * @return transaction_option is the user selected option
+     * @return transactionOption is the user selected option
      */
-    public int select_transaction_menu(){
+    public int selectTransactionMenu(){
         System.out.println("Select one of the transactions below:");
         System.out.println("(1) Inquire about balance");
         System.out.println("(2) Deposit money to the account");
@@ -99,31 +99,31 @@ public class Menus {
         System.out.println("(4) Transfer money between accounts");
         System.out.println("(5) Make payment");
         System.out.println("(6) Transfer to another customer");
-        int transaction_option = kb.nextInt();
-        return transaction_option;
+        int transactionOption = kb.nextInt();
+        return transactionOption;
     }
     /**
      * This method is yet to be implemented
      * @return Gets source account.
      */
-    public int get_source_account(){
+    public int getSourceAccount(){
         return 0;
     }
     /**
      * Ask and generates statement for user
-     * @param users_by_name A HashMap that contains user information.
+     * @param usersByName A HashMap that contains user information.
      * @param statementGenerator Generates Statement.
      * 
      */
-    public void displayStatementMenu(HashMap<String, Customer> users_by_name, TransactionStatement statementGenerator) {
+    public void displayStatementMenu(HashMap<String, Customer> usersByName, TransactionStatement statementGenerator) {
         System.out.println("=== Generate Account Statement ===");
         
         // Get customer name
         System.out.println("Enter customer's full name (FirstName LastName):");
         String customerName = kb.nextLine().trim();
         
-        if (users_by_name.containsKey(customerName)) {
-            Customer customer = users_by_name.get(customerName);
+        if (usersByName.containsKey(customerName)) {
+            Customer customer = usersByName.get(customerName);
             statementGenerator.generateTransactionStatement(customer);
         } else {
             System.out.println("Error: Customer not found. Please try again.");

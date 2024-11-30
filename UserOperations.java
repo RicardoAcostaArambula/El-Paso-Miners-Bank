@@ -10,8 +10,8 @@ class UserOperations implements Operations {
      */
     /*returns checking account balance */
     @Override
-    public float checking_account_balance(Customer customer){
-        return customer.get_checking_account_balance();
+    public float checkingAccountBalance(Customer customer){
+        return customer.getCheckingAccountBalance();
     }
     /**
      * Returns the savings account balance for a customer.
@@ -20,8 +20,8 @@ class UserOperations implements Operations {
      * @return the savings account balance
      */
     @Override
-    public float saving_account_balance(Customer customer){
-        return customer.get_saving_account_balance();
+    public float savingAccountBalance(Customer customer){
+        return customer.getSavingAccountBalance();
     }
 
     /**
@@ -32,8 +32,8 @@ class UserOperations implements Operations {
      */
 
      @Override
-    public float credit_account_balance(Customer customer){
-        return customer.get_credit_account_balance();
+    public float creditAccountBalance(Customer customer){
+        return customer.getCreditAccountBalance();
     }
 
     /**
@@ -43,10 +43,10 @@ class UserOperations implements Operations {
      * @param amount the amount to be deposited
      */
     @Override
-    public void deposit_to_checking(Customer customer, float amount){
-        float current_balance = checking_account_balance(customer);
-        float new_balance = current_balance + amount;
-        customer.set_checking_account_balance(new_balance);
+    public void depositToChecking(Customer customer, float amount){
+        float currentBalance = checkingAccountBalance(customer);
+        float newBalance = currentBalance + amount;
+        customer.setCheckingAccountBalance(newBalance);
         System.out.println("Successfully deposited $" + amount + " to checking account");
     }
 
@@ -57,10 +57,10 @@ class UserOperations implements Operations {
      * @param amount the amount to be deposited
      */
     @Override
-    public void deposit_to_saving(Customer customer, float amount){
-        float current_balance = saving_account_balance(customer);
-        float new_balance = current_balance + amount;
-        customer.set_saving_account_balance(new_balance);
+    public void depositToSaving(Customer customer, float amount){
+        float currentBalance = savingAccountBalance(customer);
+        float newBalance = currentBalance + amount;
+        customer.setSavingAccountBalance(newBalance);
         System.out.println("Successfully deposited $" + amount + " to savings account");
     }
 
@@ -71,10 +71,10 @@ class UserOperations implements Operations {
      * @param amount the amount to be deposited
      */
     @Override
-    public void deposit_to_credit(Customer customer, float amount){
-        float current_balance = credit_account_balance(customer);
-        float new_balance = current_balance + amount;
-        customer.set_credit_account_balance(new_balance);
+    public void depositToCredit(Customer customer, float amount){
+        float currentBalance = creditAccountBalance(customer);
+        float newBalance = currentBalance + amount;
+        customer.setCreditAccountBalance(newBalance);
         System.out.println("Successfully deposited $" + amount + " to credit account");
     }
      /**
@@ -93,11 +93,11 @@ class UserOperations implements Operations {
         // Get source account balance
         float sourceBalance = 0;
         if (sourceAccountType == 1) {
-            sourceBalance = checking_account_balance(sourceCustomer);
+            sourceBalance = checkingAccountBalance(sourceCustomer);
         } else if (sourceAccountType == 2) {
-            sourceBalance = saving_account_balance(sourceCustomer);
+            sourceBalance = savingAccountBalance(sourceCustomer);
         } else if (sourceAccountType == 3) {
-            sourceBalance = credit_account_balance(sourceCustomer);
+            sourceBalance = creditAccountBalance(sourceCustomer);
         }
         
         // Check if source has sufficient funds
@@ -108,66 +108,66 @@ class UserOperations implements Operations {
         
         // Deduct from source account
         if (sourceAccountType == 1) {
-            sourceCustomer.set_checking_account_balance(sourceBalance - amount);
+            sourceCustomer.setCheckingAccountBalance(sourceBalance - amount);
         } else if (sourceAccountType == 2) {
-            sourceCustomer.set_saving_account_balance(sourceBalance - amount);
+            sourceCustomer.setSavingAccountBalance(sourceBalance - amount);
         } else if (sourceAccountType == 3) {
-            sourceCustomer.set_credit_account_balance(sourceBalance - amount);
+            sourceCustomer.setCreditAccountBalance(sourceBalance - amount);
         }
         
         // Add to destination account
         if (destAccountType == 1) {
-            deposit_to_checking(destCustomer, amount);
+            depositToChecking(destCustomer, amount);
         } else if (destAccountType == 2) {
-            deposit_to_saving(destCustomer, amount);
+            depositToSaving(destCustomer, amount);
         } else if (destAccountType == 3) {
-            deposit_to_credit(destCustomer, amount);
+            depositToCredit(destCustomer, amount);
         }
         System.out.println("Successfully transferred $" + amount);
         return true;
     }
-    public void check_balance(Customer customer, int account_type){
+    public void checkBalance(Customer customer, int accountType){
         float balance;
-        if (account_type == 1) {
-            balance = checking_account_balance(customer);
-        } else if (account_type == 2) {
-            balance = saving_account_balance(customer);
+        if (accountType == 1) {
+            balance = checkingAccountBalance(customer);
+        } else if (accountType == 2) {
+            balance = savingAccountBalance(customer);
         } else {
-            balance = credit_account_balance(customer);
+            balance = creditAccountBalance(customer);
         }
         System.out.println("The account balance is: $" + String.format("%.2f", balance));
     }
-    public void deposit(Customer customer, int account_type, float amount){
+    public void deposit(Customer customer, int accountType, float amount){
         if (amount <= 0) {
             System.out.println("Error: Deposit amount must be greater than zero");
             return;
         }
-        if (account_type == 1) {
-            deposit_to_checking(customer, amount);
-        } else if (account_type == 2) {
-            deposit_to_saving(customer, amount);
+        if (accountType == 1) {
+            depositToChecking(customer, amount);
+        } else if (accountType == 2) {
+            depositToSaving(customer, amount);
         } else {
-            deposit_to_credit(customer, amount);
+            depositToCredit(customer, amount);
         }
     }
-    public void withdraw(Customer customer, int account_type, float amount){
+    public void withdraw(Customer customer, int accountType, float amount){
         if (amount <= 0) {
             System.out.println("Error: Withdraw amount must be greater than zero");
             return;
         }
 
-        if (account_type == 1) {
-            float checking_balance = checking_account_balance(customer);
-            if (checking_balance >= amount) {
-                customer.set_checking_account_balance(checking_balance - amount);
+        if (accountType == 1) {
+            float checkingBalance = checkingAccountBalance(customer);
+            if (checkingBalance >= amount) {
+                customer.setCheckingAccountBalance(checkingBalance - amount);
                 System.out.println("Successfully withdrew $" + amount + " from checking account");
             } else {
                 System.out.println("Error: Insufficient funds in checking account");
             }
-        } else if (account_type == 2) {
-            float savings_balance = saving_account_balance(customer);
-            if (savings_balance >= amount) {
-                customer.set_saving_account_balance(savings_balance - amount);
+        } else if (accountType == 2) {
+            float savingsBalance = savingAccountBalance(customer);
+            if (savingsBalance >= amount) {
+                customer.setSavingAccountBalance(savingsBalance - amount);
                 System.out.println("Successfully withdrew $" + amount + " from savings account");
             } else {
                 System.out.println("Error: Insufficient funds in savings account");
@@ -176,39 +176,39 @@ class UserOperations implements Operations {
             System.out.println("Error: Cannot withdraw from credit account");
         }
     }
-    public void transfer_between_accounts(Customer customer, int source_account, int dest_account, float transfer_amount){
-        if (source_account == dest_account) {
+    public void transferBetweenAccounts(Customer customer, int sourceAccount, int destAccount, float transferAmount){
+        if (sourceAccount == destAccount) {
             System.out.println("Error: Cannot transfer to the same account");
             return;
         }
-        float source_balance = 0;
-        if (source_account == 1) {
-            source_balance = checking_account_balance(customer);
-        } else if (source_account == 2) {
-            source_balance = saving_account_balance(customer);
-        } else if (source_account == 3) {
-            source_balance = credit_account_balance(customer);
+        float sourceBalance = 0;
+        if (sourceAccount == 1) {
+            sourceBalance = checkingAccountBalance(customer);
+        } else if (sourceAccount == 2) {
+            sourceBalance = savingAccountBalance(customer);
+        } else if (sourceAccount == 3) {
+            sourceBalance = creditAccountBalance(customer);
         }
         
-        if (source_balance < transfer_amount) {
+        if (sourceBalance < transferAmount) {
             System.out.println("Error: Insufficient funds in source account");
             return;
         }
         
-        if (source_account == 1) {
-            customer.set_checking_account_balance(source_balance - transfer_amount);
-        } else if (source_account == 2) {
-            customer.set_saving_account_balance(source_balance - transfer_amount);
-        } else if (source_account == 3) {
-            customer.set_credit_account_balance(source_balance - transfer_amount);
+        if (sourceAccount == 1) {
+            customer.setCheckingAccountBalance(sourceBalance - transferAmount);
+        } else if (sourceAccount == 2) {
+            customer.setSavingAccountBalance(sourceBalance - transferAmount);
+        } else if (sourceAccount == 3) {
+            customer.setCreditAccountBalance(sourceBalance - transferAmount);
         }
         
-        if (dest_account == 1) {
-            deposit_to_checking(customer, transfer_amount);
-        } else if (dest_account == 2) {
-            deposit_to_saving(customer, transfer_amount);
-        } else if (dest_account == 3) {
-            deposit_to_credit(customer, transfer_amount);
+        if (destAccount == 1) {
+            depositToChecking(customer, transferAmount);
+        } else if (destAccount == 2) {
+            depositToSaving(customer, transferAmount);
+        } else if (destAccount == 3) {
+            depositToCredit(customer, transferAmount);
         }
     }
 }

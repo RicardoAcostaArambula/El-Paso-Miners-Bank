@@ -2,8 +2,7 @@ import java.util.Scanner;
 
 public class VerifyUser {
     public boolean isValidPassword(Customer customer, String input) {
-        // Construct full name as used in the CSV file (first name + space + last name)
-        String fullName = customer.get_name() + " " + customer.get_last();
+        String fullName = customer.getName() + " " + customer.getLast();
         return fullName.equals(input);
     }
 
