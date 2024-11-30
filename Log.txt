@@ -4,3 +4,6 @@
 [2024-10-23 12:49:59] Daniel Mejia, made a balance inquiry on Savings-2077. Balance: $2051.62
 [2024-10-23 12:50:17] Daniel A, made a balance inquiry on Checking-1078. Balance: $857.56
 [2024-10-23 12:50:27] Mufassa Disney, made a balance inquiry on Checking-1012. Balance: $148.68
+[2024-11-23 16:59:15] Daniel A, deposited $-1000.00 to Checking-1078. New Balance: $857.56
+[2024-11-24 16:54:41] Daniel A, deposited $-12.00 to Checking-1078. New Balance: $857.56
+[2024-11-24 16:54:59] Daniel A, deposited $-1.00 to Checking-1078. New Balance: $857.56

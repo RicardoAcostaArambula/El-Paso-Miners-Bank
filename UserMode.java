@@ -114,7 +114,6 @@ class UserMode implements BankMode {
         Log transactionLog = new Log();
         UserOperations userOperations = new UserOperations();
         ManagerTransactionStatement managerStatement = new ManagerTransactionStatement();
-        ManagerOperations managerOperations = new ManagerOperations();
         Menus menu = new Menus();
         boolean continueBanking = true;
         Customer customer = usersByName.get(userName);
