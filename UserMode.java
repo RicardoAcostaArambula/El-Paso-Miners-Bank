@@ -26,6 +26,13 @@ class UserMode implements BankMode {
         else    
             performTransaction(usersByName, userName, accountsByNumber);
     }
+    /**
+     * Validates the input amount format and value for financial transactions.
+     * 
+     * @param input The string input representing the monetary amount
+     * @return The validated amount as a float
+     * @throws InvalidAmountFormatException if the amount format is invalid or the amount is less than or equal to zero
+     */
     private float validateAmount(String input) throws InvalidAmountFormatException {
         String moneyPattern = "^\\d+(\\.\\d{2})?$";
         
@@ -40,7 +47,14 @@ class UserMode implements BankMode {
         
         return amount;
     }
-    
+    /**
+     * Repeatedly prompts the user for a valid float input until a valid amount is entered.
+     * 
+     * @param kb The Scanner object used for input
+     * @param prompt The message to display when requesting input
+     * @return The valid float amount entered by the user
+     * @throws InvalidAmountFormatException if the input format is invalid
+     */
     private float getValidFloatInput(Scanner kb, String prompt) throws InvalidAmountFormatException {
         while (true) {
             System.out.println(prompt);
@@ -52,7 +66,13 @@ class UserMode implements BankMode {
             }
         }
     }
-
+    /**
+     * Repeatedly prompts the user for a valid account selection (1-3) until a valid choice is made.
+     * 
+     * @param kb The Scanner object used for input
+     * @param prompt The message to display when requesting input
+     * @return The selected account number (1, 2, or 3)
+     */
     private int getValidAccountSelection(Scanner kb, String prompt) {
         while (true) {
             System.out.println(prompt);
@@ -63,7 +83,13 @@ class UserMode implements BankMode {
             System.out.println("Invalid input. Please enter 1, 2, or 3.");
         }
     }
-
+    /**
+     * Gets a valid transaction option from the user using the transaction menu.
+     * 
+     * @param kb The Scanner object used for input
+     * @param menu The Menus object used to display the transaction menu
+     * @return The selected transaction option (1-6)
+     */
     private int getValidTransactionOption(Scanner kb, Menus menu) {
         while (true) {
             int option = menu.selectTransactionMenu();
