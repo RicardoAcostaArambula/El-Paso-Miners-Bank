@@ -47,7 +47,6 @@ class UserOperations implements Operations {
         float currentBalance = checkingAccountBalance(customer);
         float newBalance = currentBalance + amount;
         customer.setCheckingAccountBalance(newBalance);
-        System.out.println("Successfully deposited $" + amount + " to checking account");
     }
 
     /**
@@ -61,7 +60,6 @@ class UserOperations implements Operations {
         float currentBalance = savingAccountBalance(customer);
         float newBalance = currentBalance + amount;
         customer.setSavingAccountBalance(newBalance);
-        System.out.println("Successfully deposited $" + amount + " to savings account");
     }
 
     /**
@@ -75,7 +73,6 @@ class UserOperations implements Operations {
         float currentBalance = creditAccountBalance(customer);
         float newBalance = currentBalance + amount;
         customer.setCreditAccountBalance(newBalance);
-        System.out.println("Successfully deposited $" + amount + " to credit account");
     }
      /**
      * Transfers funds between two customers' accounts.
@@ -117,13 +114,15 @@ class UserOperations implements Operations {
         
         // Add to destination account
         if (destAccountType == 1) {
-            depositToChecking(destCustomer, amount);
+            float currentBalance = checkingAccountBalance(destCustomer);
+            destCustomer.setCheckingAccountBalance(currentBalance + amount);
         } else if (destAccountType == 2) {
-            depositToSaving(destCustomer, amount);
+            float currentBalance = savingAccountBalance(destCustomer);
+            destCustomer.setSavingAccountBalance(currentBalance + amount);
         } else if (destAccountType == 3) {
-            depositToCredit(destCustomer, amount);
+            float currentBalance = creditAccountBalance(destCustomer);
+            destCustomer.setCreditAccountBalance(currentBalance + amount);
         }
-        System.out.println("Successfully transferred $" + amount);
         return true;
     }
     public void checkBalance(Customer customer, int accountType){

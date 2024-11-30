@@ -41,6 +41,7 @@ class ManagerMode implements BankMode {
                 System.out.println("(4) Process manager transaction statement");
                 System.out.println("(5) Create New Account");
                 inquiryType = kb.nextInt();
+                kb.nextLine();
                 
                 if (1 <= inquiryType && inquiryType <= 5) {
                     inquiryChosen = true;
@@ -53,9 +54,7 @@ class ManagerMode implements BankMode {
                 boolean valid = false;
                 String accountHolder;
                 do {
-                    if (kb.hasNextLine()) {
-                        kb.nextLine();
-                    }
+                    
                     System.out.println("Whose account would you like to inquire about? (Enter full name as following: FirstName LastName)");
                     accountHolder = kb.nextLine();
                     if (!usersByName.containsKey(accountHolder)) {

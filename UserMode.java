@@ -1,5 +1,6 @@
 import java.util.HashMap;
 import java.util.Scanner;
+
 class UserMode implements BankMode {
     /**
      * enterMode is the starting point for entering UserMode which calls then the process of performTransaction if log in was successfull 
@@ -25,6 +26,53 @@ class UserMode implements BankMode {
         else    
             performTransaction(usersByName, userName, accountsByNumber);
     }
+    private float validateAmount(String input) throws InvalidAmountFormatException {
+        String moneyPattern = "^\\d+(\\.\\d{2})?$";
+        
+        if (!input.matches(moneyPattern)) {
+            throw new InvalidAmountFormatException("Invalid amount format. Please enter a number with exactly two decimal places (e.g., 100.00)");
+        }
+        
+        float amount = Float.parseFloat(input);
+        if (amount <= 0) {
+            throw new InvalidAmountFormatException("Amount must be greater than zero");
+        }
+        
+        return amount;
+    }
+    
+    private float getValidFloatInput(Scanner kb, String prompt) throws InvalidAmountFormatException {
+        while (true) {
+            System.out.println(prompt);
+            String input = kb.nextLine();
+            try {
+                return validateAmount(input);
+            } catch (InvalidAmountFormatException e) {
+                System.out.println("Error: " + e.getMessage() + "\nPlease try again.");
+            }
+        }
+    }
+
+    private int getValidAccountSelection(Scanner kb, String prompt) {
+        while (true) {
+            System.out.println(prompt);
+            String input = kb.nextLine().trim();
+            if (input.matches("[1-3]")) {
+                return Integer.parseInt(input);
+            }
+            System.out.println("Invalid input. Please enter 1, 2, or 3.");
+        }
+    }
+
+    private int getValidTransactionOption(Scanner kb, Menus menu) {
+        while (true) {
+            int option = menu.selectTransactionMenu();
+            if (option >= 1 && option <= 6) {
+                return option;
+            }
+            System.out.println("Invalid option. Please enter a number between 1 and 6.");
+        }
+    }
 
     /**
      * performTransaction allows user to complete transactions as displayed by the manu for the user
@@ -47,7 +95,8 @@ class UserMode implements BankMode {
 
         while(continueBanking) {
             int accountType = menu.getAccountTypeMenu();
-            int transactionOption =  menu.selectTransactionMenu();
+            int transactionOption = getValidTransactionOption(kb, menu);
+
             switch (transactionOption) {
                 case 1: 
                     userOperations.checkBalance(customer, accountType);
@@ -60,57 +109,63 @@ class UserMode implements BankMode {
                             accountType == 2 ? customer.getSavingAccountBalance() :
                             customer.getCreditAccountBalance()));
                     break;
-                case 2:
-                    System.out.println("Enter deposit amount:");
-                    float depositAmount = kb.nextFloat();
-                    kb.nextLine();
-                    userOperations.deposit(customer, accountType, depositAmount);
-                    transactionLog.logDeposit(customer, accountType, depositAmount);
-                    statementGenerator.recordTransaction(customer, String.format("Deposit of $%.2f to %s account",
-                                depositAmount,
-                                accountType == 1 ? "Checking" : accountType == 2 ? "Savings" : "Credit"));
-                    managerStatement.recordTransaction(customer, String.format("Deposit of $%.2f to %s account",
-                                depositAmount,
-                                accountType == 1 ? "Checking" : accountType == 2 ? "Savings" : "Credit"));
-                    break;
-                case 3:
-                    System.out.println("Enter withdraw amount:");
-                    float withdrawalAmount = kb.nextFloat();
-                    userOperations.withdraw(customer, accountType, withdrawalAmount);
-                    transactionLog.logWithdrawal(customer, accountType, withdrawalAmount);
-                    statementGenerator.recordTransaction(customer, String.format("Withdrawal of $%.2f from %s account",
-                                withdrawalAmount,
-                                accountType == 1 ? "Checking" : accountType == 2 ? "Savings" : "Credit"));
-                    managerStatement.recordTransaction(customer, String.format("Withdrawal of $%.2f from %s account",
-                                withdrawalAmount,
-                                accountType == 1 ? "Checking" : accountType == 2 ? "Savings" : "Credit"));
-                    break;
-                case 4:
-                    System.out.println("From which account?");
-                    System.out.println("(1) Checking");
-                    System.out.println("(2) Savings");
-                    System.out.println("(3) Credit");
-                    int sourceAccount = kb.nextInt();
-                    
-                    System.out.println("To which account?");
-                    System.out.println("(1) Checking");
-                    System.out.println("(2) Savings");
-                    System.out.println("(3) Credit");
-                    int destAccount = kb.nextInt();
 
-                    System.out.println("Enter transfer amount:");
-                    float transferAmount = kb.nextFloat();
-                    
-                    userOperations.transferBetweenAccounts(customer, sourceAccount, destAccount, transferAmount);
-                    transactionLog.logTransfer(customer, sourceAccount, destAccount, transferAmount);
-                    String transferMsg = String.format("Transfer of $%.2f from %s account to %s account",
+                case 2: // Deposit
+                    try {
+                        float depositAmount = getValidFloatInput(kb, "Enter deposit amount:");
+                        userOperations.deposit(customer, accountType, depositAmount);
+                        transactionLog.logDeposit(customer, accountType, depositAmount);
+                        String depositMsg = String.format("Deposit of $%.2f to %s account",
+                                depositAmount,
+                                accountType == 1 ? "Checking" : accountType == 2 ? "Savings" : "Credit");
+                        statementGenerator.recordTransaction(customer, depositMsg);
+                        managerStatement.recordTransaction(customer, depositMsg);
+                    } catch (InvalidAmountFormatException e) {
+                        String errorMsg = "Failed deposit attempt - " + e.getMessage();
+                        statementGenerator.recordTransaction(customer, errorMsg);
+                        managerStatement.recordTransaction(customer, errorMsg);
+                    }
+                    break;
+
+                case 3: // Withdraw
+                    try {
+                        float withdrawalAmount = getValidFloatInput(kb, "Enter withdraw amount:");
+                        userOperations.withdraw(customer, accountType, withdrawalAmount);
+                        transactionLog.logWithdrawal(customer, accountType, withdrawalAmount);
+                        String withdrawMsg = String.format("Withdrawal of $%.2f from %s account",
+                                withdrawalAmount,
+                                accountType == 1 ? "Checking" : accountType == 2 ? "Savings" : "Credit");
+                        statementGenerator.recordTransaction(customer, withdrawMsg);
+                        managerStatement.recordTransaction(customer, withdrawMsg);
+                    } catch (InvalidAmountFormatException e) {
+                        String errorMsg = "Failed withdrawal attempt - " + e.getMessage();
+                        statementGenerator.recordTransaction(customer, errorMsg);
+                        managerStatement.recordTransaction(customer, errorMsg);
+                    }
+                    break;
+
+                case 4: // Transfer between accounts
+                    try {
+                        int sourceAccount = getValidAccountSelection(kb, "From which account?\n(1) Checking\n(2) Savings\n(3) Credit");
+                        int destAccount = getValidAccountSelection(kb, "To which account?\n(1) Checking\n(2) Savings\n(3) Credit");
+                        float transferAmount = getValidFloatInput(kb, "Enter transfer amount:");
+                        
+                        userOperations.transferBetweenAccounts(customer, sourceAccount, destAccount, transferAmount);
+                        transactionLog.logTransfer(customer, sourceAccount, destAccount, transferAmount);
+                        String transferMsg = String.format("Transfer of $%.2f from %s account to %s account",
                                 transferAmount,
                                 sourceAccount == 1 ? "Checking" : sourceAccount == 2 ? "Savings" : "Credit",
                                 destAccount == 1 ? "Checking" : destAccount == 2 ? "Savings" : "Credit");
-                    statementGenerator.recordTransaction(customer, transferMsg);
-                    managerStatement.recordTransaction(customer, transferMsg);
+                        statementGenerator.recordTransaction(customer, transferMsg);
+                        managerStatement.recordTransaction(customer, transferMsg);
+                    } catch (InvalidAmountFormatException e) {
+                        String errorMsg = "Failed transfer attempt - " + e.getMessage();
+                        statementGenerator.recordTransaction(customer, errorMsg);
+                        managerStatement.recordTransaction(customer, errorMsg);
+                    }
                     break;
-                case 5:
+
+                case 5: // Payment
                     if (accountType != 3) {
                         System.out.println("Error: Payments can only be made from credit account");
                         String errorMsg = "Failed payment attempt - invalid account type";
@@ -119,104 +174,71 @@ class UserMode implements BankMode {
                         break;
                     }
                     
-                    System.out.println("Enter payment amount:");
-                    float paymentAmount = kb.nextFloat();
-                    if (paymentAmount <= 0) {
-                        System.out.println("Error: Payment amount must be greater than zero");
-                        String errorMsg = "Failed payment attempt - invalid amount";
+                    try {
+                        float paymentAmount = getValidFloatInput(kb, "Enter payment amount:");
+                        
+                        float creditBalance = userOperations.creditAccountBalance(customer);
+                        if (creditBalance + paymentAmount > customer.getCreditAccountMax()) {
+                            throw new InvalidAmountFormatException("Payment would exceed credit limit");
+                        }
+                        
+                        customer.setCreditAccountBalance(creditBalance + paymentAmount);
+                        transactionLog.logPayment(customer, paymentAmount);
+                        String paymentMsg = String.format("Payment of $%.2f made to credit account", paymentAmount);
+                        statementGenerator.recordTransaction(customer, paymentMsg);
+                        managerStatement.recordTransaction(customer, paymentMsg);
+                    } catch (InvalidAmountFormatException e) {
+                        String errorMsg = "Failed payment attempt - " + e.getMessage();
                         statementGenerator.recordTransaction(customer, errorMsg);
                         managerStatement.recordTransaction(customer, errorMsg);
-                        break;
                     }
-                    
-                    float creditBalance = userOperations.creditAccountBalance(customer);
-                    if (creditBalance + paymentAmount > customer.getCreditAccountMax()) {
-                        System.out.println("Error: Payment would exceed credit limit");
-                        String errorMsg = "Failed payment attempt - would exceed credit limit";
-                        statementGenerator.recordTransaction(customer, errorMsg);
-                        managerStatement.recordTransaction(customer, errorMsg);
-                        break;
-                    }
-                    
-                    customer.setCreditAccountBalance(creditBalance + paymentAmount);
-                    System.out.println("Successfully made payment of $" + paymentAmount);
-                    transactionLog.logPayment(customer, paymentAmount);
-                    String paymentMsg = String.format("Payment of $%.2f made to credit account", paymentAmount);
-                    statementGenerator.recordTransaction(customer, paymentMsg);
-                    managerStatement.recordTransaction(customer, paymentMsg);
                     break;
-                case 6:
-                    System.out.println("Enter recipient's name: ");
-                    String recipientFullName = kb.nextLine();
-                    
-                    if (!usersByName.containsKey(recipientFullName)) {
-                        System.out.println("Error: Recipient not found");
-                        String errorMsg = "Failed transfer attempt - recipient not found: " + recipientFullName;
-                        statementGenerator.recordTransaction(customer, errorMsg);
-                        managerStatement.recordTransaction(customer, errorMsg);
-                        break;
-                    }
-                    
-                    Customer recipientCustomer = usersByName.get(recipientFullName);
-                    
-                    System.out.println("Select recipient's account type:");
-                    System.out.println("(1) Checking");
-                    System.out.println("(2) Savings");
-                    System.out.println("(3) Credit");
-                    int recipientAccountType = kb.nextInt();
-                    
-                    if (recipientAccountType < 1 || recipientAccountType > 3) {
-                        System.out.println("Error: Invalid account type");
-                        String errorMsg = "Failed transfer attempt - invalid recipient account type";
-                        statementGenerator.recordTransaction(customer, errorMsg);
-                        managerStatement.recordTransaction(customer, errorMsg);
-                        break;
-                    }
-                    
-                    System.out.println("Enter transfer amount:");
-                    float interCustomerTransferAmount = kb.nextFloat();
-                    
-                    if (interCustomerTransferAmount <= 0) {
-                        System.out.println("Error: Transfer amount must be greater than zero");
-                        String errorMsg = "Failed transfer attempt - invalid amount";
-                        statementGenerator.recordTransaction(customer, errorMsg);
-                        managerStatement.recordTransaction(customer, errorMsg);
-                        break;
-                    }
-                    
-                    if (userOperations.transferBetweenCustomers(customer, recipientCustomer, accountType, recipientAccountType, interCustomerTransferAmount)) {
-                        System.out.println("Successfully transferred $" + String.format("%.2f", interCustomerTransferAmount) + 
-                                            " to customer: " + recipientCustomer.getName() + " " + recipientCustomer.getLast());
-                        transactionLog.logInterCustomerTransfer(customer, recipientCustomer, accountType, recipientAccountType, interCustomerTransferAmount);
-                        String transferSuccessMsg = String.format(
-                                    "Transfer of $%.2f from %s account to %s %s's %s account",
+
+                case 6: // Inter-customer transfer
+                    try {
+                        System.out.println("Enter recipient's name: ");
+                        String recipientFullName = kb.nextLine();
+                        
+                        if (!usersByName.containsKey(recipientFullName)) {
+                            throw new InvalidAmountFormatException("Recipient not found: " + recipientFullName);
+                        }
+                        
+                        Customer recipientCustomer = usersByName.get(recipientFullName);
+                        int recipientAccountType = getValidAccountSelection(kb, "Select recipient's account type:\n(1) Checking\n(2) Savings\n(3) Credit");
+                        float interCustomerTransferAmount = getValidFloatInput(kb, "Enter transfer amount:");
+                        
+                        if (userOperations.transferBetweenCustomers(customer, recipientCustomer, accountType, recipientAccountType, interCustomerTransferAmount)) {
+                            System.out.printf("Successfully transferred $%.2f to customer: %s\n", 
+                                interCustomerTransferAmount, 
+                                recipientFullName);
+                            
+                            transactionLog.logInterCustomerTransfer(customer, recipientCustomer, accountType, recipientAccountType, interCustomerTransferAmount);
+                            String transferSuccessMsg = String.format(
+                                    "Transfer of $%.2f from %s account to %s's %s account",
                                     interCustomerTransferAmount,
                                     accountType == 1 ? "Checking" : accountType == 2 ? "Savings" : "Credit",
-                                    recipientCustomer.getName(),
-                                    recipientCustomer.getLast(),
+                                    recipientFullName,
                                     recipientAccountType == 1 ? "Checking" : recipientAccountType == 2 ? "Savings" : "Credit");
-                        statementGenerator.recordTransaction(customer, transferSuccessMsg);
-                        managerStatement.recordTransaction(customer, transferSuccessMsg);
-                    } else {
-                        System.out.println("Transfer failed. Please check account balances or input data.");
-                        String errorMsg = "Failed transfer attempt - insufficient funds or invalid data";
+                            statementGenerator.recordTransaction(customer, transferSuccessMsg);
+                            managerStatement.recordTransaction(customer, transferSuccessMsg);
+                        } else {
+                            throw new InvalidAmountFormatException("Transfer failed - insufficient funds or invalid data");
+                        }
+                    } catch (InvalidAmountFormatException e) {
+                        String errorMsg = "Failed transfer attempt - " + e.getMessage();
                         statementGenerator.recordTransaction(customer, errorMsg);
                         managerStatement.recordTransaction(customer, errorMsg);
                     }
                     break;
-                default:
-                    System.out.println("Invalid option selected");
-                    String errorMsg = "Invalid transaction option selected: " + transactionOption;
-                    statementGenerator.recordTransaction(customer, errorMsg);
-                    managerStatement.recordTransaction(customer, errorMsg);
-                    break;
             }
+            
             System.out.println("Would you like to exit? (yes/no)");
             String response = kb.nextLine().trim().toLowerCase();
             continueBanking = !response.equals("yes");
         }
         exitMode();
     }
+
 
     /** 
      * ExitMode allows user to return to the main menu

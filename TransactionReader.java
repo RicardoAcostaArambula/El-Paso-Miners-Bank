@@ -266,7 +266,9 @@ class TransactionReader {
             System.out.println("File not found: " +e.getMessage());
         }
         System.out.println("Processed all transacitons from file...");
-    }
+    } 
+
+  
 
     /**
      * Gets the user account type to be worked on
