@@ -10,6 +10,7 @@ class UserMode implements BankMode {
      * @param accountsByNumber is a hashmap that contains the customers by account number
      * @return None 
      */
+    Menus menu = Menus.getInstance();
     @Override
     public void enterMode(HashMap<String, Customer> usersByName, String userName, HashMap<Integer, Customer> accountsByNumber){
         // Start the manager transaction session for this user
@@ -114,7 +115,6 @@ class UserMode implements BankMode {
         Log transactionLog = new Log();
         UserOperations userOperations = new UserOperations();
         ManagerTransactionStatement managerStatement = new ManagerTransactionStatement();
-        Menus menu = new Menus();
         boolean continueBanking = true;
         Customer customer = usersByName.get(userName);
 

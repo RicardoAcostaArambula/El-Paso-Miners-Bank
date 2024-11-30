@@ -37,7 +37,7 @@ public class RunBank {
         RunBank bankApp = new RunBank();
         boolean continueProgram = true;
         Scanner kb = new Scanner(System.in);
-        Menus menu = new Menus();
+        Menus menu = Menus.getInstance();
         TransactionStatement statementGenerator = new TransactionStatement();
         HashMap<String, Customer> usersByName = new HashMap<>();
         HashMap<Integer, Customer> accountsByNumber = new HashMap<>();

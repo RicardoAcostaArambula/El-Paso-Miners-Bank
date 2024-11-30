@@ -9,9 +9,15 @@ public class Menus {
     Scanner kb = new Scanner(System.in);
     HashMap <String, Customer> usersByName = new HashMap<>();
     HashMap <Integer, Customer> accountsByNumber = new HashMap<>();
-    public Menus(){
-
+    private static Menus menu;
+    private Menus(){}
+    public static synchronized Menus getInstance(){
+        if (menu == null){
+            menu = new Menus();
+        }
+        return menu;
     }
+
     /**
      * dispalyModeMenu allows user to select between four modes
      * 
