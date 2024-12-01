@@ -49,31 +49,17 @@ public class RunBank {
             System.out.println("Welcome to El Paso Miners Bank");
             System.out.println("===============================");
             int option = menu.displayModeMenu();
-            
             if (option == 1) {
                 String userName = menu.getFullNameMenu(usersByName);
                 Customer customer = usersByName.get(userName);
                 statementGenerator.startSession(customer); 
                 bankApp.setMode(new UserMode(), usersByName, userName, accountsByNumber);
-                
-                System.out.println("Would you like to exit the program? (yes/no)");
-                String response = kb.nextLine().trim().toLowerCase();
-                continueProgram = !response.equals("yes");
             } else if (option == 2) {
-                
                 bankApp.setMode(new ManagerMode(), usersByName, "Manager", accountsByNumber);
-        
-                System.out.println("Would you like to exit the program? (yes/no)");
-                String response = kb.nextLine().trim().toLowerCase();
-                continueProgram = !response.equals("yes");
             } else if (option == 3) {
                 String userName = "";
                 bankApp.setMode(new AccountCreationMode(), usersByName, userName, accountsByNumber);
-                System.out.println("Would you like to exit the program? (yes/no)");
-                String response = kb.nextLine().trim().toLowerCase();
-                continueProgram = !response.equals("yes");
             } 
-            menu.displayStatementMenu(usersByName, statementGenerator);
             System.out.println("Would you like to exit the program? (yes/no)");
             String response = kb.nextLine().trim().toLowerCase();
             continueProgram = !response.equals("yes");

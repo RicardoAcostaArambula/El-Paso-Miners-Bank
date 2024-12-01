@@ -129,10 +129,10 @@ class UserMode implements BankMode {
                     statementGenerator.recordTransaction(customer, "Balance inquiry for " +
                                 (accountType == 1 ? "Checking" : accountType == 2 ? "Savings" : "Credit") + " account");
                     managerStatement.recordTransaction(customer, String.format("Balance inquiry for %s account - Current balance: $%.2f",
-                            accountType == 1 ? "Checking" : accountType == 2 ? "Savings" : "Credit",
-                            accountType == 1 ? customer.getCheckingAccountBalance() :
-                            accountType == 2 ? customer.getSavingAccountBalance() :
-                            customer.getCreditAccountBalance()));
+                        accountType == 1 ? "Checking" : accountType == 2 ? "Savings" : "Credit",
+                        accountType == 1 ? customer.getCheckingAccountBalance() :
+                        accountType == 2 ? customer.getSavingAccountBalance() :
+                        customer.getCreditAccountBalance()));
                     break;
 
                 case 2: // Deposit
@@ -145,6 +145,7 @@ class UserMode implements BankMode {
                                 accountType == 1 ? "Checking" : accountType == 2 ? "Savings" : "Credit");
                         statementGenerator.recordTransaction(customer, depositMsg);
                         managerStatement.recordTransaction(customer, depositMsg);
+                        System.out.println("Successful operation.");
                     } catch (InvalidAmountFormatException e) {
                         String errorMsg = "Failed deposit attempt - " + e.getMessage();
                         statementGenerator.recordTransaction(customer, errorMsg);
@@ -162,6 +163,7 @@ class UserMode implements BankMode {
                                 accountType == 1 ? "Checking" : accountType == 2 ? "Savings" : "Credit");
                         statementGenerator.recordTransaction(customer, withdrawMsg);
                         managerStatement.recordTransaction(customer, withdrawMsg);
+                        System.out.println("Successful operation.");
                     } catch (InvalidAmountFormatException e) {
                         String errorMsg = "Failed withdrawal attempt - " + e.getMessage();
                         statementGenerator.recordTransaction(customer, errorMsg);
@@ -183,6 +185,7 @@ class UserMode implements BankMode {
                                 destAccount == 1 ? "Checking" : destAccount == 2 ? "Savings" : "Credit");
                         statementGenerator.recordTransaction(customer, transferMsg);
                         managerStatement.recordTransaction(customer, transferMsg);
+                        System.out.println("Successful operation.");
                     } catch (InvalidAmountFormatException e) {
                         String errorMsg = "Failed transfer attempt - " + e.getMessage();
                         statementGenerator.recordTransaction(customer, errorMsg);
@@ -212,6 +215,7 @@ class UserMode implements BankMode {
                         String paymentMsg = String.format("Payment of $%.2f made to credit account", paymentAmount);
                         statementGenerator.recordTransaction(customer, paymentMsg);
                         managerStatement.recordTransaction(customer, paymentMsg);
+                        System.out.println("Successful operation.");
                     } catch (InvalidAmountFormatException e) {
                         String errorMsg = "Failed payment attempt - " + e.getMessage();
                         statementGenerator.recordTransaction(customer, errorMsg);
@@ -249,6 +253,7 @@ class UserMode implements BankMode {
                         } else {
                             throw new InvalidAmountFormatException("Transfer failed - insufficient funds or invalid data");
                         }
+                        System.out.println("Successful operation.");
                     } catch (InvalidAmountFormatException e) {
                         String errorMsg = "Failed transfer attempt - " + e.getMessage();
                         statementGenerator.recordTransaction(customer, errorMsg);
