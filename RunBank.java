@@ -67,24 +67,16 @@ public class RunBank {
                 String response = kb.nextLine().trim().toLowerCase();
                 continueProgram = !response.equals("yes");
             } else if (option == 3) {
-                // String userName = "";
-                // bankApp.setMode(new AccountCreationMode(), usersByName, userName, accountsByNumber);
-                // System.out.println("Would you like to exit the program? (yes/no)");
-                // String response = kb.nextLine().trim().toLowerCase();
-                // continueProgram = !response.equals("yes");
-                
-                menu.displayStatementMenu(usersByName, statementGenerator);
+                String userName = "";
+                bankApp.setMode(new AccountCreationMode(), usersByName, userName, accountsByNumber);
                 System.out.println("Would you like to exit the program? (yes/no)");
                 String response = kb.nextLine().trim().toLowerCase();
                 continueProgram = !response.equals("yes");
             } 
-            // else if (option == 4) {
-            //     // menu.displayStatementMenu(usersByName, statementGenerator);
-                
-            //     // System.out.println("Would you like to exit the program? (yes/no)");
-            //     // String response = kb.nextLine().trim().toLowerCase();
-            //     // continueProgram = !response.equals("yes");
-            // }
+            menu.displayStatementMenu(usersByName, statementGenerator);
+            System.out.println("Would you like to exit the program? (yes/no)");
+            String response = kb.nextLine().trim().toLowerCase();
+            continueProgram = !response.equals("yes");
         }
     }
 }

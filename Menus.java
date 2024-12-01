@@ -31,14 +31,12 @@ public class Menus {
             System.out.println("Please Select the one of the following modes:");
             System.out.println("1. Customer");
             System.out.println("2. Bank Manager");
-            System.out.println("3. Generate account statement");
-            // System.out.println("3. Create New Account");
-            // System.out.println("4. Generate account statement");
+            System.out.println("3. Create New Account");
             option = kb.nextInt();
             if (kb.hasNextLine()) {
                 kb.nextLine();
             }
-            if (1 <= option && option <=4){
+            if (1 <= option && option <=3){
                 rightOption = true;
             } else {
                 System.out.println("Please choose a valid option");
