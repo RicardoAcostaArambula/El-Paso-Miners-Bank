@@ -3,7 +3,7 @@ import java.util.Scanner;
 
 class UserMode implements BankMode {
     /**
-     * enterMode is the starting point for entering UserMode which calls then the process of performTransaction if log in was successfull 
+     * enterMode is the starting point for entering UserMode which calls then the process of performTransaction if log in was successful
      * 
      * @param usersByName is a hashmap that contains the customers by name
      * @param userName is how the user is identify 
@@ -185,7 +185,6 @@ class UserMode implements BankMode {
                                 destAccount == 1 ? "Checking" : destAccount == 2 ? "Savings" : "Credit");
                         statementGenerator.recordTransaction(customer, transferMsg);
                         managerStatement.recordTransaction(customer, transferMsg);
-                        System.out.println("Successful operation.");
                     } catch (InvalidAmountFormatException e) {
                         String errorMsg = "Failed transfer attempt - " + e.getMessage();
                         statementGenerator.recordTransaction(customer, errorMsg);
